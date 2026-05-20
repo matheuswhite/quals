@@ -1,0 +1,83 @@
+\documentclass[tcc]{ic}
+
+\hypersetup{
+    colorlinks = {true},
+    linktocpage = {false},
+    plainpages = {false},
+    linkcolor = {Blue},
+    citecolor = {Blue},
+    urlcolor = {Red},
+    unicode = {true},
+    pdftitle = {Título do trabalho}, 
+    pdfauthor = {Fulano da Silva Alves},
+    pdfsubject = {Proposta de Dissertação de Mestrado},
+    pdfkeywords = {processamento gráfico, imagens médicas, visão computacional, aprendizagem profunda, aumento de dados, graphics processing, medical images, computer vision, deep learning, data augmentation}
+}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{enumerate}
+\usepackage{fancyhdr}
+\usepackage{acronym}
+\usepackage{natbib}
+\usepackage{lipsum}  
+\usepackage{amsmath}
+
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\renewcommand{\listalgorithmname}{List of \ALG@name s}
+\makeatother
+
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+
+\begin{document}
+
+    % Inclui o preâmbulo do documento (Informações da capa e contracapa)
+    \include{pre-textuais/preambulo}
+
+    \selectlanguage{portuguese}
+    
+    % Capa, contracapa e avaliadores
+    \capa
+    
+    % Agradecimentos
+    \include{pre-textuais/agradecimentos}
+    
+    % Resumo e Abstract
+    \include{pre-textuais/resumo}
+    \include{pre-textuais/abstract}
+    \include{pre-textuais/LISTA_DE_TABELAS}
+    \include{pre-textuais/LISTA_DE_FIGURAS}
+    \include{pre-textuais/LISTA_DE_SIGLAS}
+ 
+    
+    % Sumário
+    \tableofcontents
+    \thispagestyle{empty}
+    
+    % Início dos capítulos
+    \inicio
+    
+    \include{capitulos/introducao}
+    \include{capitulos/relatedworks}
+    \include{capitulos/fundamentacao}
+     \include{capitulos/Metodologia_Proposta}
+     \include{capitulos/Resultados_Parciais}
+     \include{capitulos/Cronograma_de_Execucao}
+    \include{capitulos/conclusao}
+\appendix
+\include{pos-textuais/apendiceA}
+
+\cleardoublepage
+\lhead{Bibliografia}
+%\bibliographystyle{estilo_}
+\bibliography{referencias} % arquivo fonte com a bibilografia
+\addcontentsline{toc}{chapter}{Bibliografia}
+
+
+    
+    % Pós Textuais
+    % \nocite{*}
+    % \include{pos-textuais/referencias}
+
+\end{document}

@@ -1,0 +1,28 @@
+\mychapter{Metodologia Proposta}{cap:Metodologia Proposta} 
+\label{Metodologia Proposta}
+
+% Nesta seção, serão apresentados os procedimentos metodológicos adotados no trabalho
+
+\section{Caracterização da Pesquisa}
+
+Pesquisa aplicada, com abordagem experimental e quantitativa, voltada ao desenvolvimento de uma biblioteca de software para apoio à construção de controladores com foco em segurança de memória.
+
+\section{Levantamento de Requisitos da Biblioteca}
+
+Definir quais abstrações a biblioteca precisa oferecer, como blocos dinâmicos, operações matriciais, composição de sinais, compatibilidade com \texttt{std} e \texttt{no\_std}, e uso tanto em PC quanto em embarcados; pela sua imagem, isso conversa diretamente com ``SDK/lib e não framework'', ``fácil de usar'' e ``versões sem \texttt{alloc}''.
+
+\section{Projeto da Arquitetura da Solução}
+
+Descrever os módulos, traits, tipos genéricos e interfaces de composição dos controladores; aqui entra a justificativa de usar biblioteca em vez de framework, preservando flexibilidade para o desenvolvedor.
+
+\section{Implementação da Biblioteca em Rust}
+
+Explicar como as garantias da linguagem influenciam o desenho da API, evitando padrões inseguros e privilegiando tipagem forte, traits, generics e composição estática.
+
+\section{Estratégia de Validação e Testes}
+
+Mostrar como você comprova que a biblioteca realmente facilita a construção de controladores e funciona nos cenários-alvo, inclusive host e embarcado.
+
+\section{Critérios de Avaliação e Comparação}
+
+Comparar a biblioteca com alternativas existentes, em termos de expressividade, portabilidade, segurança e adequação a sistemas embarcados. O uso de \texttt{no\_std} é especialmente relevante porque, em bare metal, a biblioteca padrão não está disponível e o código precisa depender de \texttt{core} e, opcionalmente, de \texttt{alloc}.
