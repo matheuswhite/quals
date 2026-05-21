@@ -4,6 +4,7 @@ created: 2026-05-20
 modified:
   - 2026-05-20: Claude (claude-opus-4-7) — added plan/ section, fixed chapter count to reflect missing conclusao.tex
   - 2026-05-20: Claude (claude-opus-4-7) — synced chapter count to 7 (conclusao.tex now exists), removed obsolete dangling-include note, added commit-prefix convention
+  - 2026-05-20: Claude (claude-opus-4-7) — added Rule 6 (portability of decisions) and introduced .claude/memory/ as versioned mirror
 ---
 
 # CLAUDE.md
@@ -62,6 +63,23 @@ Every file Claude creates or modifies must carry attribution. Confirmed format (
 - **`.cls` / `.sty` files** — use `%` comments at the top with the same semantic structure.
 
 This is as obligatory as Rule 1. Apply it every time, without being asked.
+
+### Rule 6 — Portability of decisions
+
+**The repository is the single carrier** of every durable collaboration decision in this project. Cloning the repo on a new device must be sufficient to restore the full collaboration state — nothing important may live only in local Claude memory (`~/.claude/projects/<encoded>/memory/`), which does not sync between devices.
+
+Two places hold durable decisions:
+
+- **`CLAUDE.md`** (this file) — the primary carrier. Collaboration rules, conventions, technical context, anything that benefits from being read at session start.
+- **`.claude/memory/`** — versioned mirror of Claude's local memory system, for decisions that are better expressed as discrete memory entries (e.g. user profile, project boundaries) rather than inlined into `CLAUDE.md`.
+
+**Maintenance contract:**
+
+- When a new durable decision is made in conversation, it must land in **either** `CLAUDE.md` **or** a file under `.claude/memory/`. Saving only to local memory is not acceptable for anything that should outlive a device switch.
+- `.claude/memory/` and the local memory dir should mirror each other. The repo is the source of truth; local is the working copy.
+- Do **not** duplicate content between `CLAUDE.md` and `.claude/memory/` — each piece lives in exactly one of them, to avoid drift.
+
+**Bootstrap on a new device:** if `~/.claude/projects/<encoded-path>/memory/` is empty or missing files that exist under `.claude/memory/`, copy them over at the start of the first session. This is Claude's responsibility, not the user's.
 
 ## What this repo is
 
