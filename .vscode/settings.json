@@ -1,0 +1,29 @@
+{
+  "//author": "Claude (claude-opus-4-7)",
+  "//created": "2026-05-20",
+  "//purpose": "Project-level VS Code workflow settings — versioned per Rule 6. Per-device overrides go in settings.local.json (gitignored).",
+
+  "latex-workshop.latex.recipe.default": "latexmk",
+  "latex-workshop.latex.autoBuild.run": "onSave",
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.synctex.afterBuild.enabled": true,
+  "latex-workshop.latex.clean.subfolder.enabled": true,
+  "latex-workshop.latex.autoClean.run": "onBuilt",
+  "latex-workshop.latex.clean.fileTypes": [
+    "*.aux", "*.bbl", "*.blg", "*.idx", "*.ind", "*.lof", "*.lot",
+    "*.out", "*.toc", "*.acn", "*.acr", "*.alg", "*.glg", "*.glo",
+    "*.gls", "*.fls", "*.log", "*.fdb_latexmk", "*.snm", "*.synctex.gz",
+    "*.nav", "*.run.xml", "*.bcf", "*.loe"
+  ],
+
+  "ltex.language": "pt-BR",
+  "ltex.additionalRules.motherTongue": "pt-BR",
+
+  "[latex]": {
+    "editor.wordWrap": "on",
+    "editor.wrappingIndent": "indent"
+  },
+  "[bibtex]": {
+    "editor.wordWrap": "off"
+  }
+}

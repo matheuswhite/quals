@@ -1,5 +1,7 @@
 # author: Claude (claude-opus-4-7)
 # created: 2026-05-20
+# modified:
+#   - 2026-05-20: Claude (claude-opus-4-7) — removed .vscode/ blanket ignore; project-level VS Code settings should be versioned (Rule 6). Only per-device overrides are ignored.
 
 # === LaTeX build artifacts ===
 # Aux / log / toc family
@@ -60,8 +62,12 @@ Thumbs.db
 *.swp
 *.swo
 *~
-.vscode/
 .idea/
+
+# VS Code: project-level settings are versioned (.vscode/settings.json, .vscode/extensions.json).
+# Only per-device overrides are ignored.
+.vscode/settings.local.json
+.vscode/*.log
 
 # === Claude Code (per-device local settings) ===
 # Note: .claude/memory/ is versioned (see CLAUDE.md Rule 6). Only local-overrides are ignored.

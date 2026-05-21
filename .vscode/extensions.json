@@ -1,0 +1,10 @@
+{
+  "//author": "Claude (claude-opus-4-7)",
+  "//created": "2026-05-20",
+  "//purpose": "Extensions recommended for this thesis project. VS Code prompts to install on first open.",
+
+  "recommendations": [
+    "james-yu.latex-workshop",
+    "valentjn.vscode-ltex"
+  ]
+}
