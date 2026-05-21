@@ -1,7 +1,11 @@
 ---
 author: Claude (claude-opus-4-7)
 created: 2026-05-20
+modified:
+  - 2026-05-20: Claude (claude-opus-4-7) — added LTeX disable magic comment
 ---
+
+<!-- LTeX: enabled=false -->
 
 # Rust em Sistemas de Controle: Garantias de Memory Safety
 

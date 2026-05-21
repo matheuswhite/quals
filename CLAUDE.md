@@ -5,6 +5,7 @@ modified:
   - 2026-05-20: Claude (claude-opus-4-7) — added plan/ section, fixed chapter count to reflect missing conclusao.tex
   - 2026-05-20: Claude (claude-opus-4-7) — synced chapter count to 7 (conclusao.tex now exists), removed obsolete dangling-include note, added commit-prefix convention
   - 2026-05-20: Claude (claude-opus-4-7) — added Rule 6 (portability of decisions) and introduced .claude/memory/ as versioned mirror
+  - 2026-05-20: Claude (claude-opus-4-7) — documented LTeX-disable convention for plan/ markdown files
 ---
 
 # CLAUDE.md
@@ -143,6 +144,8 @@ When suggesting commit messages in the LaTeX-expert/advisor role, follow this sp
 The `plan/` directory holds versioned markdown planning documents (e.g. `aule_roadmap.md`, `rust_memory_safety_em_controle.md`). They are scoping/strategy notes — not draft thesis prose, and not part of the LaTeX build (nothing in `main.tex` references them).
 
 These files are **subject to Rule 3**: Claude must not draft thesis-ready prose here for Matheus to copy/paste/adapt into `.tex`. Allowed content: outlines, comparisons, gap analyses, lists of topics-to-cover, technical scoping. Forbidden: paragraphs that read like sections of the dissertation.
+
+**LTeX is disabled in this directory.** Each markdown in `plan/` opens with `<!-- LTeX: enabled=false -->` right after the frontmatter so the spell/grammar checker doesn't lint technical scoping docs (which mix Portuguese with English jargon like `placeholder`, `template`, `benchmark`). Apply the same convention to any new file added to `plan/`.
 
 ## Assets
 

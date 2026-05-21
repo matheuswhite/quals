@@ -3,7 +3,10 @@ author: Claude (claude-opus-4-7)
 created: 2026-05-20
 modified:
   - 2026-05-20: Claude (claude-opus-4-7) — added narrative (3-act) layer mapping each chapter to its dramaturgical function
+  - 2026-05-20: Claude (claude-opus-4-7) — added LTeX disable magic comment
 ---
+
+<!-- LTeX: enabled=false -->
 
 # Outline geral da dissertação
 
