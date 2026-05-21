@@ -1,0 +1,68 @@
+# author: Claude (claude-opus-4-7)
+# created: 2026-05-20
+
+# === LaTeX build artifacts ===
+# Aux / log / toc family
+*.aux
+*.log
+*.toc
+*.lof
+*.lot
+*.out
+*.loe
+
+# BibTeX / biblatex
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+
+# latexmk / synctex
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+
+# DVI / PS intermediates
+*.dvi
+*.ps
+
+# Beamer
+*.nav
+*.snm
+*.vrb
+
+# makeindex
+*.idx
+*.ind
+*.ilg
+
+# glossaries
+*.glo
+*.gls
+*.glg
+*.acn
+*.acr
+
+# epstopdf / graphicx auto-conversions
+*-converted-to.pdf
+
+# todonotes / other listings sidecars
+*.tdo
+*.lol
+
+# Final compiled output (regenerable from source)
+main.pdf
+
+# === Editor / OS ===
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# === Claude Code (per-device local settings) ===
+# Note: .claude/memory/ is versioned (see CLAUDE.md Rule 6). Only local-overrides are ignored.
+.claude/settings.local.json
