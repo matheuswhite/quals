@@ -6,6 +6,7 @@ modified:
   - 2026-05-20: Claude (claude-opus-4-7) — added LTeX disable magic comment
   - 2026-05-28: Claude (claude-opus-4-7) — recorded research framing (hybrid, B-dominant); propagated implications to chapters 1–5 and transversal axes
   - 2026-05-28: Claude (claude-opus-4-7) — resolved Act 2 turning point (forward composition + Signal monoid); recorded its memory-safety rationale and feedback trade-offs
+  - 2026-05-28: Claude (claude-opus-4-7) — added 5th transversal axis (verification displacement, B-pure); noted forward as enabler (not proof) of B in ch.4
 ---
 
 <!-- LTeX: enabled=false -->
@@ -47,6 +48,7 @@ Antes do detalhamento capítulo a capítulo, três fios que precisam aparecer em
 2. **Biblioteca vs. framework** — decisão de design recorrente. Aparece em Introdução (como diferencial), Metodologia (como princípio de projeto), Resultados (como o que foi entregue), Conclusão (como contribuição).
 3. **Garantia por construção (tipos) vs. garantia em tempo de execução (testes/runtime)** — distinguir o que Rust dá de graça do que precisa ser desenhado ativamente.
 4. **Fronteira do que Rust garante vs. não garante** — a tese só é honesta se disser onde a memory safety do Rust **não** ajuda (stack overflow, erros lógicos, `unsafe` em FFI/HAL, panic em embarcado). Ver `rust_memory_safety_em_controle.md` §"Onde memory safety não ajuda". Aparece em cap. 3 (delimitação conceitual) e cap. 4/5 (honestidade do experimento). Sob enquadramento B, este eixo é o que protege a tese de soar exagerada.
+5. **Deslocamento da verificação** — o que em C/C++ é convenção informal não-verificada (inicializar antes de ler, não reter ponteiro além da vida do dono, sincronizar acesso compartilhado entre contextos) torna-se, em Rust, obrigação codificada no tipo e checada em compilação. O esforço de garantir ausência de uma classe de bug migra de revisão humana + ferramentas externas (sanitizers em runtime, análise estática externa) para o sistema de tipos. É o argumento central de B (ver `rust_memory_safety_em_controle.md` §"Argumento para a tese"). Atravessa cap. 2 (vs. abordagens que verificam em runtime/análise externa), cap. 3 (ownership/borrow) e cap. 5 (o experimento mede esse deslocamento). **Nota:** este eixo é a versão B-pura de uma ideia que começou misturada com A ("explícito > implícito"); a parte "explícito para o desenvolvedor" (forward, `last_output` legível) é A e vive no ponto-de-virada do cap. 4, não aqui.
 
 ---
 
@@ -219,7 +221,9 @@ O experimento comparativo já esboçado em `rust_memory_safety_em_controle.md` �
 
 **Midpoint:** a adoção da composição *forward* com `Signal` (monoid) como base de toda a biblioteca — todo elemento é um `Block` avaliado para a frente, em vez de um grafo resolvido a partir da saída (backward).
 
-**Por que é decisão de memory safety (não só arquitetura):** determina *de onde vêm as garantias de segurança*. O grafo backward, em Rust, empurra para `Rc<RefCell>` (borrow em runtime → panic, exige `alloc`), arena+índices (troca segurança-de-tipo por segurança-de-índice, mais fraca) ou `unsafe`. A composição forward mantém as garantias no sistema de tipos — estáticas, zero-custo, `no_std` sem heap. Liga ao eixo transversal 3.
+**Por que é decisão de memory safety (não só arquitetura):** determina *de onde vêm as garantias de segurança*. O grafo backward, em Rust, empurra para `Rc<RefCell>` (borrow em runtime → panic, exige `alloc`), arena+índices (troca segurança-de-tipo por segurança-de-índice, mais fraca) ou `unsafe`. A composição forward mantém as garantias no sistema de tipos — estáticas, `no_std` sem heap. Liga ao eixo transversal 3.
+
+**Enabler, não prova (refinamento 2026-05-28):** o forward *viabiliza* memory safety por construção em `no_std` (mantém as garantias sem `Rc<RefCell>`/`unsafe`), mas não a *demonstra*. A demonstração são os casos (cap. 5) e o experimento (cap. 4) — o midpoint abre a possibilidade, o clímax a prova. Honestidade: memory safety básica (ausência de UB) vale em *qualquer* Rust safe, inclusive backward; o que o forward entrega especificamente é mantê-la **estática e sem heap**, que é o que importa no alvo embarcado. Atenção também: o encadeamento via operador `*` usa `&mut dyn Block` (dispatch dinâmico), então **não** alegar "zero-custo" sem ressalva — o caminho monomorfizado é a chamada direta `.output()`.
 
 **Natureza da virada (contar com honestidade):** não foi batalha perdida-e-vencida com o borrow checker — a versão backward **não** foi implementada. Matheus reconheceu o custo do backward; a forma forward+`Signal`/monoid **emergiu de várias tentativas** até convergir, informada por abordagens idiomáticas em Rust (modelo iterator). É *convergência por iteração*, não derrota do caminho alternativo.
 
