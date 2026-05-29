@@ -6,6 +6,7 @@ modified:
   - 2026-05-20: Claude (claude-opus-4-7) — synced chapter count to 7 (conclusao.tex now exists), removed obsolete dangling-include note, added commit-prefix convention
   - 2026-05-20: Claude (claude-opus-4-7) — added Rule 6 (portability of decisions) and introduced .claude/memory/ as versioned mirror
   - 2026-05-20: Claude (claude-opus-4-7) — documented LTeX-disable convention for plan/ markdown files
+  - 2026-05-28: Claude (claude-opus-4-7) — documented the Aule sibling repository
 ---
 
 # CLAUDE.md
@@ -85,6 +86,18 @@ Two places hold durable decisions:
 ## What this repo is
 
 LaTeX source for a master's qualification document (proposta de dissertação) at the Instituto de Computação, UFAL. Working title: *"Aule: Towards memory safety in system control"* — a Rust library (not framework) for building control systems, with `no_std`/embedded targets in mind. The document is written in Portuguese (`babel` portuguese is loaded by the class).
+
+## Sibling repository — the Aule library
+
+The thesis is *about* the Aule library, which lives in a **separate sibling repository** alongside this one: `../aule/` (e.g. `/Users/matheuswhite/repo/mestrado/aule/` on this machine — the relative `../aule` is what matters; the absolute path may differ per device, see Rule 6).
+
+Understanding the thesis — especially the methodology, partial results, and the Act-2 turning point — requires reading the Aule code. Key facts:
+
+- `no_std` Rust (edition 2024), feature-gated (`std` / `alloc` / `swd`). The `continuous`/`discrete` modules need `alloc` (nalgebra); `tier1` (PID, filters, etc.), `signal`, `simulation`, `block` are core `no_std`.
+- **Forward composition** is the core design decision. Entry points: `src/block.rs` (`trait Block`), `src/signal.rs` (`Signal<T>`, the `*` operator that chains blocks via `&mut dyn Block`), `src/simulation.rs` (`Simulation` is an `Iterator<Item = SimulationState>`). Feedback is explicit via `Block::last_output()`.
+- The original `meeting_alan.md` (advisor's direction notes) lives there; it is mirrored at `plan/meeting_alan.md`.
+
+Treat the Aule repo as **read-only** from this repo unless Matheus explicitly asks otherwise — it is his code project. The "never edit `.tex` / never write prose" rules are about *this* (thesis) repo; the Aule repo is out of their scope, but the same courtesy applies: do not modify it without being asked.
 
 ## Build
 
