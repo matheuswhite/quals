@@ -11,7 +11,7 @@ Plano de *quando* escrever *o quê*. Não contém prosa da tese — só metas e 
 
 ## Premissas
 
-- **Prazo:** final de julho/2026. Janela ≈ **9 semanas** (Matheus já embutiu ~2 semanas de buffer nessa contagem).
+- **Prazo:** final de julho/2026. **Janela:** 1 bloco de arranque (sáb 30/mai — a semana atual só tem ele, pois hoje é quinta à noite) + **8 semanas cheias** (jun–jul) + margem final. Buffer de ~2 semanas preservado (semana 8 = revisão; fim de jul = margem).
 - **Dedicação:** parcial — segunda, quarta e quinta à noite + sábado de manhã ≈ **4 blocos/semana (~10–12 h)**. Sábado é o bloco longo.
 - **Orientador:** Icaro. Reuniões semanais informais, sem checkpoint formal de entrega → usar como **feedback contínuo** (levar o capítulo da semana).
 - **Estado de partida:** capítulos em esqueleto; experimento de segurança = só protocolo; Aule já madura ([`aule_roadmap.md`](aule_roadmap.md)).
@@ -25,6 +25,7 @@ Plano de *quando* escrever *o quê*. Não contém prosa da tese — só metas e 
 - **Introdução em dois tempos** — rascunho cedo (fixa pergunta de pesquisa, objetivos, estrutura); lapidação no fim.
 - **Escrita é iterativa** — a ordem é a de *foco*, não exclusiva. Voltar e ajustar é esperado.
 - **Padrão de uso dos blocos:** sábado de manhã = redigir seção nova (precisa de fôlego); noites = avançar/revisar/ler (tarefas menores).
+- **Sem fase de preparação dedicada:** o esqueleto `.tex` de cada capítulo é montado no início da semana daquele capítulo (o `outline_geral.md` já é o esqueleto conceitual). Só a pergunta de pesquisa + objetivos vem antes de tudo (bloco de arranque), porque orienta a direção.
 
 ## Plano semana a semana
 
@@ -32,15 +33,18 @@ Datas aproximadas — ajustar ao calendário real.
 
 | Sem. | Período aprox. | Foco principal | Saída esperada |
 |---|---|---|---|
-| **1** | fim de mai (parcial) | **Preparação.** Transformar o `outline_geral.md` em esqueleto `.tex` (headings + bullets do que cada seção cobre). Rascunhar pergunta de pesquisa + objetivos (1.2). Iniciar leitura do cap. 2. | Esqueleto de todos os capítulos no `.tex`; 1.2 em rascunho |
-| **2** | início jun | **Cap. 4 (1ª parte):** caracterização, requisitos, arquitetura da solução (4.1–4.3). Ancorar no forward/`Signal` + ponto-de-virada. | 4.1–4.3 escritos |
-| **3** | jun | **Cap. 4 (2ª parte):** implementação, validação/testes, critérios + **protocolo do experimento** (4.4–4.6). | Cap. 4 completo |
-| **4** | jun | **Cap. 5 (núcleo):** estado da Aule + casos demonstrativos (delay line, ISR↔DMA, MPC workspace). | Casos demonstrativos escritos |
-| **5** | fim jun | Fechar cap. 5 (limitações) + **Cap. 3 (1ª parte):** classes de bug + ownership/borrow/lifetimes (seção dedicada). | Cap. 5 completo; cap. 3 começado |
-| **6** | fim jun / início jul | **Cap. 3 (2ª parte):** A&OC mínimo, `no_std`/embedded, controle mínimo + **Cap. 2:** consolidar leitura na taxonomia por abordagem de garantia. | Cap. 3 completo; cap. 2 em rascunho |
-| **7** | jul | **Cap. 1** lapidar (intro completa, narrativa de incidentes) + **Cap. 2** fechar + tabela comparativa. | Caps. 1 e 2 completos |
-| **8** | jul | **Cap. 6** (cronograma da dissertação) + **Cap. 7** (conclusão) + **pré-textuais** (resumo, abstract, palavras-chave, trocar lista de siglas herdada). | Documento textualmente completo |
-| **9** | fim jul | **Revisão integral:** consistência entre capítulos, os 5 eixos transversais presentes, incorporar feedback do Icaro, compilação final. Buffer. | PDF final pronto pra banca |
+| **Arranque** | sáb 30/mai (1 bloco) | Rascunhar **pergunta de pesquisa + objetivos (1.2)** — o que destrava a direção de tudo. Cabe num bloco. | 1.2 em rascunho |
+| **1** | 1–7 jun | **Cap. 4 (1ª parte):** caracterização, requisitos, arquitetura (4.1–4.3), ancorado no forward/`Signal` + ponto-de-virada. Montar o esqueleto `.tex` do cap. no início. Iniciar a **leitura bibliográfica para o cap. 2** (ver nota abaixo). | 4.1–4.3 escritos; leitura começada |
+| **2** | 8–14 jun | **Cap. 4 (2ª parte):** implementação, validação/testes, critérios + **protocolo do experimento** (4.4–4.6). | Cap. 4 completo |
+| **3** | 15–21 jun | **Cap. 5 (núcleo):** estado da Aule + casos demonstrativos (delay line, ISR↔DMA, MPC workspace). | Casos demonstrativos escritos |
+| **4** | 22–28 jun | Fechar cap. 5 (limitações) + **Cap. 3 (1ª parte):** classes de bug + ownership/borrow/lifetimes (seção dedicada). | Cap. 5 completo; cap. 3 começado |
+| **5** | 29 jun–5 jul | **Cap. 3 (2ª parte):** A&OC mínimo, `no_std`/embedded, controle mínimo + **Cap. 2:** consolidar leitura na taxonomia por abordagem de garantia. | Cap. 3 completo; cap. 2 em rascunho |
+| **6** | 6–12 jul | **Cap. 1** lapidar (intro completa, narrativa de incidentes) + **Cap. 2** fechar + tabela comparativa. | Caps. 1 e 2 completos |
+| **7** | 13–19 jul | **Cap. 6** (cronograma da dissertação) + **Cap. 7** (conclusão) + **pré-textuais** (resumo, abstract, palavras-chave, trocar lista de siglas herdada). | Documento textualmente completo |
+| **8** | 20–26 jul | **Revisão integral:** consistência entre capítulos, os 5 eixos transversais presentes, incorporar feedback do Icaro, compilação final. Buffer. | PDF final pronto pra banca |
+| _margem_ | 27–31 jul | Folga / imprevistos / últimos ajustes. | — |
+
+> **Sobre a "leitura bibliográfica para o cap. 2":** é a leitura dos *trabalhos* que o cap. 2 (Relacionados) vai comparar — não a leitura do capítulo. Começa na semana 1 e roda **de fundo** ao longo das semanas 1–5 (não em bloco), porque não dá pra escrever Relacionados sem ter lido antes, e ler + escrever na mesma semana estoura. Para cada trabalho, anotar *que classe de bug elimina e em que momento* (compilação / análise estática / runtime / teste) → vira direto a tabela comparativa. Registrar as fontes em `leitura_futura.md` / `referencias.bib`.
 
 ## Sincronização com o Icaro
 
