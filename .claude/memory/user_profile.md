@@ -12,6 +12,8 @@ Matheus Tenório dos Santos — mestrando no Instituto de Computação da UFAL. 
 - Linguagem da tese: português (PT-BR).
 - Linguagem das conversas comigo: português.
 - Email acadêmico (o único a usar neste projeto): `mtds@ic.ufal.br`.
-- Defesa prevista: julho/2026.
+- **Orientador: Icaro** (sobrenome a confirmar; `pre-textuais/preambulo.tex` ainda está com placeholder "Dr. Orientador 1" — Matheus precisa preencher).
+- **Alan**: colaborador de ideias (NÃO é o orientador). As anotações em `plan/meeting_alan.md` são de conversas com ele.
+- Qualificação prevista: final de julho/2026.
 
 Este é um **projeto pessoal acadêmico** — ver [[personal-project-boundary]]: não misturar com vida profissional do usuário.

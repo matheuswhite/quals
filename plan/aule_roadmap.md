@@ -4,6 +4,7 @@ created: 2026-05-20
 modified:
   - 2026-05-20: Claude (claude-opus-4-7) — added LTeX disable magic comment
   - 2026-05-28: Claude (claude-opus-4-7) — fixed cross-reference to meeting_alan.md (now mirrored in plan/)
+  - 2026-05-28: Claude (claude-opus-4-7) — corrected advisor attribution (Icaro is the advisor; Alan is an idea collaborator)
 ---
 
 <!-- LTeX: enabled=false -->
@@ -340,7 +341,7 @@ Assim:
 
 ## Próximos passos recomendados
 
-1. **Validar o roadmap com o orientador** (Alan) — confirmar ordem das fases.
+1. **Validar o roadmap** — confirmar ordem das fases com o orientador (Icaro) e com Alan (colaborador de ideias).
 2. **Começar pela Fase 1** — entrega visível e rápida, fecha a pergunta "isso é uma toolbox de controle?".
 3. **Tomar decisão arquitetural sobre MIMO cedo** — quanto mais código depender de SISO, mais caro o refator depois.
 4. **Documentar com rustdoc + benchmarks** desde a Fase 1 — o capítulo "implementação" da tese se beneficia de docs autogeradas e gráficos de performance vs `python-control`.

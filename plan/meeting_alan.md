@@ -6,9 +6,9 @@ co-authors:
 
 <!-- LTeX: enabled=false -->
 
-# Anotações — Reunião com Alan (orientador)
+# Anotações — Reunião com Alan (colaborador de ideias)
 
-> Importado de `aule/meeting_alan.md` (repo da biblioteca) para o repo da tese em 2026-05-28, como registro durável da direção definida com o orientador (CLAUDE.md, Rule 6). Conteúdo das anotações preservado fielmente abaixo.
+> Importado de `aule/meeting_alan.md` (repo da biblioteca) para o repo da tese em 2026-05-28, como registro durável da direção de tese discutida com **Alan** — colaborador de ideias (o **orientador é Icaro**). Ver CLAUDE.md, Rule 6. Conteúdo das anotações preservado fielmente abaixo.
 
 - Atraso de transporte
 - Segurança de buffer
