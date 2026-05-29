@@ -3,13 +3,14 @@ author: Claude (claude-opus-4-7)
 created: 2026-05-20
 modified:
   - 2026-05-20: Claude (claude-opus-4-7) — added LTeX disable magic comment
+  - 2026-05-28: Claude (claude-opus-4-7) — fixed cross-reference to meeting_alan.md (now mirrored in plan/)
 ---
 
 <!-- LTeX: enabled=false -->
 
 # Roadmap da Biblioteca `aule` — Lacunas e Priorização
 
-Análise comparando o estado atual de `aule` com uma toolbox de referência de controle (MATLAB Control System Toolbox + `python-control`), e proposta de fases de evolução alinhada à direção da tese registrada em [`aule/meeting_alan.md`](aule/meeting_alan.md).
+Análise comparando o estado atual de `aule` com uma toolbox de referência de controle (MATLAB Control System Toolbox + `python-control`), e proposta de fases de evolução alinhada à direção da tese registrada em [`meeting_alan.md`](meeting_alan.md).
 
 ## Estado atual
 

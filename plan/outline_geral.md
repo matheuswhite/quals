@@ -5,6 +5,7 @@ modified:
   - 2026-05-20: Claude (claude-opus-4-7) — added narrative (3-act) layer mapping each chapter to its dramaturgical function
   - 2026-05-20: Claude (claude-opus-4-7) — added LTeX disable magic comment
   - 2026-05-28: Claude (claude-opus-4-7) — recorded research framing (hybrid, B-dominant); propagated implications to chapters 1–5 and transversal axes
+  - 2026-05-28: Claude (claude-opus-4-7) — resolved Act 2 turning point (forward composition + Signal monoid); recorded its memory-safety rationale and feedback trade-offs
 ---
 
 <!-- LTeX: enabled=false -->
@@ -73,7 +74,7 @@ Sistemas de controle críticos rodam em software cuja pilha (C/C++ + paliativos 
 
 - **Filtro de escopo:** ao decidir se um trecho entra/sai, perguntar "que ato ele serve, e como?". Resposta "nenhum" → cortar.
 - **Filtro de tom:** Ato 1 estabelece e provoca; Ato 2 explora e admite dificuldades; Ato 3 sintetiza e aponta. Tom errado pro ato derrapa a leitura.
-- **Identificar o ponto-de-virada (midpoint do Ato 2):** decisão de design da Aule que destrava o restante. Precisa estar **explícita** no cap. 4 — banca cobra "qual foi a decisão difícil, e por que assim?".
+- **Identificar o ponto-de-virada (midpoint do Ato 2):** decisão de design da Aule que destrava o restante. Precisa estar **explícita** no cap. 4 — banca cobra "qual foi a decisão difícil, e por que assim?". → **RESOLVIDO:** composição forward + `Signal` (monoid); ver cap. 4.
 
 ---
 
@@ -214,12 +215,21 @@ Sob enquadramento B, os comparáveis **primários** são abordagens de *garantia
 ### Experimento central (âncora do método sob B)
 O experimento comparativo já esboçado em `rust_memory_safety_em_controle.md` §"Experimento proposto" é o coração metodológico: mesmo algoritmo (Smith Predictor + Kalman de baixa ordem + estado compartilhado com ISR + reconfiguração de horizonte) implementado em **C+FreeRTOS** e **Rust+`heapless`+RTIC**, ambos passados por ASan/TSan/UBSan, documentando para cada bug o trio {snippet C que o produz, erro de compilação Rust que o impede, diagnóstico do sanitizer}. Decidir a escala do experimento na qualificação vs. dissertação.
 
-### Candidatos a ponto-de-virada do Ato 2 (escolher 1 como o "midpoint")
-A decisão de design não-óbvia que organiza a narrativa. Candidatos concretos, agora que conheço a Aule:
-1. **Codificar invariantes de segurança no sistema de tipos** — `DelayLine<const N>`, split `Producer`/`Consumer`, `OwnedTrajectory` vs. `&'a` (ver os 3 casos). É o mais alinhado com a tese B.
-2. **Refator `Controller`/`Block`** (separar controlador do loop de `Simulation`) — destrava "o mesmo código roda em simulação e em hardware real". Mais alinhado com engenharia/viabilidade.
-3. **Aposta em verificação formal (Kani)** — provar ausência de panic em blocos-chave. Eleva a tese de "elimina UB" para "prova ausência de classe de falha".
-- **Recomendação de revisor:** sob B, o midpoint natural é o (1); (2) e (3) são desdobramentos. Confirmar.
+### Ponto-de-virada do Ato 2 — RESOLVIDO (2026-05-28)
+
+**Midpoint:** a adoção da composição *forward* com `Signal` (monoid) como base de toda a biblioteca — todo elemento é um `Block` avaliado para a frente, em vez de um grafo resolvido a partir da saída (backward).
+
+**Por que é decisão de memory safety (não só arquitetura):** determina *de onde vêm as garantias de segurança*. O grafo backward, em Rust, empurra para `Rc<RefCell>` (borrow em runtime → panic, exige `alloc`), arena+índices (troca segurança-de-tipo por segurança-de-índice, mais fraca) ou `unsafe`. A composição forward mantém as garantias no sistema de tipos — estáticas, zero-custo, `no_std` sem heap. Liga ao eixo transversal 3.
+
+**Natureza da virada (contar com honestidade):** não foi batalha perdida-e-vencida com o borrow checker — a versão backward **não** foi implementada. Matheus reconheceu o custo do backward; a forma forward+`Signal`/monoid **emergiu de várias tentativas** até convergir, informada por abordagens idiomáticas em Rust (modelo iterator). É *convergência por iteração*, não derrota do caminho alternativo.
+
+**Consequência de honestidade (tarefa):** como o backward não foi medido, a afirmação sobre seu custo precisa ser ancorada em argumento técnico + literatura (o problema conhecido de "grafos em Rust safe"), nunca em experiência própria de implementação. Material para cap. 2/3.
+
+**Desdobramentos a jusante (não são o midpoint):**
+- Refator `Controller`/`Block` → "mesmo código em simulação e hardware".
+- Verificação formal (Kani) → clímax do Ato 3, não a virada.
+
+**Feedback no modelo forward (decisão de design + ponto que a banca cutuca):** a realimentação é explícita — o desenvolvedor lê o `last_output` do bloco à frente e a injeta onde quer. Vantagem: o atraso/estado da malha fica *literal*, não escondido num diagrama que sugere simultaneidade. Trade-offs a guardar: (a) explícito vira manual → propenso a erro em sistemas grandes; (b) laço algébrico puro (sem atraso) pode não ser representável — tende a forçar um atraso unitário; (c) comparar com solvers de laço algébrico (Simulink). Não resolver agora; ter resposta pronta.
 
 ### Decisões em aberto
 - A metodologia trata Aule como produto único ou como **plataforma extensível** (terceiros podem contribuir blocos)? Sob B, "produto único focado nos casos" reduz escopo — provavelmente melhor.
