@@ -8,6 +8,7 @@ modified:
   - 2026-05-28: Claude (claude-opus-4-7) — resolved Act 2 turning point (forward composition + Signal monoid); recorded its memory-safety rationale and feedback trade-offs
   - 2026-05-28: Claude (claude-opus-4-7) — added 5th transversal axis (verification displacement, B-pure); noted forward as enabler (not proof) of B in ch.4
   - 2026-05-28: Claude (claude-opus-4-7) — closed scope decisions for the qualification; recorded project state (experiment = protocol only, hardware undecided, partial workload)
+  - 2026-05-28: Claude (claude-opus-4-7) — refined §1.2 (research question + objectives) with criteria, the A-vs-B verb test, and a coverage checklist (no drafted prose)
 ---
 
 <!-- LTeX: enabled=false -->
@@ -115,14 +116,38 @@ Sistemas de controle críticos rodam em software cuja pilha (C/C++ + paliativos 
 - Por que Rust e por que **agora**?
 
 ### 1.2 Objetivos
-#### 1.2.1 Objetivo Geral
-- Uma frase. O que será entregue ao final do mestrado.
-- Critério: deve ser verificável (alguém de fora deve saber dizer se foi atingido).
 
-#### 1.2.2 Objetivos Específicos
-- Lista de marcos parciais que, juntos, satisfazem o geral.
-- Mapeáveis 1-pra-1 com o cronograma (capítulo 6).
-- Cada objetivo específico deve ter um critério de "feito".
+> A pergunta de pesquisa orienta toda a tese; os objetivos derivam dela. Pode abrir esta seção ou fechar a 1.1 (o "nicho/ocupação" do CARS). Abaixo: critérios e frentes a cobrir — **a redação é do Matheus** (Regra 1). Não há frases prontas aqui, de propósito.
+
+#### Pergunta de pesquisa — critérios para a formulação (a redigir)
+Uma pergunta defensável, para este trabalho, precisa ser:
+- **Sobre o fenômeno, não sobre o artefato.** Se for "como construir uma biblioteca…", é Tese A e a banca cobra a contribuição científica. Deve ser sobre *memory safety por construção em controle embarcado*.
+- **Não-trivial.** "Rust elimina use-after-free?" é óbvio (design da linguagem). A pergunta precisa morar na tensão não-óbvia já mapeada (Enquadramento + eixos 3/4/5): o deslocamento da verificação para o tipo e seu custo/limite no domínio embarcado. Capture *essa* tensão — você a formula.
+- **Verificável.** Tem que existir critério de resposta (os casos + o protocolo do experimento). Sem isso, é opinião, não pergunta de pesquisa.
+- **Ancorada na lacuna** do cap. 2.
+- **Coerente com B-dominante:** responde ao que a tese entrega (demonstração), não à completude da toolbox.
+
+Armadilhas: ampla demais ("Rust é bom pra embedded?"); de engenharia ("como construir X?"); de resposta óbvia (sim/não trivial).
+
+#### 1.2.1 Objetivo Geral (a redigir)
+- Uma frase, derivada da pergunta, verificável por terceiros.
+- **Teste decisivo A vs B — o verbo.** "Desenvolver/implementar uma biblioteca…" → Tese A. "Avaliar / demonstrar / caracterizar em que medida…" (com a Aule como veículo) → Tese B. Sob B, o verbo é de investigação/avaliação, não de construção.
+
+#### 1.2.2 Objetivos Específicos (a redigir)
+- São **resultados verificáveis** que, juntos, satisfazem o geral — não atividades. "Estudar Rust" / "implementar a feature X" são meios, não objetivos.
+- Cada um com critério de "feito" e mapeável 1-pra-1 com o cronograma (cap. 6).
+- **Não** listar construção de features de toolbox como objetivos (Tese A; cortável sob prazo).
+- **Checklist de cobertura** — confira se o conjunto que você redigir contempla estas frentes (cada uma vira um ou mais objetivos, formulados por você):
+  - a caracterização das classes de bug relevantes ao domínio (de onde vem o problema)?
+  - como o Rust as trata e onde **não** alcança (eixo 4)?
+  - a Aule como veículo que materializa os casos?
+  - a definição do protocolo de avaliação comparativa (cap. 4.6)?
+  - a avaliação segundo os critérios primários?
+
+#### Antes de redigir (sábado), responda a si mesmo:
+- A tese em uma frase, sem marketing: o que exatamente você afirma?
+- O que contaria como "demonstrado"? (reafirme o critério de sucesso do Enquadramento)
+- Recorte fino: quais classes de bug entram, qual o domínio exato, o que fica de fora?
 
 ### 1.3 Visão Geral da Dissertação
 - Resumo de uma frase por capítulo restante.
