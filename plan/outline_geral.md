@@ -4,6 +4,7 @@ created: 2026-05-20
 modified:
   - 2026-05-20: Claude (claude-opus-4-7) — added narrative (3-act) layer mapping each chapter to its dramaturgical function
   - 2026-05-20: Claude (claude-opus-4-7) — added LTeX disable magic comment
+  - 2026-05-28: Claude (claude-opus-4-7) — recorded research framing (hybrid, B-dominant); propagated implications to chapters 1–5 and transversal axes
 ---
 
 <!-- LTeX: enabled=false -->
@@ -19,6 +20,24 @@ Referências cruzadas:
 
 ---
 
+## Enquadramento da pesquisa (decidido — 2026-05-28)
+
+Decisão: **híbrido com hierarquia B-dominante.**
+
+- **Tese (fim):** a afirmação de que Rust elimina, por construção, classes de bug de memória relevantes em controle embarcado. É o que a pergunta de pesquisa persegue e o critério de sucesso mede.
+- **Aule (meio):** a biblioteca é pré-requisito de viabilidade — dá realismo aos casos demonstrativos (delay line, ISR↔DMA, workspace de MPC) em vez de exemplos de brinquedo. Não é a contribuição central.
+
+Consequências que valem para todo o resto do outline:
+
+- **Pergunta de pesquisa:** gira em torno de memory safety em controle embarcado. (Matheus redige a formulação final — ver 1.2.)
+- **Critério de sucesso:** demonstrar a eliminação de classes de bug (experimento C-vs-Rust + invariantes provados), mesmo que a toolbox fique incompleta.
+- **Regra de corte sob prazo:** sob pressão até jul/2026, corta-se profundidade/abrangência de features de controle (LQR, MPC avançado, root locus), **nunca** o experimento de segurança nem os casos demonstrativos.
+- **O que isto NÃO é:** não é uma tese de "toolbox de controle em Rust". Paridade com MATLAB/`python-control` é validação de que o veículo funciona, não o objetivo.
+
+Resolve o item transversal 3 (título "Towards memory safety…" coerente com B) e orienta 1.2 (objetivos).
+
+---
+
 ## Eixos transversais
 
 Antes do detalhamento capítulo a capítulo, três fios que precisam aparecer em mais de um lugar e amarrar o trabalho:
@@ -26,6 +45,7 @@ Antes do detalhamento capítulo a capítulo, três fios que precisam aparecer em
 1. **Tripé do tema** — *sistemas de controle* × *segurança de memória* × *sistemas embarcados / `no_std`*. Cada capítulo precisa indicar qual(is) vértice(s) está abordando e como se conecta ao outro.
 2. **Biblioteca vs. framework** — decisão de design recorrente. Aparece em Introdução (como diferencial), Metodologia (como princípio de projeto), Resultados (como o que foi entregue), Conclusão (como contribuição).
 3. **Garantia por construção (tipos) vs. garantia em tempo de execução (testes/runtime)** — distinguir o que Rust dá de graça do que precisa ser desenhado ativamente.
+4. **Fronteira do que Rust garante vs. não garante** — a tese só é honesta se disser onde a memory safety do Rust **não** ajuda (stack overflow, erros lógicos, `unsafe` em FFI/HAL, panic em embarcado). Ver `rust_memory_safety_em_controle.md` §"Onde memory safety não ajuda". Aparece em cap. 3 (delimitação conceitual) e cap. 4/5 (honestidade do experimento). Sob enquadramento B, este eixo é o que protege a tese de soar exagerada.
 
 ---
 
@@ -84,8 +104,9 @@ Sistemas de controle críticos rodam em software cuja pilha (C/C++ + paliativos 
 - Função: dar mapa de navegação ao leitor.
 
 ### Decisões em aberto pra este capítulo
-- A motivação de partida vai de **incidentes reais conhecidos** (Toyota unintended acceleration, etc.) ou de **dados estatísticos** (% de CVEs por classe de bug)?
-- A introdução cita Aule pelo nome ou descreve "uma biblioteca"?
+- ~~A introdução cita Aule pelo nome ou descreve "uma biblioteca"?~~ **Resolvido sob B:** cita pelo nome, mas apresentada como *meio* (veículo que torna os casos reais), não como objeto central.
+- **Encaminhamento sob B (confirmar):** liderar a motivação pelos incidentes documentados mapeados a classes de bug de memória (Toyota UA, Therac-25, Ariane V, MCAS — ver `rust_memory_safety_em_controle.md` §"Argumento para a tese"); dados estatísticos de CVEs entram como reforço, não como abertura.
+- **Novo (B):** o objetivo geral (1.2.1) orienta-se à *demonstração de eliminação de classes de bug*, não à entrega de uma toolbox. As features de controle aparecem nos objetivos específicos como pré-requisito de viabilidade, não como fim.
 
 ---
 
@@ -95,17 +116,20 @@ Sistemas de controle críticos rodam em software cuja pilha (C/C++ + paliativos 
 
 **Ato narrativo:** Ato 1 — aprofunda a tensão introduzida em 1.1. Cada trabalho citado precisa empurrar a tensão: "X resolve Y mas não Z", "W ataca a borda errada do problema". Não é catálogo — é mapeamento da lacuna que a Aule preenche. Tabela comparativa final é o cliffhanger que prepara a entrada do Ato 2.
 
-### Estrutura sugerida (a refinar)
-- **2.x Bibliotecas de controle em Rust** — `control-rs`, `nalgebra-based`, esforços de comunidade.
-- **2.x Bibliotecas de controle em outras linguagens** — MATLAB Control Toolbox, `python-control`, Slycot, Modelica. Servem como baseline de funcionalidade esperada.
-- **2.x Linguagens "memory-safe" em embarcados** — Rust embedded WG, Ada/SPARK, MISRA-C, Frama-C. Cada uma mira garantias diferentes; mapear.
-- **2.x Trabalhos acadêmicos sobre verificação/segurança de software de controle** — onde a literatura cruza com sua proposta?
-- **2.x Síntese comparativa** — tabela que mostra eixos (expressividade, portabilidade, segurança, embedded-ready, ergonomia) × trabalhos. **Aule entra como linha final** com seus pontos.
+### Estrutura sugerida (reordenada sob B)
+
+Sob enquadramento B, os comparáveis **primários** são abordagens de *garantia de segurança*; toolboxes de controle entram como *contexto* (de onde a Aule herda requisitos), não como o eixo de comparação central.
+
+- **2.x (primário) Abordagens de memory/type safety em software crítico** — Rust (safe + `unsafe` confinado), Ada/SPARK, MISRA-C + ferramentas (Polyspace, Coverity, Frama-C), C com sanitizers (ASan/TSan/UBSan). Eixo: *que classes de bug cada uma elimina, e em que momento (compilação / análise estática / runtime / teste)?*
+- **2.x (primário) Verificação formal aplicável a Rust** — Kani, Creusot, Prusti. O que provam e a que custo. Liga ao cap. 4 (invariantes provados).
+- **2.x (contexto) Bibliotecas de controle como origem de requisitos** — MATLAB Control Toolbox, `python-control`, Slycot; libs de controle em Rust (`control-rs` etc.). Servem pra dizer "isto é o que uma toolbox precisa ter" e situar a Aule, **não** pra reivindicar superioridade funcional.
+- **2.x Trabalhos acadêmicos no cruzamento controle × segurança de software** — onde a literatura já tocou no problema; qual a lacuna.
+- **2.x Síntese comparativa** — tabela cujo eixo central é *classe de bug eliminada × abordagem*, com colunas secundárias (embedded-ready, ergonomia, custo de adoção). **Aule entra como linha**, posicionada pela combinação "elimina por construção + ergonômica + `no_std`".
 
 ### Decisões em aberto
-- A taxonomia é por **linguagem** ou por **abordagem de garantia**?
-- Quão fundo entrar em Ada/SPARK? É parente próximo conceitual; pode ser comparação rica ou distração.
-- Incluir ferramentas adjacentes (RTOS com tipo-safety, ex. RTIC) ou manter foco em libs?
+- ~~A taxonomia é por linguagem ou por abordagem de garantia?~~ **Resolvido sob B:** por **abordagem de garantia** (é o que conversa com a tese). Linguagem vira atributo dentro de cada abordagem.
+- Quão fundo entrar em Ada/SPARK? Sob B, é o comparável conceitual mais forte (também mira segurança por construção) — provavelmente merece mais espaço que as toolboxes. Definir profundidade.
+- Incluir ferramentas adjacentes (RTOS type-safe, ex. RTIC/Embassy)? Sob B, RTIC é relevante porque aparece nos casos (cap. cap. de memory safety) — incluir como parte da abordagem Rust, não como item isolado.
 
 ---
 
@@ -116,6 +140,11 @@ Sistemas de controle críticos rodam em software cuja pilha (C/C++ + paliativos 
 **Ato narrativo:** Ato 1 — última etapa antes da virada do Ato 2. Equipa o leitor com o vocabulário mínimo para entender a tentativa que vem. Cada seção precisa passar pelo filtro "remover isso quebra a leitura do Ato 2 ou 3?" — se não, corta. É a fronteira final do "setup" — termina deixando o leitor pronto pra ver a proposta entrar em cena.
 
 **Risco identificado (papel de revisor):** as 4 áreas atuais ("Sistemas de Controle", "Arquitetura e Organização de Computadores", "Engenharia de Software", "Sistemas Embarcados") são amplas demais. Sem filtro, vira manual genérico. Cada seção precisa de **um teste de relevância**: "remover esta seção quebra a leitura de algum capítulo posterior?"
+
+**Priorização sob B (núcleo vs. periferia):** com memory safety como tese, o peso da fundamentação inverte em relação a uma tese de toolbox.
+- **Núcleo** (sustenta diretamente os casos e o experimento): classes de bug de memória e ownership/borrow/lifetimes (3.3); o mínimo de A&OC que os casos exigem — stack vs. heap, atomicidade/torn read, MMU/MPU (3.2); `no_std`/`core`/`alloc` e modelo de execução ISR↔tarefa (3.4).
+- **Periferia** (só o suficiente pra ler os casos): teoria de controle (3.1) entra no nível necessário pra entender delay line, observador e MPC como *objetos* — não como projeto de controladores. Profundidade de controle além disso é candidata a corte.
+- **Teste afiado:** se uma subseção de 3.1 não é pré-requisito de nenhum caso do cap. de memory safety nem do experimento, ela serve à Tese A (toolbox), não à B — reavaliar.
 
 ### 3.1 Sistemas de Controle
 - Mínimo: o que é planta, controlador, malha aberta/fechada, controlador discreto vs. contínuo.
@@ -174,12 +203,28 @@ Sistemas de controle críticos rodam em software cuja pilha (C/C++ + paliativos 
 - Critérios de aceitação por feature.
 
 ### 4.6 Critérios de Avaliação e Comparação
-- Definir **eixos mensuráveis**: expressividade (linhas de código pra implementar X), portabilidade (alvos suportados), overhead (binário, tempo), segurança (CVEs evitados por construção).
-- Baselines de comparação (definidos no cap. 2).
+- **Eixos primários sob B (do experimento em `rust_memory_safety_em_controle.md` §"Experimento proposto"):**
+  - bugs que um sanitizer detecta em C e que **não compilam** em Rust (a evidência central);
+  - tamanho da fronteira `unsafe` no projeto Rust (quanto da segurança não é coberta pelo compilador);
+  - linhas de "boilerplate de segurança" (locks manuais, bounds checks, verificação de init) eliminadas;
+  - paridade de performance (ciclos/iteração) — esperado: empate. Refutar o medo "Rust é mais lento".
+- **Eixos secundários (validação do veículo, não da tese):** expressividade, portabilidade, overhead de binário. Comparação numérica com `python-control` mora aqui.
+- Baselines definidos no cap. 2 (abordagem de garantia, não toolbox).
+
+### Experimento central (âncora do método sob B)
+O experimento comparativo já esboçado em `rust_memory_safety_em_controle.md` §"Experimento proposto" é o coração metodológico: mesmo algoritmo (Smith Predictor + Kalman de baixa ordem + estado compartilhado com ISR + reconfiguração de horizonte) implementado em **C+FreeRTOS** e **Rust+`heapless`+RTIC**, ambos passados por ASan/TSan/UBSan, documentando para cada bug o trio {snippet C que o produz, erro de compilação Rust que o impede, diagnóstico do sanitizer}. Decidir a escala do experimento na qualificação vs. dissertação.
+
+### Candidatos a ponto-de-virada do Ato 2 (escolher 1 como o "midpoint")
+A decisão de design não-óbvia que organiza a narrativa. Candidatos concretos, agora que conheço a Aule:
+1. **Codificar invariantes de segurança no sistema de tipos** — `DelayLine<const N>`, split `Producer`/`Consumer`, `OwnedTrajectory` vs. `&'a` (ver os 3 casos). É o mais alinhado com a tese B.
+2. **Refator `Controller`/`Block`** (separar controlador do loop de `Simulation`) — destrava "o mesmo código roda em simulação e em hardware real". Mais alinhado com engenharia/viabilidade.
+3. **Aposta em verificação formal (Kani)** — provar ausência de panic em blocos-chave. Eleva a tese de "elimina UB" para "prova ausência de classe de falha".
+- **Recomendação de revisor:** sob B, o midpoint natural é o (1); (2) e (3) são desdobramentos. Confirmar.
 
 ### Decisões em aberto
-- A metodologia trata Aule como produto único ou como **plataforma extensível** (terceiros podem contribuir blocos)?
+- A metodologia trata Aule como produto único ou como **plataforma extensível** (terceiros podem contribuir blocos)? Sob B, "produto único focado nos casos" reduz escopo — provavelmente melhor.
 - Os critérios de avaliação precisam ser fechados **agora** (qualificação) ou podem ser refinados na dissertação?
+- Qual o hardware-alvo do experimento (Cortex-M específico)? O bridge SWD via probe-rs já existe na Aule — aproveitar.
 
 ---
 
@@ -192,16 +237,23 @@ Sistemas de controle críticos rodam em software cuja pilha (C/C++ + paliativos 
 ### 5.1 Análise de Eficiência (atual)
 - **Crítica (papel de revisor):** "eficiência" como única dimensão é estreito demais pra qualificação. O leitor pergunta: eficiência de quê — tempo de execução, footprint, esforço de desenvolvimento, expressividade?
 
-### Estrutura sugerida (a refinar)
-- **5.x Estado atual da biblioteca** — o que está implementado, referência a [`aule_roadmap.md`](aule_roadmap.md).
-- **5.x Decisões de design já validadas** — exemplos de escolhas que se mostraram corretas/incorretas (ex.: trait `X` foi refatorada porque…).
-- **5.x Casos de uso construídos** — controladores concretos que rodam com Aule. Mínimo: 1 não-trivial.
-- **5.x Métricas preliminares** — só se houver. Não inventar.
-- **5.x Limitações conhecidas** — honestidade aqui ganha credibilidade na banca.
+### Estrutura sugerida (reorganizada em duas metades sob B)
+
+**Metade 1 — "o veículo funciona" (fecha o Ato 2):**
+- **5.x Estado atual da biblioteca** — o que está implementado, referência a [`aule_roadmap.md`](aule_roadmap.md). Função: mostrar que a Aule é real e usável, não vaporware.
+- **5.x Validação funcional do veículo** — comparação numérica Aule ↔ `python-control` em casos conhecidos. Função: provar que a base de controle está correta, pra que os casos de segurança não sejam contestados como "controle de brinquedo".
+- **5.x Decisões de design que codificam segurança** — onde o sistema de tipos já tornou bugs impossíveis (liga ao ponto-de-virada do cap. 4).
+
+**Metade 2 — "a tese se sustenta" (abre o Ato 3):**
+- **5.x Resultado do experimento de segurança** — o comparativo C-vs-Rust (mesmo que parcial na qualificação): bugs que não compilam, fronteira `unsafe`, boilerplate eliminado, paridade de performance.
+- **5.x Limitações conhecidas** — onde a memory safety do Rust não alcança (eixo transversal 4). Honestidade aqui ganha credibilidade na banca.
+
+**Fronteira Ato 2 → Ato 3:** entre a Metade 1 e a Metade 2. Marcar quando o capítulo for escrito.
 
 ### Decisões em aberto
-- O capítulo cita resultados quantitativos (medições) ou apenas qualitativos (decisões tomadas)?
-- Há benchmarks contra alguma baseline já?
+- ~~O capítulo cita resultados quantitativos ou qualitativos?~~ **Encaminhamento sob B:** ambos — qualitativo (bugs que não compilam, decisões de tipo) é o núcleo; quantitativo (performance, fronteira `unsafe` em LoC) reforça. Não inventar números que ainda não existem.
+- Quanto do experimento de segurança estará pronto até a qualificação? Define se a Metade 2 mostra resultado ou só protocolo + piloto.
+- A comparação com `python-control` já tem alguma medição feita, ou é trabalho futuro?
 
 ---
 
