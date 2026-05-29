@@ -7,6 +7,7 @@ modified:
   - 2026-05-28: Claude (claude-opus-4-7) — recorded research framing (hybrid, B-dominant); propagated implications to chapters 1–5 and transversal axes
   - 2026-05-28: Claude (claude-opus-4-7) — resolved Act 2 turning point (forward composition + Signal monoid); recorded its memory-safety rationale and feedback trade-offs
   - 2026-05-28: Claude (claude-opus-4-7) — added 5th transversal axis (verification displacement, B-pure); noted forward as enabler (not proof) of B in ch.4
+  - 2026-05-28: Claude (claude-opus-4-7) — closed scope decisions for the qualification; recorded project state (experiment = protocol only, hardware undecided, partial workload)
 ---
 
 <!-- LTeX: enabled=false -->
@@ -37,6 +38,27 @@ Consequências que valem para todo o resto do outline:
 - **O que isto NÃO é:** não é uma tese de "toolbox de controle em Rust". Paridade com MATLAB/`python-control` é validação de que o veículo funciona, não o objetivo.
 
 Resolve o item transversal 3 (título "Towards memory safety…" coerente com B) e orienta 1.2 (objetivos).
+
+---
+
+## Decisões fechadas — escopo da qualificação (2026-05-28)
+
+Estado de partida: ~28/mai/2026; qualificação em julho/2026 (~9 semanas); dedicação **parcial** (seg/qua/qui à noite + sábado de manhã, ~10–12 h/semana). Princípio que decide os recortes: **a qualificação defende proposta + resultados parciais + protocolo do experimento; o experimento completo e a toolbox madura ficam para a dissertação.**
+
+### Recortes de escopo (assumidos sob o prazo — ajustar se discordar)
+- **Cap. 1 abertura:** incidentes documentados (Toyota UA, Therac-25, Ariane 5, MCAS) como motivação.
+- **Cap. 2 Ada/SPARK:** uma subseção como comparável conceitual mais próximo; sem aprofundar.
+- **Cap. 3 Rust conceitual:** seção dedicada (ownership/borrow/lifetimes), não diluída em Eng. de Software. Ordem: classes de bug → ownership → A&OC mínimo → `no_std`/embedded.
+- **Cap. 4 Aule:** produto único focado nos casos; **não** plataforma extensível.
+- **Cap. 4 critérios:** eixos primários já fechados (4.6); números refinados na dissertação.
+
+### Estado real do projeto (decide o cap. 5)
+- **Experimento de segurança (C+FreeRTOS vs Rust+RTIC + sanitizers):** apenas **conceito/protocolo** — nada implementado. → cap. 4 descreve o método; cap. 5 apresenta o **protocolo**, não dados.
+- **Hardware-alvo:** **indefinido.** → para a qualificação, plano = simulação em host + HIL via probe-rs (já na Aule); placa específica é decisão da fase de execução. Não bloqueia.
+- **Resultado parcial real (cap. 5):** (a) estado atual da Aule — já substancial, ver [`aule_roadmap.md`](aule_roadmap.md); (b) **casos demonstrativos** (os 3 de [`rust_memory_safety_em_controle.md`](rust_memory_safety_em_controle.md), como código que compila/não-compila) — evidência por construção, qualitativa, já fazível; (c) protocolo do experimento. Sem medições.
+
+### Consequência para o cap. 6
+O cronograma é o roadmap de escrita até julho, em arquivo próprio (`plan/roadmap_escrita.md`, a montar). Carga parcial × 9 semanas exige priorização dura.
 
 ---
 
@@ -259,7 +281,8 @@ O experimento comparativo já esboçado em `rust_memory_safety_em_controle.md` �
 - **5.x Decisões de design que codificam segurança** — onde o sistema de tipos já tornou bugs impossíveis (liga ao ponto-de-virada do cap. 4).
 
 **Metade 2 — "a tese se sustenta" (abre o Ato 3):**
-- **5.x Resultado do experimento de segurança** — o comparativo C-vs-Rust (mesmo que parcial na qualificação): bugs que não compilam, fronteira `unsafe`, boilerplate eliminado, paridade de performance.
+- **5.x Casos demonstrativos como evidência por construção** — para cada um dos 3 casos (delay line, ISR↔DMA, MPC workspace): o trecho C com o bug e o equivalente Rust que **não compila** / força a forma segura. É o resultado parcial *qualitativo* mais forte, e independe do experimento completo. **Núcleo do cap. 5 na qualificação.**
+- **5.x Protocolo do experimento (trabalho futuro)** — design do comparativo C-vs-Rust + sanitizers + métricas (fronteira `unsafe`, boilerplate, performance). Apresentado como **protocolo**, não resultados (o experimento é só conceito hoje — ver "Decisões fechadas").
 - **5.x Limitações conhecidas** — onde a memory safety do Rust não alcança (eixo transversal 4). Honestidade aqui ganha credibilidade na banca.
 
 **Fronteira Ato 2 → Ato 3:** entre a Metade 1 e a Metade 2. Marcar quando o capítulo for escrito.
