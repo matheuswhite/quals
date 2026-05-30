@@ -7,6 +7,7 @@ modified:
   - 2026-05-20: Claude (claude-opus-4-7) — added Rule 6 (portability of decisions) and introduced .claude/memory/ as versioned mirror
   - 2026-05-20: Claude (claude-opus-4-7) — documented LTeX-disable convention for plan/ markdown files
   - 2026-05-28: Claude (claude-opus-4-7) — documented the Aule sibling repository
+  - 2026-05-30: Claude (claude-sonnet-4-6) — corrected latexmkrc presence, added VS Code build integration note
 ---
 
 # CLAUDE.md
@@ -101,7 +102,14 @@ Treat the Aule repo as **read-only** from this repo unless Matheus explicitly as
 
 ## Build
 
-There is no Makefile or latexmkrc. Standard pdfLaTeX + BibTeX run from the repo root:
+A `latexmkrc` is present at the repo root. It sets `$pdf_mode = 1` (pdfLaTeX), passes `-synctex=1 -interaction=nonstopmode -file-line-error`, sets `$bibtex_use = 2` (bibtex on every run), and declares `@default_files = ('main.tex')`. Preferred commands:
+
+```sh
+latexmk               # full build (uses latexmkrc defaults)
+latexmk -c            # clean aux files (keeps PDF)
+```
+
+Manual fallback (bypasses latexmk):
 
 ```sh
 pdflatex main
@@ -110,14 +118,11 @@ pdflatex main
 pdflatex main   # second pass resolves cross-refs / TOC
 ```
 
-Or with `latexmk` (auto-handles passes):
-
-```sh
-latexmk -pdf main.tex
-latexmk -c            # clean aux files (keeps PDF)
-```
-
 The output is `main.pdf`. The entrypoint is `main.tex` — do not rename or move it; the class file (`ic.cls`) and the bib (`referencias.bib`) are resolved relative to it.
+
+### VS Code / LaTeX Workshop
+
+`.vscode/settings.json` (versioned) configures LaTeX Workshop to build on save via `latexmk`, enable SyncTeX, and auto-clean aux files. LTeX grammar checker is set to `pt-BR`. Per-device overrides go in `settings.local.json` (gitignored). Do not suggest build configurations that conflict with this setup.
 
 ## Document structure
 
