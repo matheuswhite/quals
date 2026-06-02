@@ -4,6 +4,7 @@ created: 2026-05-20
 modified:
   - 2026-05-20: Claude (claude-opus-4-7) — added LTeX disable magic comment
   - 2026-05-28: Claude (claude-opus-4-7) — added references on the cost of graph/self-referential structures in safe Rust
+  - 2026-06-01: Claude (claude-opus-4-8) — added a "Espaco de design" section (analysis method + synchronization design space + embedded Rust concurrency) to inform obj. 3
 ---
 
 <!-- LTeX: enabled=false -->
@@ -63,6 +64,28 @@ Sustenta o argumento do ponto-de-virada (cap. 4): por que a alternativa *backwar
 
 - **Referência:** documentação dos crates `slotmap` e/ou `generational-arena` (docs.rs; confirmar versão).
 - **Por que importa:** mostram a versão madura da arena, com *generations* para detectar índices obsoletos em runtime. Reforça o argumento: mesmo a melhor saída backward reintroduz uma verificação (de geração) em runtime que o modelo forward dispensa por construção.
+- **Estado:** por ler.
+
+## Espaço de design (design space)
+
+Informa o obj. 3 (catalogar o **espaço de design** dos meios de implementar a sincronização que a garantia força no lado safe) e o critério "um por eixo do espaço de design" do obj. 4 (ver F19 em [`banca_pergunta_pesquisa.md`](banca_pergunta_pesquisa.md)). Cobre o *método* de estruturar/apresentar um espaço de design, o *conteúdo* (o espaço da sincronização) e sua concretização em Rust embarcado. **Confirmar URL/edição/data ao citar.**
+
+### Herlihy & Shavit — *The Art of Multiprocessor Programming*
+
+- **Referência:** Herlihy, M.; Shavit, N. *The Art of Multiprocessor Programming.* Morgan Kaufmann (confirmar edição — Revised Reprint 2012; há 2ª ed. 2020 com Luchangco e Spear).
+- **Por que importa:** mapeia o espaço de design da sincronização — locks, lock-free, wait-free — e os trade-offs de progresso/custo entre eles. É o conteúdo técnico que o catálogo do obj. 3 enumera, e ancora a tensão "lock-free safe × `Mutex`" registrada em [`recorte_tese.md`](recorte_tese.md) (falsificabilidade da Q2: o custo da sincronização forçada).
+- **Estado:** por ler.
+
+### MacLean, Young, Bellotti & Moran — QOC / *Design Space Analysis*
+
+- **Referência:** MacLean, A.; Young, R. M.; Bellotti, V. M. E.; Moran, T. P. (1991). "Questions, Options, and Criteria: Elements of Design Space Analysis." *Human–Computer Interaction*, 6(3–4), 201–250 (confirmar páginas/DOI).
+- **Por que importa:** define o *método* de análise de espaço de design — Questions (eixos de decisão), Options (alternativas) e Criteria (critérios de escolha). É o arcabouço para estruturar o obj. 3: cada eixo = uma Question, cada meio = uma Option, custo/deadline/ergonomia = Criteria. Também fundamenta o critério "um por eixo" do obj. 4.
+- **Estado:** por ler.
+
+### RTIC — *Real-Time Interrupt-driven Concurrency*
+
+- **Referência:** *RTIC — Real-Time Interrupt-driven Concurrency* (livro/documentação do framework; rtic.rs — confirmar versão e data de acesso).
+- **Por que importa:** documenta o espaço de design concreto de concorrência **safe** em Cortex-M — recursos compartilhados, prioridades, seções críticas e a troca ISR↔tarefa. É o lado embarcado dos "meios" do obj. 3 e do caso de reconfiguração de parâmetros, e conecta com a plataforma do experimento (Cortex-M0, obj. 5). Relacionados a confirmar/considerar: crates `critical-section`, `heapless` (fila SPSC) e os atômicos de `core::sync::atomic`.
 - **Estado:** por ler.
 
 ## Outros tópicos
