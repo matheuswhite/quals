@@ -9,9 +9,9 @@ Versioned mirror of durable Claude memory for this project. See `CLAUDE.md` → 
 
 What lives here (and not in `CLAUDE.md`):
 
-- [User profile](user_profile.md) — Matheus, mestrando UFAL IC, tese sobre biblioteca Rust "Aule" para controle com segurança de memória
+- [User profile](user_profile.md) — Matheus, mestrando UFAL IC; tese no nível do fenômeno (B-dominante) sobre a fronteira de segurança de memória do Rust em data races de controle concorrente — a lib Aule é o veículo
 - [Personal project boundary](personal_project_boundary.md) — projeto pessoal acadêmico; nunca citar empregador nem email corporativo em nada deste repo ou memória
-- [Ponto de retomada](ponto_retomada.md) — exercício de banca sobre a pergunta de pesquisa EM CURSO; ao retomar, ler `plan/banca_pergunta_pesquisa.md` (transitório — remover ao encerrar)
+- [Ponto de retomada](ponto_retomada.md) — §1.2 (pergunta + objetivos + título) FECHADA; próxima etapa = Cap. 4 (núcleo), semana 1 do roadmap, a fazer noutro dia
 - [Review checklist enforce](review_checklist_enforce.md) — ao revisar o texto da tese, cobrar `plan/checklist_revisao.md` (taxonomia de padrões de data race, F7)
 
 What lives in `CLAUDE.md` (not duplicated here):

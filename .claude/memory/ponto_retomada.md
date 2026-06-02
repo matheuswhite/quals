@@ -1,34 +1,31 @@
 ---
 name: ponto-retomada
-description: "Exercício de banca antecipada sobre a pergunta de pesquisa (§1.2) EM CURSO — log corrido em plan/banca_pergunta_pesquisa.md; ler ao retomar"
+description: "§1.2 (pergunta + objetivos + título) FECHADA e commitada; próxima etapa = Cap. 4 (núcleo), semana 1 do roadmap — a fazer noutro dia"
 author: Claude (claude-opus-4-8)
 created: 2026-05-31
 metadata:
   type: project
 ---
 
-**Ponto de retomada — exercício ATIVO (banca antecipada sobre a pergunta de pesquisa).**
+**Ponto de retomada — §1.2 encerrada (1/jun/2026).**
 
-Iniciado pós-travamento em 31/mai/2026. Matheus pediu que **cada rodada** fosse salva
-para nada se perder se o PC travar de novo.
+## Concluído
+- **§1.2 (pergunta de pesquisa + objetivos)** redigida pelo Matheus e commitada
+  (`capitulos/introducao.tex`): 8 objetivos, corte 1–3 qualificação / 4–8 pós-qualificação.
+- **Título** reenquadrado para o nível do fenômeno (B-dominante), sem Aule:
+  *"Mapeando o custo e a fronteira de segurança do Rust no território de data races em
+  algoritmos de controle"* (`pre-textuais/preambulo.tex`).
+- Exercício de banca antecipada **encerrado** — histórico completo (rodadas 1–10, furos
+  F1–F21) em [`plan/banca_pergunta_pesquisa.md`](../../plan/banca_pergunta_pesquisa.md).
 
-## Ao retomar, leia nesta ordem
-1. [`plan/banca_pergunta_pesquisa.md`](../../plan/banca_pergunta_pesquisa.md) — **log
-   corrido** das rodadas de reformulação da pergunta + furos da banca + pendências vivas.
-2. [`plan/recorte_tese.md`](../../plan/recorte_tese.md) — decisões de recorte já fechadas
-   (classe = data race; baseline C; falsificabilidade; dois casos).
+## Próxima etapa (a fazer noutro dia)
+**Cap. 4 (núcleo) — semana 1 do roadmap (1–7 jun):** caracterização, requisitos, arquitetura
+(4.1–4.3), ancorado no forward/`Signal` + ponto-de-virada. Ver
+[`plan/roadmap_escrita.md`](../../plan/roadmap_escrita.md). Em paralelo, começar a leitura
+bibliográfica do cap. 2.
 
-## Mecânica do exercício
-Claude no papel de **banca/revisor** (furar sem dó); Matheus pensa em voz alta e **redige
-ele mesmo** a pergunta (Regra 1 — Claude NÃO redige a pergunta nem a §1.2). A cada rodada:
-registrar a formulação do Matheus (verbatim) e os furos no log acima.
-
-## Estado em 31/mai (rodada 5)
-F6(a)/F8/F9 resolvidos — pergunta **estruturalmente defensável**. Único furo substantivo
-aberto: **F7 resíduo** — ancorar "os data races presentes" numa **taxonomia de padrões de
-concorrência** (não censo empírico). Matheus já começou a colar a pergunta em
-`capitulos/introducao.tex` (redação é dele, Regra 1). Ver "Pendências vivas" no log.
-
-## Transitório
-Remover este arquivo (e o ponteiro em ambos os `MEMORY.md`) quando a §1.2 estiver redigida
-e o exercício encerrado — como foi feito com a versão anterior em 30/mai.
+## Ainda valendo
+- Ao **escrever/revisar o corpo**: entregar a taxonomia de padrões de data race que o obj. 1
+  promete (F7) — ver [[review-checklist-enforce]] e `plan/checklist_revisao.md`.
+- Resíduos não-graves dos objetivos (não bloqueiam): período de amostragem do regime;
+  ortografia do rascunho; lista `1. 2. 3.` não renderiza como `enumerate` em LaTeX.

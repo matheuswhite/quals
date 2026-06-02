@@ -7,6 +7,11 @@ created: 2026-05-31
 
 # Log da banca antecipada — iteração da pergunta de pesquisa
 
+> **ENCERRADO (1/jun/2026).** §1.2 (pergunta + objetivos) redigida e commitada, e o título
+> reenquadrado para o nível do fenômeno (B-dominante, sem Aule). Este arquivo fica como
+> **histórico** (rodadas 1–10, furos F1–F21). Próxima etapa do projeto: Cap. 4 — ver
+> `roadmap_escrita.md`.
+
 Registro **corrido** do exercício de banca antecipada sobre a redação da pergunta de
 pesquisa (§1.2). Atualizado **a cada rodada** para sobreviver a travamento do PC: se a
 sessão cair, este arquivo (em disco + versionado) é suficiente para retomar o fio.

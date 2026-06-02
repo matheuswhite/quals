@@ -87,7 +87,7 @@ Two places hold durable decisions:
 
 ## What this repo is
 
-LaTeX source for a master's qualification document (proposta de dissertação) at the Instituto de Computação, UFAL. Working title: *"Aule: Towards memory safety in system control"* — a Rust library (not framework) for building control systems, with `no_std`/embedded targets in mind. The document is written in Portuguese (`babel` portuguese is loaded by the class).
+LaTeX source for a master's qualification document (proposta de dissertação) at the Instituto de Computação, UFAL. Working title (PT, updated 2026-06-01): *"Mapeando o custo e a fronteira de segurança do Rust no território de data races em algoritmos de controle"* — reframed from the artifact-first *"Aule: Towards memory safety in system control"* to a **phenomenon-level (B-dominant)** title: it maps where Rust's safe/`unsafe` frontier falls for data races in concurrent control code, and the cost the safe side's forced synchronization imposes (vs C+MISRA). The **Aule** library — a Rust library (not framework) for building control systems, `no_std`/embedded — is the *vehicle*, not the subject of the claim. The document is written in Portuguese (`babel` portuguese is loaded by the class).
 
 ## Sibling repository — the Aule library
 
