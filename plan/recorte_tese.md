@@ -5,6 +5,7 @@ modified:
   - 2026-05-30: Claude (claude-opus-4-8) — classe revisada para data race / aliasing concorrente (P3 fechada); refinado o recorte do ISR↔DMA (exemplo fora da Aule × bloco out-of-box); registrado o papel da Aule (herda e preserva, com ergonomia)
   - 2026-05-30: Claude (claude-opus-4-8) — registrada a frase-núcleo re-redigida pelo Matheus (classe data race; verbo "tornam inexprimíveis"; cortado "multi-thread")
   - 2026-05-30: Claude (claude-opus-4-8) — P2 fechada (baseline MISRA + estado-da-arte; critério por construção; falsificabilidade = sincronização forçada mais cara que C instabiliza); registrados os 2 casos de data race
+  - 2026-06-01: Claude (claude-opus-4-8) — obj. 4 chegou a ser movido para a qualificação pelo Matheus e foi revertido para pós-qualificação no mesmo dia; conflito com a postergação do bloco out-of-box / roadmap resolvido, linhas de decisão preservadas
 ---
 
 <!-- LTeX: enabled=false -->
@@ -35,7 +36,8 @@ Status: **núcleo de pé** (sujeito · contexto concorrente · verbo · classe �
 - ~~**P3 — recorte da classe.**~~ **RESOLVIDA:** *data race / aliasing concorrente*.
 - ~~**P2 — salto da amostra.**~~ **RESOLVIDA:** dois casos de padrões distintos; generalização ancorada na garantia da linguagem (`Send`/`Sync` cobre qualquer padrão), não na contagem.
 - ~~**P2 — critério, baseline, falsificabilidade.**~~ **RESOLVIDA:** ver §"P2 — o que conta como demonstrado".
-- **Aberta (Matheus, Regra 1):** redigir a §1.2 (pergunta de pesquisa + objetivos) a partir desta espinha.
+- **Em curso (Matheus, Regra 1):** redigir a §1.2 (pergunta + objetivos) a partir desta espinha — pergunta e objetivos já rascunhados em `capitulos/introducao.tex`; iteração de banca registrada em `banca_pergunta_pesquisa.md`.
+- ~~**Aberta (1/jun) — obj. 4 na qualificação × postergação do out-of-box.**~~ **RESOLVIDA (1/jun):** o obj. 4 chegou a ser movido para a **qualificação** e foi revertido para **pós-qualificação** no mesmo dia. O conflito com a decisão de que o **bloco out-of-box = pós-qualificação** e com `roadmap_escrita.md:81` ("sem implementar" na qualificação) some; a postergação do bloco out-of-box segue valendo e as linhas de decisão foram preservadas. Histórico em `banca_pergunta_pesquisa.md` (rodadas 9–10).
 - **Aberta (cosmético):** agente da ação — "algoritmos … tornam" × "o sistema de tipos torna".
 
 ## Casos de data race (qualificação)
