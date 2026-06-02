@@ -2,10 +2,29 @@
 
 \section{Contextualização}
 
+% Final da contextualização já com o gancho para a pergunta da pesquisa
+A linguagem Rust fornece garantias de tornar inexpremíveis, em tempo de compilação e em código safe, data races. Com isso, onde mora a fronteira entre safe e unsafe para os data races presentes em algorítmos de controle que compartilham estado entre múltiplos contextos? Além disso, os custos impostos para implementar a sincronização das garatias são suficientemente baixos, em comparação com as implementações em C+MISRA+estado da arte, para que os algorítmos de controle não percam deadlines?
+
 \section{Objetivos}
 
 \subsection{Objetivos Gerais}
 
+% Ainda está em rascunho, mas já está com um texto mais ok. Ainda vou organizar esse texto melhor.
+Para este trabalho, o objetivo inicial é a caracterização da fronteira entre safe e unsafe dos data races presentes em algorítmos de controle, que compartilham estado entre múltiplos contextos. Com esta fronteira definida, o objetivo seguinte é avaliar o custo para implementar a sincronização imposta pelo lado safe da fronteira; e comparar com o estado da arte atual para implementar algoritmos de controle em C usando MISRA e padrões de controle de qualidade (como ISOs e sanitazers).
+
 \subsection{Objetivos Especificos}
+
+% Só o rascunho mesmo com tópicos
+Os objetivos 1, 2 e 3 serão desenvolvidos na qualificação, enquanto os objetivos 4, 5, 6, 7 e 8 serão desenvolvidos na pós-qualificação.
+
+1. Propor uma taxonomia de padrões de data races presentes em algorítmos de controle que compartilham estado entre múltiplos contexto;
+2. Caracterizar a fronteira entre safe e unsafe destes padrões de data races;
+3. Catalogar o espaço de design de implementar as garantias impostas para tornar os data races, presentes no lado safe da fronteira, inexprimíveis;
+
+4. Implementar, na biblioteca Aulë, um subconjunto das garantias (um por eixo do espaço de design) impostas para tornar os data races, presentes no lado safe da fronteira, inexprimíveis;
+5. Avaliar o overhead de tempo de execução destas implementações (em Rust) e em implementações em C, em controladores com realimentação de estados, em controle de um pendulo invertido, em placas com Cortex-M0;
+6. Avaliar a perda de deadlines nos algoritmos de controle implementados em Rust e em C;
+7. Comparar o overhead de tempo de execução e a perda de deadlines entre a implementação em Rust e em C de controladores que compartilham estado entre múltiplos contextos;
+8. Comparar a verificação em tipos e em tempo de compilação da implementação destes algorítmos de controle, com a implementação do estado da arte em C, que usa MISRA e padrões de controle de qualidade (como ISOs e sanitazers).
 
 \section{Visão Geral da Dissertação}
