@@ -5,24 +5,50 @@
 
 \section{Caracterização da Pesquisa}
 
-Pesquisa aplicada, com abordagem experimental e quantitativa, voltada ao desenvolvimento de uma biblioteca de software para apoio à construção de controladores com foco em segurança de memória.
+natureza (aplicada) - abordagem (mista) - objetivos (exploratória-descritiva) - procedimentos (bibliográfica + experimental); nota: qualificação = fase quali + \emph{desenho} da quanti.
 
-\section{Levantamento de Requisitos da Biblioteca}
+\section{Taxonomia de Padrões de Data Race}
 
-Definir quais abstrações a biblioteca precisa oferecer, como blocos dinâmicos, operações matriciais, composição de sinais, compatibilidade com \texttt{std} e \texttt{no\_std}, e uso tanto em PC quanto em embarcados; pela sua imagem, isso conversa diretamente com ``SDK/lib e não framework'', ``fácil de usar'' e ``versões sem \texttt{alloc}''.
+\subsection{Método de Levantamento}
 
-\section{Projeto da Arquitetura da Solução}
+fontes + critério de inclusão
 
-Descrever os módulos, traits, tipos genéricos e interfaces de composição dos controladores; aqui entra a justificativa de usar biblioteca em vez de framework, preservando flexibilidade para o desenvolvedor.
+\subsection{Os Três Eixos}
 
-\section{Implementação da Biblioteca em Rust}
+par de contextos - estrutura do dado - padrão de acesso
 
-Explicar como as garantias da linguagem influenciam o desenho da API, evitando padrões inseguros e privilegiando tipagem forte, traits, generics e composição estática.
+\subsection{A Taxonomia}
 
-\section{Estratégia de Validação e Testes}
+tabela P1-P7
 
-Mostrar como você comprova que a biblioteca realmente facilita a construção de controladores e funciona nos cenários-alvo, inclusive host e embarcado.
+\section{Caracterização da Fronteira safe/unsafe}
 
-\section{Critérios de Avaliação e Comparação}
+\subsection{Procedimento}
 
-Comparar a biblioteca com alternativas existentes, em termos de expressividade, portabilidade, segurança e adequação a sistemas embarcados. O uso de \texttt{no\_std} é especialmente relevante porque, em bare metal, a biblioteca padrão não está disponível e o código precisa depender de \texttt{core} e, opcionalmente, de \texttt{alloc}.
+exprimir em safe; observar a recusa do compilador
+
+\subsection{Critério}
+
+compila/não-compila - \texttt{Send}/\texttt{Sync} - borrow
+
+\subsection{Padrões que Cruzam a Fronteira}
+
+fila safe + registrador \texttt{unsafe}
+
+\section{Catalogação do Espaço de Design das Garantias}
+
+\subsection{Eixos de Design}
+
+atomics - lock/critical-section - message-passing - RTIC resources - owned-copy
+
+\subsection{Trade-offs em \texttt{no\_std}}
+
+runtime - ergonomia - footprint - determinismo
+
+\section{A Aule como Veículo de Instanciação}
+
+
+\section{Protocolo do experimento de Custo}
+
+
+\section{Verificação por Tipos vs. C+MISRA+Sanitizers}
