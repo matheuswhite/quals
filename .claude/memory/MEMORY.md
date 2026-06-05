@@ -16,6 +16,6 @@ What lives here (and not in `CLAUDE.md`):
 
 What lives in `CLAUDE.md` (not duplicated here):
 
-- Collaboration rules 1–5 (never write `.tex`, three roles, allowed file types, outlines policy, authorship)
+- Collaboration rules 1–7 (never write `.tex`; never run the bibliographic search for him — Rule 7; four roles incl. *Bibliotecário*; allowed file types; outlines policy; authorship)
 - Commit conventions (`ai:` vs `feat:`/`fix:`)
 - Build, document structure, class-specific conventions, bibliography, `plan/`, assets
