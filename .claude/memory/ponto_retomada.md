@@ -27,5 +27,5 @@ Propagado a `plan/cap_4_metodologia.md`, `plan/roadmap_escrita.md`, `plan/rust_m
 
 ## Ainda valendo
 - A taxonomia que o obj 1 promete (F7) agora **é** a §4.2 — ver [[review-checklist-enforce]] e `plan/checklist_revisao.md`.
-- Decisões em aberto no `cap_4_metodologia.md`: #4 (natureza da pesquisa em 4.1 — "experimental/quantitativa" → "mista") e #5 (fechar critérios agora?).
+- Todas as 5 decisões em aberto do `cap_4_metodologia.md` **resolvidas** (4/jun): escopo (só data race), planta (pêndulo), natureza (aplicada/mista/exploratória), critérios (qualitativo 100% + eixos operacionalizados; números na dissertação).
 - Resíduos não-graves: período de amostragem; ortografia do rascunho; lista `1. 2. 3.` não vira `enumerate` em LaTeX.

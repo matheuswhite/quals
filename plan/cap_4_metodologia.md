@@ -37,8 +37,13 @@ A reorganização mapeia **método ↔ objetivo (1-pra-1)** e separa qualificaç
 - Que **natureza de evidência** cada produto gera? (por construção / "compila vs. não-compila" nos obj 1–3; numérica / ciclos e deadlines nos obj 5–8; qualitativa-comparativa no obj 8)
 - Onde termina a qualificação e começa a pós-qualificação (linha obj 3 | obj 4)?
 
-**Decisão a tomar:**
-- O `.tex` atual diz "experimental e quantitativa". Mas os obj 1–3 (o que a qualificação entrega) **não** são experimentais — são analíticos. Reclassificar a natureza (candidato: pesquisa **mista** / aplicada com fase analítica + fase experimental). Decidir o rótulo.
+**Decidido (2026-06-04):** classificação por eixos —
+- **natureza:** aplicada;
+- **abordagem:** mista (quali-quanti) — qualitativa em 4.2–4.4 (obj 1–3), quantitativa em 4.6 (obj 5–7);
+- **objetivos:** exploratória-descritiva (o verbo "mapear" do título);
+- **procedimentos:** bibliográfica + experimental (casos demonstrativos como instrumentos).
+
+Explicitar que a **qualificação cobre a fase qualitativa + o *desenho* da quantitativa** (o experimento ainda não roda). Substitui o "experimental e quantitativa" do `.tex` atual.
 
 ---
 
@@ -117,6 +122,11 @@ A reorganização mapeia **método ↔ objetivo (1-pra-1)** e separa qualificaç
 
 **Nota:** apresentado como **protocolo** — o experimento é conceito hoje, nada implementado.
 
+**Critérios — o que fecha na qualificação (DECIDIDO 2026-06-04):**
+- **Fecha agora:** critério qualitativo central completo (data race no lado safe → o código que o produziria **não compila** / é forçado à forma segura = sucesso); eixos quantitativos com **operacionalização** (overhead via DWT cycle counter; "deadline perdido" = estourar o período de controle; fronteira `unsafe` = LoC em blocos `unsafe`; boilerplate de segurança eliminado).
+- **Adia p/ dissertação:** thresholds numéricos (ex.: "empate" = Δ < X%), placa Cortex-M0 específica, escala (nº de cenários e repetições).
+- Regra: fechar *o que* medir e *como*; adiar *quanto*.
+
 ---
 
 ## 4.7 Protocolo: Verificação por Tipos vs. C+MISRA+Sanitizers (obj 8 — pós-qual, protocolo qualitativo)
@@ -135,8 +145,8 @@ A reorganização mapeia **método ↔ objetivo (1-pra-1)** e separa qualificaç
 1. ~~Quais casos sob o título "data races"?~~ **RESOLVIDO (2026-06-04):** estreitar para data race puro. Caso 1 (delay line, OOB/uninit) e Caso 3 (MPC workspace, UAF) **aposentados do núcleo**. Taxonomia construída sobre padrões reais de DR (ver 4.2); casos do cap. 5 = setpoint escalar (didático) + ISR/DMA→buffer (central) + estado composto estimador↔controlador.
 2. ~~Planta do experimento.~~ **RESOLVIDO (2026-06-04):** pêndulo invertido + realimentação de estados (ver 4.6). Smith Predictor + Kalman + MPC aposentados; Kalman pode reaparecer como observador.
 3. ~~`no_std` vs. `std` no Caso 3.~~ **RESOLVIDO por tabela-rasa:** com o MPC fora, a questão do `Arc`/`arc_swap` em Cortex-M0 deixa de existir. Pêndulo + state feedback é `no_std`-friendly.
-4. **Natureza da pesquisa (4.1):** trocar "experimental e quantitativa" por rótulo que cubra a fase analítica (obj 1–3). Ver 4.1.
-5. **Fechar critérios agora ou na dissertação?** (decisão em aberto herdada do `outline_geral.md` §4).
+4. ~~Natureza da pesquisa (4.1).~~ **RESOLVIDO (2026-06-04):** aplicada; mista (quali-quanti); exploratória-descritiva; bibliográfica + experimental. Ver 4.1.
+5. ~~Fechar critérios agora ou na dissertação?~~ **RESOLVIDO (2026-06-04):** qualitativo central 100% + eixos quantitativos operacionalizados fecham agora; thresholds/placa/escala na dissertação. Ver 4.6.
 
 ## Pendência de manutenção do roadmap
 
