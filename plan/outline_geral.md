@@ -9,6 +9,7 @@ modified:
   - 2026-05-28: Claude (claude-opus-4-7) — added 5th transversal axis (verification displacement, B-pure); noted forward as enabler (not proof) of B in ch.4
   - 2026-05-28: Claude (claude-opus-4-7) — closed scope decisions for the qualification; recorded project state (experiment = protocol only, hardware undecided, partial workload)
   - 2026-05-28: Claude (claude-opus-4-7) — refined §1.2 (research question + objectives) with criteria, the A-vs-B verb test, and a coverage checklist (no drafted prose)
+  - 2026-06-04: Claude (claude-opus-4-8) — propaga decisões do cap. 4: escopo só data race (casos = setpoint/ISR-DMA/estado composto; delay line e MPC fora) e experimento = pêndulo invertido + realimentação de estados; atualiza referências ao título novo (itens 42 e 372)
 ---
 
 <!-- LTeX: enabled=false -->
@@ -29,7 +30,7 @@ Referências cruzadas:
 Decisão: **híbrido com hierarquia B-dominante.**
 
 - **Tese (fim):** a afirmação de que Rust elimina, por construção, classes de bug de memória relevantes em controle embarcado. É o que a pergunta de pesquisa persegue e o critério de sucesso mede.
-- **Aule (meio):** a biblioteca é pré-requisito de viabilidade — dá realismo aos casos demonstrativos (delay line, ISR↔DMA, workspace de MPC) em vez de exemplos de brinquedo. Não é a contribuição central.
+- **Aule (meio):** a biblioteca é pré-requisito de viabilidade — dá realismo aos casos demonstrativos de data race (setpoint escalar, ISR/DMA→buffer, estado composto estimador↔controlador) em vez de exemplos de brinquedo. Não é a contribuição central.
 
 Consequências que valem para todo o resto do outline:
 
@@ -38,7 +39,7 @@ Consequências que valem para todo o resto do outline:
 - **Regra de corte sob prazo:** sob pressão até jul/2026, corta-se profundidade/abrangência de features de controle (LQR, MPC avançado, root locus), **nunca** o experimento de segurança nem os casos demonstrativos.
 - **O que isto NÃO é:** não é uma tese de "toolbox de controle em Rust". Paridade com MATLAB/`python-control` é validação de que o veículo funciona, não o objetivo.
 
-Resolve o item transversal 3 (título "Towards memory safety…" coerente com B) e orienta 1.2 (objetivos).
+Resolve o item transversal 3 (o título — agora *"Mapeando o custo e a fronteira de segurança do Rust no território de data races em algoritmos de controle"* — coerente com B) e orienta 1.2 (objetivos).
 
 ---
 
@@ -56,7 +57,7 @@ Estado de partida: ~28/mai/2026; qualificação em julho/2026 (~9 semanas); dedi
 ### Estado real do projeto (decide o cap. 5)
 - **Experimento de segurança (C+FreeRTOS vs Rust+RTIC + sanitizers):** apenas **conceito/protocolo** — nada implementado. → cap. 4 descreve o método; cap. 5 apresenta o **protocolo**, não dados.
 - **Hardware-alvo:** **indefinido.** → para a qualificação, plano = simulação em host + HIL via probe-rs (já na Aule); placa específica é decisão da fase de execução. Não bloqueia.
-- **Resultado parcial real (cap. 5):** (a) estado atual da Aule — já substancial, ver [`aule_roadmap.md`](aule_roadmap.md); (b) **casos demonstrativos** (os 3 de [`rust_memory_safety_em_controle.md`](rust_memory_safety_em_controle.md), como código que compila/não-compila) — evidência por construção, qualitativa, já fazível; (c) protocolo do experimento. Sem medições.
+- **Resultado parcial real (cap. 5):** (a) estado atual da Aule — já substancial, ver [`aule_roadmap.md`](aule_roadmap.md); (b) **casos demonstrativos de data race** (setpoint escalar, ISR/DMA→buffer, estado composto estimador↔controlador — como código que compila/não-compila; taxonomia e recorte em [`cap_4_metodologia.md`](cap_4_metodologia.md)) — evidência por construção, qualitativa, já fazível; (c) protocolo do experimento. Sem medições.
 
 ### Consequência para o cap. 6
 O cronograma é o roadmap de escrita até julho, em arquivo próprio (`plan/roadmap_escrita.md`, a montar). Carga parcial × 9 semanas exige priorização dura.
@@ -193,13 +194,13 @@ Sob enquadramento B, os comparáveis **primários** são abordagens de *garantia
 
 **Priorização sob B (núcleo vs. periferia):** com memory safety como tese, o peso da fundamentação inverte em relação a uma tese de toolbox.
 - **Núcleo** (sustenta diretamente os casos e o experimento): classes de bug de memória e ownership/borrow/lifetimes (3.3); o mínimo de A&OC que os casos exigem — stack vs. heap, atomicidade/torn read, MMU/MPU (3.2); `no_std`/`core`/`alloc` e modelo de execução ISR↔tarefa (3.4).
-- **Periferia** (só o suficiente pra ler os casos): teoria de controle (3.1) entra no nível necessário pra entender delay line, observador e MPC como *objetos* — não como projeto de controladores. Profundidade de controle além disso é candidata a corte.
+- **Periferia** (só o suficiente pra ler os casos): teoria de controle (3.1) entra no nível necessário pra entender pêndulo invertido, realimentação de estados e observador como *objetos* — não como projeto de controladores. Profundidade de controle além disso é candidata a corte.
 - **Teste afiado:** se uma subseção de 3.1 não é pré-requisito de nenhum caso do cap. de memory safety nem do experimento, ela serve à Tese A (toolbox), não à B — reavaliar.
 
 ### 3.1 Sistemas de Controle
 - Mínimo: o que é planta, controlador, malha aberta/fechada, controlador discreto vs. contínuo.
 - Conceitos que **a biblioteca exporta** — blocos, espaço de estados, função de transferência. Se Aule usa esse vocabulário, defina aqui.
-- **NÃO entrar em** projeto de controladores específicos (PID detalhado, LQR, pole placement) a menos que apareça depois.
+- Realimentação de estados (pole placement / LQR) entra **no nível de objeto** — é o controlador do experimento (pêndulo invertido). **NÃO entrar em** projeto detalhado (síntese de ganhos, prova de estabilidade) além do necessário pra ler o experimento.
 
 ### 3.2 Arquitetura e Organização de Computadores
 - Pergunta de filtro: o que de A&OC importa para entender memory safety em embedded?
@@ -262,7 +263,7 @@ Sob enquadramento B, os comparáveis **primários** são abordagens de *garantia
 - Baselines definidos no cap. 2 (abordagem de garantia, não toolbox).
 
 ### Experimento central (âncora do método sob B)
-O experimento comparativo já esboçado em `rust_memory_safety_em_controle.md` §"Experimento proposto" é o coração metodológico: mesmo algoritmo (Smith Predictor + Kalman de baixa ordem + estado compartilhado com ISR + reconfiguração de horizonte) implementado em **C+FreeRTOS** e **Rust+`heapless`+RTIC**, ambos passados por ASan/TSan/UBSan, documentando para cada bug o trio {snippet C que o produz, erro de compilação Rust que o impede, diagnóstico do sanitizer}. Decidir a escala do experimento na qualificação vs. dissertação.
+O experimento comparativo é o coração metodológico: mesmo algoritmo (**pêndulo invertido + realimentação de estados**, com estado compartilhado entre ISR de sensor e loop de controle; observador opcional) implementado em **C+FreeRTOS+MISRA** e **Rust+`heapless`+RTIC**, ambos passados por ASan/TSan/UBSan, documentando para cada bug o trio {snippet C que o produz, erro de compilação Rust que o impede, diagnóstico do sanitizer} e medindo overhead (ciclos) + perda de deadlines em Cortex-M0. Escala/placa/thresholds refinados na dissertação (ver [`cap_4_metodologia.md`](cap_4_metodologia.md) §4.6).
 
 ### Ponto-de-virada do Ato 2 — RESOLVIDO (2026-05-28)
 
@@ -306,7 +307,7 @@ O experimento comparativo já esboçado em `rust_memory_safety_em_controle.md` �
 - **5.x Decisões de design que codificam segurança** — onde o sistema de tipos já tornou bugs impossíveis (liga ao ponto-de-virada do cap. 4).
 
 **Metade 2 — "a tese se sustenta" (abre o Ato 3):**
-- **5.x Casos demonstrativos como evidência por construção** — para cada um dos 3 casos (delay line, ISR↔DMA, MPC workspace): o trecho C com o bug e o equivalente Rust que **não compila** / força a forma segura. É o resultado parcial *qualitativo* mais forte, e independe do experimento completo. **Núcleo do cap. 5 na qualificação.**
+- **5.x Casos demonstrativos como evidência por construção** — para cada padrão de data race (setpoint escalar, ISR/DMA→buffer, estado composto estimador↔controlador): o trecho C com o bug e o equivalente Rust que **não compila** / força a forma segura. É o resultado parcial *qualitativo* mais forte, e independe do experimento completo. **Núcleo do cap. 5 na qualificação.**
 - **5.x Protocolo do experimento (trabalho futuro)** — design do comparativo C-vs-Rust + sanitizers + métricas (fronteira `unsafe`, boilerplate, performance). Apresentado como **protocolo**, não resultados (o experimento é só conceito hoje — ver "Decisões fechadas").
 - **5.x Limitações conhecidas** — onde a memory safety do Rust não alcança (eixo transversal 4). Honestidade aqui ganha credibilidade na banca.
 
@@ -368,7 +369,7 @@ O experimento comparativo já esboçado em `rust_memory_safety_em_controle.md` �
 
 1. **Lista de Siglas (`pre-textuais/LISTA_DE_SIGLAS.tex`) está com siglas herdadas do template original** (DEA, CVLI, CISPs, etc.) — nada do tema atual. Definir a lista de siglas reais.
 2. **Resumo / Abstract / Palavras-chave** — placeholders. Escrever depois que a introdução estabilizar.
-3. **Título do trabalho** — atualmente "Aule: Towards memory safety in system control". Confirmar se é título definitivo pra qualificação.
+3. ~~**Título do trabalho** — atualmente "Aule: Towards memory safety in system control". Confirmar se é título definitivo pra qualificação.~~ **RESOLVIDO (01/jun/2026):** título no nível do fenômeno — *"Mapeando o custo e a fronteira de segurança do Rust no território de data races em algoritmos de controle"* (`pre-textuais/preambulo.tex`); Aule passa a veículo, não objeto central.
 4. **Estilo de citação** — `natbib` com `[square, numbers]`. Confirmar com a banca/orientação se é o aceito pelo programa.
 5. **Idioma** — tudo em português, abstract em inglês. Manter.
 
