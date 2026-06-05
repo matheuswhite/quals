@@ -3,6 +3,7 @@ author: Claude (claude-opus-4-7)
 created: 2026-05-28
 modified:
   - 2026-05-30: Claude (claude-opus-4-8) — anotado o bloco out-of-box da Aule p/ ISR↔DMA como trabalho pós-qualificação (cap. 6)
+  - 2026-06-04: Claude (claude-opus-4-8) — semanas 1-2 realinhadas à estrutura método-por-objetivo do cap. 4 (4.1–4.4 = obj 1–3; 4.5–4.7 = pós-qual); ver cap_4_metodologia.md
 ---
 
 <!-- LTeX: enabled=false -->
@@ -36,8 +37,8 @@ Datas aproximadas — ajustar ao calendário real.
 | Sem. | Período aprox. | Foco principal | Saída esperada |
 |---|---|---|---|
 | **Arranque** | sáb 30/mai (1 bloco) | Rascunhar **pergunta de pesquisa + objetivos (1.2)** — o que destrava a direção de tudo. Cabe num bloco. | 1.2 em rascunho |
-| **1** | 1–7 jun | **Cap. 4 (1ª parte):** caracterização, requisitos, arquitetura (4.1–4.3), ancorado no forward/`Signal` + ponto-de-virada. Montar o esqueleto `.tex` do cap. no início. Iniciar a **leitura bibliográfica para o cap. 2** (ver nota abaixo). | 4.1–4.3 escritos; leitura começada |
-| **2** | 8–14 jun | **Cap. 4 (2ª parte):** implementação, validação/testes, critérios + **protocolo do experimento** (4.4–4.6). | Cap. 4 completo |
+| **1** | 1–7 jun | **Cap. 4 (1ª parte) — métodos da qualificação (obj 1–3):** caracterização da pesquisa (4.1) + método da taxonomia de padrões de data race (4.2), da fronteira safe/unsafe (4.3) e do espaço de design (4.4). Esqueleto detalhado em [`cap_4_metodologia.md`](cap_4_metodologia.md); montar o `.tex` a partir dele. Iniciar a **leitura bibliográfica para o cap. 2** (ver nota abaixo). | 4.1–4.4 escritos; leitura começada |
+| **2** | 8–14 jun | **Cap. 4 (2ª parte) — pós-qualificação como plano (obj 4–8):** Aule como veículo (4.5, onde vivem o forward/`Signal` + ponto-de-virada) + protocolo do experimento de custo (4.6) + protocolo da comparação de verificação vs C+MISRA (4.7). | Cap. 4 completo |
 | **3** | 15–21 jun | **Cap. 5 (núcleo):** estado da Aule + casos demonstrativos (delay line, ISR↔DMA, MPC workspace). | Casos demonstrativos escritos |
 | **4** | 22–28 jun | Fechar cap. 5 (limitações) + **Cap. 3 (1ª parte):** classes de bug + ownership/borrow/lifetimes (seção dedicada). | Cap. 5 completo; cap. 3 começado |
 | **5** | 29 jun–5 jul | **Cap. 3 (2ª parte):** A&OC mínimo, `no_std`/embedded, controle mínimo + **Cap. 2:** consolidar leitura na taxonomia por abordagem de garantia. | Cap. 3 completo; cap. 2 em rascunho |
