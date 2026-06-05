@@ -1,6 +1,8 @@
 ---
 author: Claude (claude-opus-4-8)
 created: 2026-06-04
+co-authors:
+  - Claude (claude-opus-4-8), 2026-06-05
 ---
 
 <!-- LTeX: enabled=false -->
@@ -37,13 +39,44 @@ A reorganização mapeia **método ↔ objetivo (1-pra-1)** e separa qualificaç
 - Que **natureza de evidência** cada produto gera? (por construção / "compila vs. não-compila" nos obj 1–3; numérica / ciclos e deadlines nos obj 5–8; qualitativa-comparativa no obj 8)
 - Onde termina a qualificação e começa a pós-qualificação (linha obj 3 | obj 4)?
 
-**Decidido (2026-06-04):** classificação por eixos —
-- **natureza:** aplicada;
-- **abordagem:** mista (quali-quanti) — qualitativa em 4.2–4.4 (obj 1–3), quantitativa em 4.6 (obj 5–7);
-- **objetivos:** exploratória-descritiva (o verbo "mapear" do título);
-- **procedimentos:** bibliográfica + experimental (casos demonstrativos como instrumentos).
+**Decidido (2026-06-04; classificação REVISADA em 2026-06-05 — ver nota de correção abaixo):** na taxonomia de tipos de pesquisa em computação de Wazlawick (`wazlawick2009metodologia`, §2.6 — três tipos: formal / empírica / exploratória), a pesquisa é **exploratória-empírica**, em **sequenciamento** (não duas pesquisas disjuntas):
+- **exploratória** na qualificação (obj 1–3) — taxonomia, fronteira, espaço de design: área emergente, organização conceitual, casos como instrumento de argumentação;
+- **empírica + experimental** na dissertação (obj 5–8) — implementação/medição/comparação. Experimental no sentido do §3.4.2 (manipula a variável "implementação"); em vocabulário do §3.4.5: variável **independente** = implementação (Rust+RTIC vs. C+FreeRTOS+MISRA), **dependentes** = ciclos/iteração e perdas de deadline;
+- **não é "formal"** — não há prova de teorema; a fronteira "compila/não-compila" toca numa propriedade formal do sistema de tipos, mas o método é observar o compilador, não demonstrar.
 
-Explicitar que a **qualificação cobre a fase qualitativa + o *desenho* da quantitativa** (o experimento ainda não roda). Substitui o "experimental e quantitativa" do `.tex` atual.
+Explicitar que a **qualificação cobre a fase exploratória + o *desenho* da empírica** (o experimento ainda não roda). Substitui o "experimental e quantitativa" do `.tex` herdado.
+
+> **Nota de correção (2026-06-05):** a classificação anterior ("aplicada / mista / exploratória-**descritiva** / bibliográfica + experimental") era da tradição do **Gil** (ciências sociais), **não** do Wazlawick — a única referência metodológica no `.bib`. Substituída pelo vocabulário do Wazlawick (CC). **Defesa-chave:** Wazlawick chama a pesquisa exploratória de a "mais arriscada" (aceitação não-universal), defensável só com **teoria boa + casos** → reforça ancorar a taxonomia (obj 1) no modelo de memória C11/Rust + literatura (cf. F7). Não é preciso adquirir Gil/Creswell: o Wazlawick cobre taxonomia (§2.6) + maquinário experimental (§3.4).
+
+### Estado da redação da 4.1 (5/jun) — pendências e expansão
+
+> Diagnóstico do 1º parágrafo já redigido no `.tex` (classificação exploratória-empírica, citando §2.6). Guia para a próxima passada de escrita. **Não é prosa para colar** — são tópicos a cobrir (Regra 4); a redação é do Matheus (Regra 1).
+
+**Erros mecânicos a corrigir (Claude não toca no `.tex` — Regra 3; Matheus aplica):**
+- `carater` → caráter.
+- `e Empírico pois` → `Empírico, pois` (vírgula; mantém o paralelo com "Exploratório, pois").
+- `incluíndo` → incluindo (sem acento).
+- `(descrito em mais detalhes em 4.6)` → concordância: `descritos` (refere "objetivos") ou "o que é detalhado em 4.6".
+- Dois `pois` colados ("Empírico pois… pois buscam") → reformular um deles.
+- `Onde a fundamentação… em 4.2;` quebra o paralelismo Exploratório↔Empírico → tratar o forward-pointer do 4.2 como parêntese, igual ao 4.6 (ex.: "(aprofundada em 4.2)").
+- `todas as fases` → "ambas as fases" (só há duas: exploratória e empírica).
+
+**Expansão — cardápio priorizado (tamanho vem de substância, não de enchimento):**
+
+| Prioridade | Tópico a adicionar | Onde vive o detalhe |
+|---|---|---|
+| Alta | Definir o que Wazlawick entende por **exploratória** (argumentação/convencimento; área emergente) e **empírica** (comparação por testes aceitos / métodos estatísticos) — §2.6. Hoje os rótulos são invocados sem definição. | aqui (4.1) |
+| Alta | **Natureza da evidência** de cada fase: exploratória = "compila vs. não-compila" (o tipo recusa o data race); empírica = ciclos/deadlines medidos. | aqui (4.1) |
+| Alta | **Parágrafo-mapa de fecho:** mapeamento método↔objetivo (4.2→obj 1; 4.3→obj 2; 4.4→obj 3; 4.5→obj 4; 4.6→obj 5–7; 4.7→obj 8). | aqui (4.1) |
+| Média | **Objeto + instrumentos:** casos demonstrativos = instrumentos de evidência (não "estudo de caso" à la Yin); Aule = veículo. Só frase de enquadramento. | 1 frase aqui; grosso em 4.5 |
+
+**Não colocar na 4.1 (senão duplica e fere o método-por-objetivo):**
+- variáveis independente/dependente + métricas → 4.6;
+- definição dos padrões de data race → 4.2;
+- forward composition / política de `unsafe` → 4.5;
+- limitações extensas → seção própria (Wazlawick §3.7 trata "Limitações" à parte).
+
+**Estrutura-alvo (~3 parágrafos):** P1 classificação + sequenciamento + linha qualificação|dissertação (✓ feito) · P2 definição dos dois tipos + natureza da evidência · P3 mapa método↔objetivo.
 
 ---
 
@@ -159,7 +192,7 @@ Critério de inclusão (obj 1): ocorre em controle real **e** é data race (≥2
 1. ~~Quais casos sob o título "data races"?~~ **RESOLVIDO (2026-06-04):** estreitar para data race puro. Caso 1 (delay line, OOB/uninit) e Caso 3 (MPC workspace, UAF) **aposentados do núcleo**. Taxonomia construída sobre padrões reais de DR (ver 4.2); casos do cap. 5 = setpoint escalar (didático) + ISR/DMA→buffer (central) + estado composto estimador↔controlador.
 2. ~~Planta do experimento.~~ **RESOLVIDO (2026-06-04):** pêndulo invertido + realimentação de estados (ver 4.6). Smith Predictor + Kalman + MPC aposentados; Kalman pode reaparecer como observador.
 3. ~~`no_std` vs. `std` no Caso 3.~~ **RESOLVIDO por tabela-rasa:** com o MPC fora, a questão do `Arc`/`arc_swap` em Cortex-M0 deixa de existir. Pêndulo + state feedback é `no_std`-friendly.
-4. ~~Natureza da pesquisa (4.1).~~ **RESOLVIDO (2026-06-04):** aplicada; mista (quali-quanti); exploratória-descritiva; bibliográfica + experimental. Ver 4.1.
+4. ~~Natureza da pesquisa (4.1).~~ **RESOLVIDO (2026-06-04); RE-CLASSIFICADO (2026-06-05):** pesquisa **exploratória-empírica** na taxonomia de Wazlawick (§2.6) — exploratória (qualificação) + empírica/experimental (dissertação). A classificação Gil de 4/jun ("aplicada/mista/exploratória-descritiva") foi descartada. Ver 4.1 + nota de correção.
 5. ~~Fechar critérios agora ou na dissertação?~~ **RESOLVIDO (2026-06-04):** qualitativo central 100% + eixos quantitativos operacionalizados fecham agora; thresholds/placa/escala na dissertação. Ver 4.6.
 
 ## Pendência de manutenção do roadmap
