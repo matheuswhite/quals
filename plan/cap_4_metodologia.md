@@ -49,11 +49,15 @@ A reorganização mapeia **método ↔ objetivo (1-pra-1)** e separa qualificaç
 - Quais os **contextos de execução** relevantes no domínio embarcado? (ISR ↔ tarefa; DMA ↔ tarefa; tarefas RTOS em prioridades distintas; núcleos distintos em multi-core)
 - **De onde** os padrões são levantados? (fontes: literatura de controle embarcado; padrões canônicos de concorrência produtor-consumidor; os casos demonstrativos do cap. 5; a tabela "classe de bug × onde aparece em controle" de [`rust_memory_safety_em_controle.md`](rust_memory_safety_em_controle.md))
 - Qual o **critério de inclusão/exclusão** de um padrão? (precisa: aparecer em algoritmo de controle real **e** ser data race especificamente — não outra classe de memory bug)
-- Como a taxonomia é **estruturada** (quais eixos)? Candidatos a discutir: por canal de compartilhamento (fila, variável global, registrador); por par produtor/consumidor (ISR→loop, DMA→estimador, planejamento→low-level); por estrutura de dados compartilhada (escalar, buffer, struct composta)?
+- Como a taxonomia é **estruturada**? **Decidido (2026-06-04):** três eixos a cruzar —
+  - **par de contextos** (ISR↔tarefa; DMA↔tarefa; tarefa↔tarefa por prioridade; core↔core);
+  - **estrutura do dado compartilhado** (escalar/flag — setpoint, modo; buffer/fila — amostras; struct coerente — `x̂`+`P` do estimador);
+  - **padrão de acesso** (produtor→consumidor; leitor↔escritor; read-modify-write compartilhado).
+  Cada célula relevante = um padrão; os casos do cap. 5 instanciam células específicas.
 
 **Saída (entregável do obj 1):** a taxonomia em si (tabela/figura), pronta para alimentar 4.3.
 
-**Nota de escopo (honestidade):** a taxonomia é só de **data race** — não cobre OOB, UAF, uninit. Isso é coerente com o título novo e precisa estar explícito (ver "Decisões em aberto" sobre os casos 1 e 3).
+**Nota de escopo (honestidade):** a taxonomia é só de **data race** — não cobre OOB, UAF, uninit. **Decidido (2026-06-04):** delay line (Caso 1, OOB/uninit) e MPC workspace (Caso 3, UAF) saem do núcleo — não são data race. Os casos do cap. 5 instanciam células de DR: setpoint escalar (didático/abertura), ISR/DMA→buffer (central), estado composto estimador↔controlador.
 
 ---
 
@@ -103,7 +107,7 @@ A reorganização mapeia **método ↔ objetivo (1-pra-1)** e separa qualificaç
 ## 4.6 Protocolo do Experimento de Custo (obj 5–7 — pós-qual, protocolo)
 
 **Perguntas que a seção responde:**
-- **Planta-alvo:** qual? (DECISÃO PENDENTE — ver "Decisões em aberto": objetivos dizem *pêndulo invertido + realimentação de estados*; o doc técnico dizia *Smith Predictor + Kalman + reconfiguração de horizonte*)
+- **Planta-alvo (DECIDIDO 2026-06-04):** pêndulo invertido + realimentação de estados (state feedback). Kalman/observador entra como opção (estado estimado compartilhado → célula "struct coerente" da taxonomia). Smith Predictor e MPC aposentados.
 - **Plataforma:** Cortex-M0 (dos objetivos). Placa específica indefinida — plano: simulação host + HIL via `probe-rs` (já na Aule). Decidir se fecha agora ou na execução.
 - **Implementações comparadas:** C + FreeRTOS + MISRA (estado da arte) vs. Rust + `heapless` + RTIC.
 - **Métricas:** overhead de tempo de execução — ciclos/iteração (obj 5); perda de deadlines (obj 6); comparação dos dois entre Rust e C (obj 7).
@@ -128,11 +132,9 @@ A reorganização mapeia **método ↔ objetivo (1-pra-1)** e separa qualificaç
 
 ## Decisões em aberto / divergências a reconciliar
 
-1. **Quais casos demonstrativos sob o título "data races"?** Dos 3 herdados, só o **Caso 2 (ISR↔DMA, torn read)** é data race stricto sensu; o Caso 1 (delay line) é OOB/uninit e o Caso 3 (MPC workspace) é use-after-free. Decidir:
-   - manter só os padrões de data race (Caso 2 + variantes: encoder ISR→loop, DMA→estimador, comandos de trajetória→controlador) e **cortar/realocar** 1 e 3; **ou**
-   - manter 1 e 3 como contraste ("memory safety além de data race") — mas isso alarga o título de novo. Recomendação inicial: estreitar para data race e usar 1/3 só como menção de fronteira (eixo 4).
-2. **Planta do experimento:** pêndulo invertido (objetivos, §1.2) vs. Smith Predictor + Kalman + horizonte (doc técnico). Reconciliar — afeta 4.6 e o cap. 5.
-3. **`no_std` vs. `std` no Caso 3:** a versão Rust do MPC usa `Arc`/`arc_swap` (= `alloc`/`std`), incompatível com Cortex-M0 bare-metal. Se o Caso 3 sobreviver, decidir a versão `no_std` (ou marcá-lo como caso host-only).
+1. ~~Quais casos sob o título "data races"?~~ **RESOLVIDO (2026-06-04):** estreitar para data race puro. Caso 1 (delay line, OOB/uninit) e Caso 3 (MPC workspace, UAF) **aposentados do núcleo**. Taxonomia construída sobre padrões reais de DR (ver 4.2); casos do cap. 5 = setpoint escalar (didático) + ISR/DMA→buffer (central) + estado composto estimador↔controlador.
+2. ~~Planta do experimento.~~ **RESOLVIDO (2026-06-04):** pêndulo invertido + realimentação de estados (ver 4.6). Smith Predictor + Kalman + MPC aposentados; Kalman pode reaparecer como observador.
+3. ~~`no_std` vs. `std` no Caso 3.~~ **RESOLVIDO por tabela-rasa:** com o MPC fora, a questão do `Arc`/`arc_swap` em Cortex-M0 deixa de existir. Pêndulo + state feedback é `no_std`-friendly.
 4. **Natureza da pesquisa (4.1):** trocar "experimental e quantitativa" por rótulo que cubra a fase analítica (obj 1–3). Ver 4.1.
 5. **Fechar critérios agora ou na dissertação?** (decisão em aberto herdada do `outline_geral.md` §4).
 

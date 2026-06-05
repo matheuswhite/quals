@@ -3,11 +3,14 @@ author: Claude (claude-opus-4-7)
 created: 2026-05-20
 modified:
   - 2026-05-20: Claude (claude-opus-4-7) — added LTeX disable magic comment
+  - 2026-06-04: Claude (claude-opus-4-8) — nota de escopo no topo: sob o título de 01/jun (só data race), delay line e MPC saem do núcleo e o experimento vira pêndulo invertido
 ---
 
 <!-- LTeX: enabled=false -->
 
 # Rust em Sistemas de Controle: Garantias de Memory Safety
+
+> **Nota de escopo (2026-06-04).** Sob o título de 01/jun (foco em **data races**), o recorte estreitou em relação a este doc (escrito em 20/mai, memory safety amplo). Mudanças: (a) **só data race** no núcleo — Caso 1 (delay line, OOB/uninit) e Caso 3 (MPC workspace, UAF) saem do conjunto demonstrativo (seguem úteis como fronteira/eixo 4); (b) o **experimento** passa a ser **pêndulo invertido + realimentação de estados** (Cortex-M0), não Smith Predictor + Kalman + MPC. Conteúdo abaixo preservado para rastreabilidade. Ver [`cap_4_metodologia.md`](cap_4_metodologia.md).
 
 ## Visão geral
 

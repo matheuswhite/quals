@@ -3,7 +3,7 @@ author: Claude (claude-opus-4-7)
 created: 2026-05-28
 modified:
   - 2026-05-30: Claude (claude-opus-4-8) — anotado o bloco out-of-box da Aule p/ ISR↔DMA como trabalho pós-qualificação (cap. 6)
-  - 2026-06-04: Claude (claude-opus-4-8) — semanas 1-2 realinhadas à estrutura método-por-objetivo do cap. 4 (4.1–4.4 = obj 1–3; 4.5–4.7 = pós-qual); ver cap_4_metodologia.md
+  - 2026-06-04: Claude (claude-opus-4-8) — semanas 1-2 realinhadas à estrutura método-por-objetivo do cap. 4 (4.1–4.4 = obj 1–3; 4.5–4.7 = pós-qual); regra de corte atualizada (delay line → setpoint escalar); ver cap_4_metodologia.md
 ---
 
 <!-- LTeX: enabled=false -->
@@ -73,7 +73,7 @@ Ordem de sacrifício — cortar de cima pra baixo:
 
 1. **Fundamentação inflando** → podar para o mínimo dos casos. (risco nº 1)
 2. **Relacionados crescendo** → 1 subseção por abordagem; a tabela resolve o resto.
-3. **Casos demonstrativos** → se faltar tempo, **1 caso completo e profundo > 3 rasos**. Garantir o da *delay line* (mais simples e didático).
+3. **Casos demonstrativos** → se faltar tempo, **1 caso completo e profundo > vários rasos**. Garantir o do *setpoint escalar compartilhado* (mais simples e didático; ver [`cap_4_metodologia.md`](cap_4_metodologia.md)).
 
 **Nunca cortar** (é o que define a qualificação sob enquadramento B): pergunta de pesquisa clara, protocolo do experimento, ≥ 1 caso demonstrativo, e o eixo "fronteira do que Rust não garante" (honestidade).
 
