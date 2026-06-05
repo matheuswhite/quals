@@ -62,6 +62,20 @@ Explicitar que a **qualificação cobre a fase qualitativa + o *desenho* da quan
 
 **Saída (entregável do obj 1):** a taxonomia em si (tabela/figura), pronta para alimentar 4.3.
 
+**Gabarito da matriz (a preencher/podar — o julgamento é seu):** cada linha = um padrão candidato (cruzamento dos 3 eixos). Marque quais entram na taxonomia final; ✦ = vira caso demonstrativo no cap. 5.
+
+| # | Par de contextos | Estrutura do dado | Padrão de acesso | Exemplo em controle | Caso? |
+|---|---|---|---|---|---|
+| P1 | tarefa↔tarefa (comm↔loop) | escalar/flag | leitor↔escritor | setpoint / modo de operação | ✦ didático |
+| P2 | ISR/DMA↔tarefa | buffer/fila | produtor→consumidor | amostras de ADC → loop | ✦ central |
+| P3 | tarefa↔tarefa (estimador↔ctrl) | struct coerente (`x̂`+`P`) | leitor↔escritor / RMW | estado do observador | ✦ composto |
+| P4 | ISR↔tarefa | escalar | RMW compartilhado | contador/acumulador de encoder | ? |
+| P5 | ISR↔tarefa | flag | leitor↔escritor | flag de emergência / watchdog | ? |
+| P6 | tarefa↔tarefa | buffer | produtor→consumidor | trajetória planejamento→low-level | ? |
+| P7 | core↔core | struct/escalar | leitor↔escritor | controlador↔supervisório (multi-core) | ? |
+
+Critério de inclusão (obj 1): ocorre em controle real **e** é data race (≥2 contextos, ≥1 escrita, sem sincronização garantida). Critério de "vira caso": cobre combinação de eixos distinta + contraste C-vs-Rust didático.
+
 **Nota de escopo (honestidade):** a taxonomia é só de **data race** — não cobre OOB, UAF, uninit. **Decidido (2026-06-04):** delay line (Caso 1, OOB/uninit) e MPC workspace (Caso 3, UAF) saem do núcleo — não são data race. Os casos do cap. 5 instanciam células de DR: setpoint escalar (didático/abertura), ISR/DMA→buffer (central), estado composto estimador↔controlador.
 
 ---
@@ -150,4 +164,32 @@ Explicitar que a **qualificação cobre a fase qualitativa + o *desenho* da quan
 
 ## Pendência de manutenção do roadmap
 
-`roadmap_escrita.md` (semana 1) ainda manda "4.1–4.3 ancorado no forward/`Signal`". Com esta reorganização, a semana 1 passa a ser **4.1–4.4** (caracterização: obj 1–3), e o forward/`Signal` migra para 4.5. Atualizar o roadmap quando esta estrutura for confirmada.
+`roadmap_escrita.md` já foi realinhado (semana 1 = 4.1–4.4; forward/`Signal` migrou para 4.5) em 2026-06-04. ✓
+
+---
+
+## Preparação para a redação (4/jun)
+
+### Micro-decisões a fixar (recomendações — confirme/ajuste)
+1. **Granularidade da taxonomia:** ~5–7 padrões (células P1–P7 do gabarito em §4.2, podadas), não o produto cartesiano (4×3×3). Listar só combinações que ocorrem em controle.
+2. **Nomenclatura dos padrões:** nome curto descritivo (ex.: "torn read de setpoint", "fila ISR→tarefa", "estado de estimador compartilhado"). Fixe antes — será citado consistentemente em 4.3/4.4 e no cap. 5.
+3. **Quantos casos viram código completo (C + Rust):** os 3 decididos (P1, P2, P3). Sob aperto de prazo, garantir P1+P2; P3 pode ficar descritivo. Demais células: só na taxonomia (texto).
+4. **Ordem dentro de 4.2:** crescente em complexidade (escalar → buffer → struct → multi-core). Espelhar a mesma sequência em 4.3 e 4.4 (leitura fácil).
+5. **Ancoragem da taxonomia:** literatura de concorrência embedded/RTOS + modelo de memória C11/Rust, com os casos como instâncias — não "da cabeça" (a banca cobra fonte; a bibliografia em levantamento cobre isso).
+
+### Esqueleto `.tex` fino de 4.1–4.4 (rótulos sugeridos — transcreva você; sem prosa aqui)
+- `\section{Caracterização da Pesquisa}` (4.1) — natureza (aplicada) · abordagem (mista) · objetivos (exploratória-descritiva) · procedimentos (bibliográfica + experimental); nota: qualificação = fase quali + *desenho* da quanti.
+- `\section{...}` (4.2 — sugiro rotular "Taxonomia de padrões de data race…")
+  - `\subsection` método de levantamento (fontes + critério de inclusão)
+  - `\subsection` os três eixos (par de contextos · estrutura do dado · padrão de acesso)
+  - `\subsection` a taxonomia — tabela P1–P7 ← **entregável obj 1**
+- `\section{...}` (4.3 — "Fronteira safe/unsafe dos padrões")
+  - `\subsection` procedimento (exprimir em safe; observar a recusa do compilador)
+  - `\subsection` critério (compila/não-compila · `Send`/`Sync` · borrow)
+  - `\subsection` padrões que cruzam a fronteira (fila safe + registrador `unsafe`)
+- `\section{...}` (4.4 — "Espaço de design das garantias")
+  - `\subsection` eixos de design (atomics · lock/critical-section · message-passing · RTIC resources · owned-copy)
+  - `\subsection` trade-offs em `no_std` (runtime · ergonomia · footprint · determinismo)
+  - `\subsection` como alimenta o obj 4 (um por eixo)
+
+Lembrete LaTeX: o capítulo já abre com `\mychapter{Metodologia Proposta}{...}`; dentro use `\section`/`\subsection` normais — **nunca** `\mychapter` de novo (ver `CLAUDE.md` → convenções da classe).

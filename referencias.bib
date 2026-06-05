@@ -1,4 +1,146 @@
 
+% ===========================================================================
+% co-authors:
+%   - Claude (claude-opus-4-8), 2026-06-04 -- entradas do tema atual (data races
+%     em controle, Rust, sanitizers, tempo real, controle), marcadas "added-by".
+% NOTA: as entradas SEM marcacao "added-by" sao herdadas de um projeto anterior
+% (DEA / seguranca publica) e NAO pertencem a esta tese -- candidatas a remocao.
+% Metadados das entradas novas verificados via WebSearch (ACM DL, DBLP, USENIX,
+% IEEE Xplore) em 2026-06-04.
+% ===========================================================================
+
+% added-by: Claude, 2026-06-04
+@inproceedings{boehm2008foundations,
+  author    = {Boehm, Hans-J. and Adve, Sarita V.},
+  title     = {Foundations of the {C}++ Concurrency Memory Model},
+  booktitle = {Proceedings of the 29th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI '08)},
+  year      = {2008},
+  pages     = {68--78},
+  publisher = {ACM},
+  doi       = {10.1145/1375581.1375591}
+}
+
+% added-by: Claude, 2026-06-04
+@inproceedings{boehm2005threads,
+  author    = {Boehm, Hans-J.},
+  title     = {Threads Cannot Be Implemented As a Library},
+  booktitle = {Proceedings of the 2005 ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI '05)},
+  year      = {2005},
+  pages     = {261--268},
+  publisher = {ACM},
+  doi       = {10.1145/1065010.1065042}
+}
+
+% added-by: Claude, 2026-06-04
+@article{adve2010memory,
+  author  = {Adve, Sarita V. and Boehm, Hans-J.},
+  title   = {Memory Models: A Case for Rethinking Parallel Languages and Hardware},
+  journal = {Communications of the ACM},
+  year    = {2010},
+  volume  = {53},
+  number  = {8},
+  pages   = {90--101},
+  doi     = {10.1145/1787234.1787255}
+}
+
+% added-by: Claude, 2026-06-04
+@article{jung2018rustbelt,
+  author    = {Jung, Ralf and Jourdan, Jacques-Henri and Krebbers, Robbert and Dreyer, Derek},
+  title     = {{RustBelt}: Securing the Foundations of the {Rust} Programming Language},
+  journal   = {Proceedings of the ACM on Programming Languages},
+  year      = {2018},
+  volume    = {2},
+  number    = {POPL},
+  articleno = {66},
+  pages     = {66:1--66:34},
+  doi       = {10.1145/3158154}
+}
+
+% added-by: Claude, 2026-06-04
+@inproceedings{eriksson2013rtfm,
+  author    = {Eriksson, Johan and H{\"a}ggstr{\"o}m, Fredrik and Aittamaa, Simon and Kruglyak, Andrey and Lindgren, Per},
+  title     = {Real-Time for the Masses, Step 1: Programming {API} and Static Priority {SRP} Kernel Primitives},
+  booktitle = {2013 8th IEEE International Symposium on Industrial Embedded Systems (SIES)},
+  year      = {2013},
+  pages     = {110--113},
+  publisher = {IEEE},
+  doi       = {10.1109/SIES.2013.6601482}
+}
+
+% added-by: Claude, 2026-06-04
+@inproceedings{serebryany2009threadsanitizer,
+  author    = {Serebryany, Konstantin and Iskhodzhanov, Timur},
+  title     = {{ThreadSanitizer}: Data Race Detection in Practice},
+  booktitle = {Proceedings of the Workshop on Binary Instrumentation and Applications (WBIA '09)},
+  year      = {2009},
+  pages     = {62--71},
+  publisher = {ACM},
+  doi       = {10.1145/1791194.1791203}
+}
+
+% added-by: Claude, 2026-06-04
+@inproceedings{serebryany2012addresssanitizer,
+  author    = {Serebryany, Konstantin and Bruening, Derek and Potapenko, Alexander and Vyukov, Dmitry},
+  title     = {{AddressSanitizer}: A Fast Address Sanity Checker},
+  booktitle = {Proceedings of the 2012 USENIX Annual Technical Conference (USENIX ATC '12)},
+  year      = {2012},
+  pages     = {309--318},
+  publisher = {USENIX Association},
+  note      = {ACM DL id 10.5555/2342821.2342849}
+}
+
+% added-by: Claude, 2026-06-04
+@manual{misra2012,
+  author       = {{MISRA}},
+  title        = {{MISRA C:2012} -- Guidelines for the Use of the {C} Language in Critical Systems},
+  organization = {MIRA Limited},
+  address      = {Nuneaton, Warwickshire, UK},
+  year         = {2013},
+  isbn         = {978-1-906400-10-1}
+}
+
+% added-by: Claude, 2026-06-04
+@book{astrom2008feedback,
+  author    = {{\AA}str{\"o}m, Karl Johan and Murray, Richard M.},
+  title     = {Feedback Systems: An Introduction for Scientists and Engineers},
+  publisher = {Princeton University Press},
+  year      = {2008}
+}
+
+% added-by: Claude, 2026-06-04
+@book{ogata2010modern,
+  author    = {Ogata, Katsuhiko},
+  title     = {Modern Control Engineering},
+  edition   = {5th},
+  publisher = {Prentice Hall},
+  year      = {2010},
+  isbn      = {978-0-13-615673-4}
+}
+
+% added-by: Claude, 2026-06-04
+@article{liu1973scheduling,
+  author  = {Liu, C. L. and Layland, James W.},
+  title   = {Scheduling Algorithms for Multiprogramming in a Hard-Real-Time Environment},
+  journal = {Journal of the ACM},
+  year    = {1973},
+  volume  = {20},
+  number  = {1},
+  pages   = {46--61},
+  doi     = {10.1145/321738.321743}
+}
+
+% added-by: Claude, 2026-06-04
+% TODO: confirmar a lista completa de autores (CCS 2024) -- usei "and others".
+@inproceedings{sharma2024rust,
+  author    = {Sharma, Ayushi and others},
+  title     = {Rust for Embedded Systems: Current State, Challenges and Open Problems},
+  booktitle = {Proceedings of the 2024 ACM SIGSAC Conference on Computer and Communications Security (CCS '24)},
+  year      = {2024},
+  doi       = {10.1145/3658644.3690275}
+}
+
+% --- entradas herdadas do projeto anterior (DEA / seguranca publica) abaixo ---
+
 @article{gonccalves2013eficiencia,
   title={Efici{\^e}ncia na provis{\~a}o de educa{\c{c}}{\~a}o p{\'u}blica municipal: uma an{\'a}lise em tr{\^e}s est{\'a}gios dos munic{\'\i}pios brasileiros},
   author={Gon{\c{c}}alves, Fl{\'a}vio de Oliveira and Fran{\c{c}}a, Marco T{\'u}lio Aniceto},
