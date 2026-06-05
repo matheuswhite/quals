@@ -190,6 +190,6 @@ Critério de inclusão (obj 1): ocorre em controle real **e** é data race (≥2
 - `\section{...}` (4.4 — "Espaço de design das garantias")
   - `\subsection` eixos de design (atomics · lock/critical-section · message-passing · RTIC resources · owned-copy)
   - `\subsection` trade-offs em `no_std` (runtime · ergonomia · footprint · determinismo)
-  - `\subsection` como alimenta o obj 4 (um por eixo)
+  - *(sem subseção)* **frase de fecho** do 4.4 (decisão 4/jun): ponte para o obj 4 — critério "um por eixo" + rastreabilidade. Não vira subseção própria.
 
 Lembrete LaTeX: o capítulo já abre com `\mychapter{Metodologia Proposta}{...}`; dentro use `\section`/`\subsection` normais — **nunca** `\mychapter` de novo (ver `CLAUDE.md` → convenções da classe).
