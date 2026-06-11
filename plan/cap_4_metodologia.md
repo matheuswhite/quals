@@ -3,6 +3,7 @@ author: Claude (claude-opus-4-8)
 created: 2026-06-04
 co-authors:
   - Claude (claude-opus-4-8), 2026-06-05
+  - Claude (claude-opus-4-8), 2026-06-10
 ---
 
 <!-- LTeX: enabled=false -->
@@ -95,19 +96,40 @@ Explicitar que a **qualificação cobre a fase exploratória + o *desenho* da em
 
 **Saída (entregável do obj 1):** a taxonomia em si (tabela/figura), pronta para alimentar 4.3.
 
-**Gabarito da matriz (a preencher/podar — o julgamento é seu):** cada linha = um padrão candidato (cruzamento dos 3 eixos). Marque quais entram na taxonomia final; ✦ = vira caso demonstrativo no cap. 5.
+**Gabarito da matriz (PODA FECHADA — 2026-06-10):** cada linha = um padrão candidato (cruzamento dos 3 eixos). Coluna "Status" = resultado da poda; ✦ = vira caso demonstrativo no cap. 5.
 
-| # | Par de contextos | Estrutura do dado | Padrão de acesso | Exemplo em controle | Caso? |
+| # | Par de contextos | Estrutura do dado | Padrão de acesso | Exemplo em controle | Status |
 |---|---|---|---|---|---|
-| P1 | tarefa↔tarefa (comm↔loop) | escalar/flag | leitor↔escritor | setpoint / modo de operação | ✦ didático |
-| P2 | ISR/DMA↔tarefa | buffer/fila | produtor→consumidor | amostras de ADC → loop | ✦ central |
-| P3 | tarefa↔tarefa (estimador↔ctrl) | struct coerente (`x̂`+`P`) | leitor↔escritor / RMW | estado do observador | ✦ composto |
-| P4 | ISR↔tarefa | escalar | RMW compartilhado | contador/acumulador de encoder | ? |
-| P5 | ISR↔tarefa | flag | leitor↔escritor | flag de emergência / watchdog | ? |
-| P6 | tarefa↔tarefa | buffer | produtor→consumidor | trajetória planejamento→low-level | ? |
-| P7 | core↔core | struct/escalar | leitor↔escritor | controlador↔supervisório (multi-core) | ? |
+| P1 | tarefa↔tarefa (comm↔loop) | escalar/flag | leitor↔escritor | setpoint / modo de operação | ✓ entra · ✦ didático |
+| P2 | ISR/DMA↔tarefa | buffer/fila | produtor→consumidor | amostras de ADC → loop | ✓ entra · ✦ central |
+| P3 | tarefa↔tarefa (estimador↔ctrl) | struct coerente (`x̂`+`P`) | leitor↔escritor / RMW | estado do observador | ✓ entra · ✦ composto |
+| P4 | ISR↔tarefa | escalar | RMW (read-modify-write) | contador/acumulador de encoder | ✓ entra (4º padrão) |
+| P5 | ISR↔tarefa | flag | leitor↔escritor | flag de emergência / watchdog | → variante de P1 (sub-bullet) |
+| P6 | tarefa↔tarefa | buffer | produtor→consumidor | trajetória planejamento→low-level | → funde em P2 (variante de contexto) |
+| P7 | core↔core | struct/escalar | leitor↔escritor | controlador↔supervisório (multi-core) | ✗ cortado — fora do escopo (Cortex-M0 single-core) → limitação declarada |
 
 Critério de inclusão (obj 1): ocorre em controle real **e** é data race (≥2 contextos, ≥1 escrita, sem sincronização garantida). Critério de "vira caso": cobre combinação de eixos distinta + contraste C-vs-Rust didático.
+
+### Nomenclatura fechada (2026-06-10) — 4 padrões
+
+Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organiza a taxonomia é a garantia exigida no lado safe**: combinações de eixos que exigem a mesma garantia são o mesmo padrão (ou variante).
+
+| # | Nome fixado | Eixo distintivo | Garantia no lado safe (→ 4.4) |
+|---|---|---|---|
+| P1 | **Tipo primitivo compartilhado** | leitor↔escritor de dado que cabe na palavra | atomic load/store + ordenação |
+| P2 | **Produtor-consumidor** | transferência de itens via fila/buffer | fila SPSC / canal (transfere posse) |
+| P3 | **Tipo composto compartilhado** | agregado > palavra + invariante entre campos | exclusão mútua do bloco **ou** snapshot/publicação |
+| P4 | **Read-modify-write compartilhado** | atualização não-atômica do mesmo valor | RMW atômico **ou** seção crítica |
+
+- **P5** (flag ISR↔tarefa) = **sub-bullet de P1** — mesma garantia (atomic load/store), muda só o par de contexto.
+- **P6** (trajetória tarefa↔tarefa) = **nota em P2** — mesmo padrão produtor-consumidor, par de contexto diferente.
+- **P7** (core↔core) = **limitação declarada** — fora do escopo de hardware (Cortex-M0 single-core); candidato a trabalho futuro.
+
+**Distinção P1 × P3 (granularidade da atomicidade):** P1 = dado cabe na largura atômica → load/store atômico resolve (unidade de acesso = unidade de consistência). P3 = agregado multi-palavra com invariante entre campos → não há atomic desse tamanho → exclusão mútua ou publicação por troca de ponteiro (unidade de consistência > unidade de acesso).
+
+**Distinção P1 × P4 (padrão de acesso):** P1/P5 = leitor↔escritor (um só lê, outro só escreve). P4 = RMW do mesmo valor (lost update); `c += 1` é load→add→store, não atômico. No Cortex-M0 (ARMv6-M) **não há LDREX/STREX** → sem RMW atômico em HW → cai em **seção crítica** (`critical-section`/`portable-atomic`): evidência direta do *custo* da segurança (conferir/citar o detalhe do ARMv6-M antes de afirmar).
+
+**Alerta de coerência (defesa contra circularidade):** os 3 eixos (par de contexto · estrutura · acesso) são as **dimensões descritivas** (causa); a garantia é o que cada combinação **exige** (consequência, catalogada em 4.4). Direção = eixos → garantia. Tornar isso explícito na 4.2 evita a objeção "a taxonomia é dos eixos ou das soluções?".
 
 **Nota de escopo (honestidade):** a taxonomia é só de **data race** — não cobre OOB, UAF, uninit. **Decidido (2026-06-04):** delay line (Caso 1, OOB/uninit) e MPC workspace (Caso 3, UAF) saem do núcleo — não são data race. Os casos do cap. 5 instanciam células de DR: setpoint escalar (didático/abertura), ISR/DMA→buffer (central), estado composto estimador↔controlador.
 
@@ -204,10 +226,10 @@ Critério de inclusão (obj 1): ocorre em controle real **e** é data race (≥2
 ## Preparação para a redação (4/jun)
 
 ### Micro-decisões a fixar (recomendações — confirme/ajuste)
-1. **Granularidade da taxonomia:** ~5–7 padrões (células P1–P7 do gabarito em §4.2, podadas), não o produto cartesiano (4×3×3). Listar só combinações que ocorrem em controle.
-2. **Nomenclatura dos padrões:** nome curto descritivo (ex.: "torn read de setpoint", "fila ISR→tarefa", "estado de estimador compartilhado"). Fixe antes — será citado consistentemente em 4.3/4.4 e no cap. 5.
+1. **Granularidade da taxonomia: FECHADO (2026-06-10):** 4 padrões (P1–P4) + 2 variantes (P5 em P1, P6 em P2) + P7 como limitação. Não o produto cartesiano. Ver "Nomenclatura fechada" em §4.2.
+2. **Nomenclatura dos padrões: FECHADA (2026-06-10):** P1 Tipo primitivo compartilhado · P2 Produtor-consumidor · P3 Tipo composto compartilhado · P4 Read-modify-write compartilhado. Tabela completa (com garantia exigida) em §4.2 → "Nomenclatura fechada". Citar consistentemente em 4.3/4.4 e no cap. 5.
 3. **Quantos casos viram código completo (C + Rust):** os 3 decididos (P1, P2, P3). Sob aperto de prazo, garantir P1+P2; P3 pode ficar descritivo. Demais células: só na taxonomia (texto).
-4. **Ordem dentro de 4.2:** crescente em complexidade (escalar → buffer → struct → multi-core). Espelhar a mesma sequência em 4.3 e 4.4 (leitura fácil).
+4. **Ordem dentro de 4.2:** crescente em complexidade (P1 primitivo → P2 produtor-consumidor → P3 composto → P4 RMW; ou reordenar por complexidade da garantia — sua escolha). Espelhar a mesma sequência em 4.3 e 4.4 (leitura fácil). *(multi-core/P7 saiu do escopo.)*
 5. **Ancoragem da taxonomia:** literatura de concorrência embedded/RTOS + modelo de memória C11/Rust, com os casos como instâncias — não "da cabeça" (a banca cobra fonte; a bibliografia em levantamento cobre isso).
 
 ### Esqueleto `.tex` fino de 4.1–4.4 (rótulos sugeridos — transcreva você; sem prosa aqui)
