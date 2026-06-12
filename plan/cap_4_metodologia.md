@@ -31,6 +31,17 @@ A reorganização mapeia **método ↔ objetivo (1-pra-1)** e separa qualificaç
 
 > O **ponto-de-virada** (forward/`Signal`) **migra** para 4.5 (decisão de design do veículo) — deixa de ancorar 4.1–4.3, como previa o roadmap antigo. A âncora da qualificação passa a ser a fronteira + o espaço de design.
 
+### Decisão estrutural — a fase exploratória entrega os resultados DENTRO do cap. 4 (Arquitetura B, fechada 2026-06-11)
+
+A fase exploratória (obj 1–3) **entrega seus resultados no próprio cap. 4**: a taxonomia (4.2.3), o mapa da fronteira (4.3) e o catálogo do espaço de design (4.4) são *resultados analíticos* apresentados **junto ao método que os produz** — porque, em pesquisa exploratória, a construção conceitual é inseparável do raciocínio que a gera. O **cap. 5** fica com os resultados *materiais*: casos demonstrativos (código compila/não-compila), estado da Aule, protocolo. **Linha de corte:** resultado conceitual (cap. 4) × resultado material/artefato (cap. 5). *(Alternativa descartada por ora — Arquitetura A: todos os entregáveis no cap. 5.)*
+
+> **⚠️ LEMBRETE / TODO (Matheus) — ao redigir/revisar:**
+> 1. **Ajustar o verbo da 4.1.** O trecho já escrito — *"a seção 4.2 aborda **como deve ser realizada** a taxonomia"* — fala só de **método**; precisa refletir que a 4.2 **realiza e entrega** a taxonomia (idem 4.3/4.4 entregam fronteira/catálogo). Hoje há leve incoerência método × resultado.
+> 2. **Tornar explícito** (na 4.1 ou na abertura da 4.2) que, por ser pesquisa **exploratória**, o resultado analítico é apresentado no capítulo de método — isso **antecipa a objeção de banca** "por que um resultado está na metodologia?".
+> 3. **Validar com o Icaro:** neste programa, construções conceituais (taxonomia/framework) vão em Metodologia ou em Resultados? Barato perguntar; caro descobrir na defesa.
+>
+> **Reversível:** se depois optar pela Arquitetura A, é *recortar e realocar* a 4.2.3 (e equivalentes) para o cap. 5 — **não** reescrever.
+
 ---
 
 ## 4.1 Caracterização da Pesquisa

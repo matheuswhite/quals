@@ -10,6 +10,7 @@ modified:
   - 2026-05-28: Claude (claude-opus-4-7) — closed scope decisions for the qualification; recorded project state (experiment = protocol only, hardware undecided, partial workload)
   - 2026-05-28: Claude (claude-opus-4-7) — refined §1.2 (research question + objectives) with criteria, the A-vs-B verb test, and a coverage checklist (no drafted prose)
   - 2026-06-04: Claude (claude-opus-4-8) — propaga decisões do cap. 4: escopo só data race (casos = setpoint/ISR-DMA/estado composto; delay line e MPC fora) e experimento = pêndulo invertido + realimentação de estados; atualiza referências ao título novo (itens 42 e 372)
+  - 2026-06-11: Claude (claude-opus-4-8) — registra a decisão da fronteira cap. 4 × cap. 5 (Arquitetura B: fase exploratória entrega resultados no cap. 4) nas decisões em aberto do cap. 5
 ---
 
 <!-- LTeX: enabled=false -->
@@ -314,6 +315,7 @@ O experimento comparativo é o coração metodológico: mesmo algoritmo (**pênd
 **Fronteira Ato 2 → Ato 3:** entre a Metade 1 e a Metade 2. Marcar quando o capítulo for escrito.
 
 ### Decisões em aberto
+- **Fronteira cap. 4 × cap. 5 — RESOLVIDA (2026-06-11, Arquitetura B):** os resultados *analíticos* da fase exploratória (taxonomia, fronteira safe/unsafe, espaço de design) ficam no **cap. 4**, entregues junto ao método; o cap. 5 mantém só os resultados *materiais* (casos compila/não-compila, estado da Aule, protocolo). Detalhe + TODO de redação em [`cap_4_metodologia.md`](cap_4_metodologia.md) → "Decisão estrutural — a fase exploratória entrega os resultados dentro do cap. 4".
 - ~~O capítulo cita resultados quantitativos ou qualitativos?~~ **Encaminhamento sob B:** ambos — qualitativo (bugs que não compilam, decisões de tipo) é o núcleo; quantitativo (performance, fronteira `unsafe` em LoC) reforça. Não inventar números que ainda não existem.
 - Quanto do experimento de segurança estará pronto até a qualificação? Define se a Metade 2 mostra resultado ou só protocolo + piloto.
 - A comparação com `python-control` já tem alguma medição feita, ou é trabalho futuro?
