@@ -134,36 +134,82 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 
 **Nota de escopo (honestidade):** a taxonomia é só de **data race** — não cobre OOB, UAF, uninit. **Decidido (2026-06-04):** delay line (Caso 1, OOB/uninit) e MPC workspace (Caso 3, UAF) saem do núcleo — não são data race. Os casos do cap. 5 instanciam células de DR: setpoint escalar (didático/abertura), ISR/DMA→buffer (central), estado composto estimador↔controlador.
 
-### 4.2.2 (Os Três Eixos) — estrutura argumentativa (orientação 2026-06-11)
+> **Formato das subseções 4.2.1–4.2.3 (convenção fixada 2026-06-11):** cada uma traz *Missão · Perguntas que responde · Blocos (em ordem de escrita) · Pontos de defesa · Fronteiras (não invadir) · Apoios/Micro-decisões*. "Blocos" = roteiro de redação na ordem em que escrever; **não é prosa** (Regra 4), a redação é do Matheus (Regra 1).
 
-> Outline da subseção (Regra 4): o **argumento que ela carrega**, não prosa. Redação é do Matheus (Regra 1). Expande o "Alerta de coerência" acima e formaliza *por que três eixos*.
+### 4.2.1 (Método de Levantamento) — estrutura de redação (blocos) (orientação 2026-06-11)
 
-**Missão de convencimento:** provar que os 3 eixos são as dimensões **necessárias, independentes e suficientes (no recorte)** para descrever um DR, e que **cruzá-los gera o espaço** dos padrões. Se a banca aceita a 4.2.2, a taxonomia fica de pé. Poda + tabela final = **4.2.3** (não invadir).
+> Consolida a orientação que antes só vivia no ponto de retomada.
+
+**Missão:** estabelecer *o que conta* como padrão de DR e *como* os padrões foram obtidos — **antes** de apresentá-los. Blinda a defensibilidade (a banca cobra "de onde vêm? não é da sua cabeça?").
+
+**Perguntas que responde:** o que é DR (definição operacional); DR × race condition; como os padrões são levantados (método); de onde (fontes); critério de inclusão/exclusão.
+
+**Blocos (ordem de escrita):**
+1. **Definição operacional de DR** — ancorar em C11/Rust: ≥2 acessos concorrentes ao mesmo endereço · ≥1 escrita · sem happens-before · ≥1 não-atômico. É a definição que todo o capítulo usa.
+2. **DR × race condition** — separar o subconjunto (DR, o que o tipo do Rust rejeita) do conceito amplo (race condition). Gancho de literatura: Helmbold & McDowell (1996) + Netzer & Miller (1992). ⚠️ Armadilha terminológica: a "data race" deles ≠ a sua (C11/Rust, com a cláusula de atomicidade). Citar quando validar as refs.
+3. **Método de levantamento** — os padrões vêm de **dedução estruturada pelos 3 eixos** (4.2.2) + **poda por ocorrência em controle real** (4.2.3). Explicitar que **NÃO é revisão sistemática** da literatura — é dedução do espaço + filtro por domínio. "Representativo, não exaustivo" (coerente com a exploratória da 4.1).
+4. **Fontes** — literatura de concorrência embedded/RTOS + modelo de memória C11/Rust + os casos do cap. 5 (+ a tabela "classe de bug × onde aparece em controle" de [`rust_memory_safety_em_controle.md`](rust_memory_safety_em_controle.md)). [Bibliotecário: a busca é sua, Regra 7.]
+5. **Critério de inclusão/exclusão (explícito)** — inclui se: ocorre em controle real **E** é data race especificamente. Exclui: outras classes de memory bug (OOB/UAF/uninit — ver Nota de escopo).
+
+**Pontos de defesa:** por que dedução e não revisão sistemática (área emergente + recorte específico de controle embarcado; a revisão sistemática responderia outra pergunta); cada eixo/padrão é rastreável a uma fonte (não "da cabeça").
+
+**Fronteiras (não invadir):** não derivar os eixos em si (4.2.2); não nomear/listar os padrões (4.2.3).
+
+### 4.2.2 (Os Três Eixos) — estrutura de redação (blocos) (orientação 2026-06-11)
+
+> Expande o "Alerta de coerência" acima e formaliza *por que três eixos*.
+
+**Missão:** provar que os 3 eixos são as dimensões **necessárias e independentes** que descrevem um DR no recorte, e que **cruzá-los gera o espaço** dos padrões (cobertura representativa, não exaustiva). Se a banca aceita a 4.2.2, a taxonomia fica de pé. Poda + tabela final = **4.2.3** (não invadir).
 
 **Perguntas que responde:** por que *três* e por que *estes*; necessidade de cada eixo; ortogonalidade; por que não outros eixos; como geram a matriz.
 
-**Por eixo — necessidade (por que importa p/ DR) + independência (contraexemplo):**
-- **Eixo 1 — par de contextos:** DR exige ≥2 contextos (def. 4.2.1); a *natureza* do par condiciona quais garantias são sequer aplicáveis (ISR não bloqueia em mutex; DMA não executa código). Filtra o conjunto de soluções viáveis — não é decorativo.
-- **Eixo 2 — estrutura do dado:** decide se há **atômico de HW que cobre o dado inteiro** (escalar na palavra → load/store atômico; agregado multi-palavra c/ invariante → não há; buffer/fila → posse). É o eixo da *granularidade da consistência vs. granularidade do acesso atômico* (= distinção P1×P3).
-- **Eixo 3 — padrão de acesso:** fixados os outros 2, **leitor↔escritor ≠ RMW** (RMW exige atomicidade da *sequência*; lost update) (= distinção P1×P4, gancho ARMv6-M).
+**Blocos (ordem de escrita):**
+1. **Enunciar os três eixos** — par de contextos · estrutura do dado · padrão de acesso. Definir "eixo" = dimensão descritiva independente de um DR.
+2. **Necessidade de cada eixo** (por que importa p/ DR):
+   - Eixo 1 — par de contextos: DR exige ≥2 contextos (def. 4.2.1); a natureza do par condiciona quais garantias são aplicáveis (ISR não bloqueia em mutex; DMA não executa código).
+   - Eixo 2 — estrutura do dado: decide se há atômico de HW que cobre o dado inteiro (escalar→atomic; agregado multi-palavra c/ invariante→não há; buffer→posse). Granularidade consistência vs. acesso atômico (= distinção P1×P3).
+   - Eixo 3 — padrão de acesso: fixados os outros 2, leitor↔escritor ≠ RMW (RMW exige atomicidade da sequência; lost update) (= distinção P1×P4, gancho ARMv6-M).
+3. **Prova de ortogonalidade** (argumento mais forte) — fixar 2 eixos, variar 1, a garantia muda:
+   - varia acesso: P1 atomic × P4 seção crítica → eixo 3 independente;
+   - varia estrutura: P1 atomic × P3 mutex/snapshot → eixo 2 independente;
+   - varia par: tarefa↔tarefa × ISR↔tarefa → eixo 1 condiciona o *mecanismo* **mesmo sem mudar a classe de garantia** → por isso **P5 é variante de P1, não padrão novo**. Converte a aparente fraqueza em rigor.
+4. **Trava anti-circularidade** — os 3 eixos = causa/descrição (entrada); a garantia = consequência (catalogada em 4.4). Direção **eixos → garantia**. Corolário: *"mecanismo de sincronização"* **não pode ser um 4º eixo** (classificar pelas soluções → circular). Dizer explicitamente.
+5. **Delimitação negativa** (banca cobra "por que não X?"):
+   - *"tipo de bug de memória"* → recorte, não eixo (DR, 4.2.1);
+   - *"prioridade/preempção"* → absorvido no eixo 1;
+   - *"mecanismo de sincronização"* → consequência, não entrada (ver bloco 4).
+6. **Geração da matriz** — produto cartesiano dos 3 eixos → células = padrões candidatos. Nem toda célula é povoada → aponta p/ critério de inclusão (4.2.1) e **passa o bastão à 4.2.3** (poda). A 4.2.2 mostra o *mecanismo de geração*; **não** lista os 4 padrões finais.
 
-**Prova de ortogonalidade (argumento mais forte) — fixar 2 eixos, variar 1, a garantia muda:**
-- varia **acesso**: P1 atomic × P4 seção crítica → eixo 3 independente;
-- varia **estrutura**: P1 atomic × P3 mutex/snapshot → eixo 2 independente;
-- varia **par**: tarefa↔tarefa × ISR↔tarefa → eixo 1 condiciona o *mecanismo* **mesmo quando não muda a classe de garantia** → é por isso que **P5 é variante de P1, não padrão novo**. Explicitar isto converte a aparente fraqueza ("então o eixo 1 às vezes não importa?") em evidência de rigor.
+**Fronteiras (não invadir):** não re-derivar def. de DR/fontes (4.2.1); não nomear/podar padrões nem trazer a tabela final (4.2.3); não catalogar garantias (4.4).
 
-**Trava anti-circularidade (a objeção que derruba a taxonomia):** os 3 eixos = **causa/descrição (entrada)**; a garantia exigida = **consequência (catalogada em 4.4)**. Direção **eixos → garantia**, nunca o contrário. Corolário: *"mecanismo de sincronização"* **não pode ser um 4º eixo** — seria classificar pelas próprias soluções e concluir qual solução (circular). Dizer explicitamente.
+**Apoios (sua escolha):** figura = cubo 3D dos eixos ou tabela por coluna (matriz *povoada* fica em 4.2.3); ordem dos eixos sugerida = par → estrutura → acesso (espelha P1→P4); manter a humildade da 4.1 (**representativo, não exaustivo**).
 
-**Delimitação negativa (a banca cobra "por que não X?"):**
-- *"tipo de bug de memória"* → não é eixo, é o **recorte** (DR, fixado em 4.2.1);
-- *"prioridade/preempção"* → **absorvido** no eixo 1 (par de contextos);
-- *"mecanismo de sincronização"* → **consequência**, não dimensão de entrada (ver trava acima).
+### 4.2.3 (A Taxonomia) — estrutura de redação (blocos) (orientação 2026-06-11)
 
-**Geração da matriz:** **produto cartesiano** dos 3 eixos → células = padrões candidatos. Nem toda célula é povoada (não ocorre em controle real **ou** não é DR) → aponta p/ critério de inclusão (4.2.1) e **passa o bastão à 4.2.3** (poda). A 4.2.2 mostra o *mecanismo de geração*; **não** lista os 4 padrões finais.
+> Seção-entregável do obj 1. Auto-suficiente (vai ser citada depois).
 
-**Fronteiras (não invadir):** não re-derivar def. de DR / fontes (4.2.1); não nomear/podar padrões nem trazer a tabela final (4.2.3); não catalogar garantias (4.4).
+**Missão:** entregar os **4 padrões** como resultado de **povoar + podar** a matriz da 4.2.2, com a garantia exigida no safe como critério de individuação.
 
-**Apoios (escolha do Matheus):** figura = eixos como cubo 3D **ou** tabela por coluna (matriz *povoada* fica em 4.2.3); ordem dos eixos sugerida = par → estrutura → acesso (espelha P1→P4); manter a humildade da 4.1 (cobre DR de estado compartilhado em controle concorrente embarcado — **representativo, não exaustivo**).
+**Perguntas que responde:** quais os padrões; como se chega neles a partir da matriz; por que 4 e não 7; o que individua cada um; como alimenta 4.3/4.4.
+
+**Blocos (ordem de escrita):**
+1. **Transição matriz → padrões** (1 parágrafo) — a matriz (4.2.2) gera as células; aplica-se o critério de inclusão (4.2.1: ocorre em controle real **E** é DR) + o **critério de equivalência** (células que exigem a mesma garantia = mesmo padrão); resultam **4 padrões + 2 variantes + 1 limitação**. ⚠️ Trava anti-circularidade de novo: a garantia entra como *relação de equivalência sobre as células* (consequência), não como entrada.
+2. **A tabela** (entregável) — tabela consolidada, ordem P1→P4, colunas: **# / Nome · (Par · Estrutura · Acesso) · Exemplo em controle · Garantia exigida no safe**. Transcrever da "Nomenclatura fechada" (não reinventar). A garantia aqui = *propriedade exigida* (critério); as **alternativas de implementação** ficam em 4.4.
+3. **A poda explicada** (por que 4 e não 7) — P5→variante de P1 (mesma garantia, muda o par); P6→variante de P2 (mesmo produtor-consumidor, par diferente); P7→limitação declarada (core↔core fora do escopo Cortex-M0 single-core; trabalho futuro). É a aplicação concreta do critério de equivalência do bloco 1.
+4. **As distinções finas** (defesa de que P1/P3/P4 são distintos):
+   - **P1×P3** (granularidade da atomicidade): P1 dado cabe na palavra (acesso = consistência) × P3 agregado multi-palavra c/ invariante (consistência > acesso → mutex/publicação).
+   - **P1×P4** (padrão de acesso): P1/P5 leitor↔escritor × P4 RMW do mesmo valor (lost update; `c += 1` = load→add→store).
+5. **Forward-pointer** (1–2 frases) — alimenta 4.3 (fronteira por padrão) e 4.4 (espaço de design por padrão); comprometer-se a manter a ordem P1→P4 em 4.3/4.4/cap. 5.
+
+**Pontos de defesa:** "organiza pelos eixos ou pela garantia?" → garantia = equivalência derivada dos eixos (bloco 1); "por que só 4?" → poda por inclusão + equivalência; **representativo, não exaustivo**; "P5/P6 não eram padrões?" → colapsam na mesma garantia (bloco 3); "e multi-core?" → P7 fora do escopo de HW (trabalho futuro).
+
+**Fronteiras (não invadir):** 4.2.2 (não re-derivar eixos); 4.3 (só *nomear* que há fronteira, não caracterizá-la); 4.4 (nomear a garantia *exigida*, não catalogar alternativas/trade-offs).
+
+**Micro-decisões (suas) + pendência:**
+- formato: tabela consolidada + parágrafo de poda + parágrafo de distinções (recomendado);
+- figura: reusar o cubo/matriz da 4.2.2 com células povoadas destacadas e podadas riscadas (visual da poda);
+- marcar com ✦ as células que viram caso no cap. 5 (P1, P2, P3; P1+P2 garantidos sob aperto, P3 pode ficar descritivo);
+- ⚠️ **ARMv6-M:** o gancho de custo do P4 (Cortex-M0 sem LDREX/STREX → seção crítica) é argumento de **custo** — manter fora da 4.2.3 (descritiva); usar em 4.3/4.4. **Confirmar/citar o detalhe do ARMv6-M antes de afirmar** (pendência aberta).
 
 ---
 
