@@ -226,26 +226,115 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 
 ## 4.3 Método: Caracterização da Fronteira safe/unsafe (obj 2)
 
-**Perguntas que a seção responde:**
-- Para cada padrão da taxonomia (4.2), qual o **procedimento** para localizar a fronteira? (tentar exprimir o padrão em Rust *safe*; registrar o que o compilador recusa — `Send`/`Sync`/borrow — e onde força `unsafe`)
-- O que define o **lado safe** vs. o **lado unsafe** de um padrão? (safe = exprimível sem `unsafe`, garantia codificada no tipo; unsafe = exige bloco `unsafe` / FFI / acesso direto a registrador / `static mut`)
-- Qual o **critério de evidência** da fronteira? (compila vs. não-compila; mensagem do borrow checker; obrigação de `Send`+`Sync`)
-- Como tratar padrões que caem **dos dois lados**? (ex.: ISR↔DMA — a fila SPSC é safe, mas o acesso ao registrador do periférico é `unsafe` dentro da HAL; a fronteira passa *dentro* do padrão)
-- Que **ferramentas** apoiam a caracterização? (`rustc`; inspeção de `Send`/`Sync`; `miri` para UB em testes; `cargo-call-stack` fica fora — é outra classe)
+> **A tríade 4.2 → 4.3 → 4.4** (fio que liga as três seções; cada uma faz uma pergunta sobre o mesmo padrão P1–P4):
+> - **4.2** — *qual* garantia o padrão **exige**? (propriedade abstrata)
+> - **4.3** — até *onde* o Rust **safe codifica** essa garantia no tipo, e onde escapa para `unsafe`? → a **fronteira**
+> - **4.4** — *quais* as opções de entregá-la no lado safe, e **a que custo**? → o **espaço de design**
+>
+> É o título da tese desmontado: **4.3 = a fronteira · 4.4 = o custo**. Consequências: o argumento de **custo** mora na 4.4 (não aqui); e a 4.4 é onde a trava anti-circularidade da 4.2.2 se fecha (a 4.2 *nomeia* a garantia; a 4.4 *cataloga* as soluções).
 
-**Saída (entregável do obj 2):** o mapa da fronteira por padrão.
+**Missão da seção:** para cada padrão P1–P4, localizar e caracterizar a fronteira — o que o Rust safe codifica no tipo (recusa o DR em compilação) e onde a garantia escapa do compilador (força `unsafe`). Materializa o **eixo transversal 4** (o que Rust *não* garante) — o que protege a tese de soar exagerada. **Saída (entregável do obj 2):** o mapa da fronteira por padrão (consolidado na 4.3.3).
+
+### 4.3.1 Procedimento — estrutura de redação (blocos)
+
+**Missão:** descrever *como se investiga* a fronteira em cada padrão — o protocolo, não as conclusões.
+
+**Perguntas que responde:** como, operacionalmente, se localiza a fronteira; o que conta como "tentar exprimir em safe"; como manter o método uniforme nos 4 padrões; o que se registra de cada tentativa.
+
+**Blocos (ordem de escrita):**
+1. **O roteiro em 3 passos** — para cada P1→P4: (a) exprimir o padrão em Rust safe idiomático; (b) compilar e observar a reação; (c) localizar o ponto onde o DR vira inexprimível **ou** o compilador exige `unsafe`.
+2. **Definição de "tentativa idiomática"** — o que um dev Rust competente escreveria (`heapless`, `Mutex` de `critical-section`, atomics), não um espantalho fácil de derrubar nem `unsafe` gratuito. Blinda contra "você plantou o resultado".
+3. **Protocolo uniforme + registro** — mesma sonda nos 4 padrões; registrar a construção safe tentada, o veredito (compila/recusa) e o ponto de fronteira. A uniformidade é o que torna o mapa (4.3.3) comparável.
+4. **Natureza da evidência** — compilar *é* o experimento (liga à 4.1); é reproduzível (a banca pode rodar).
+
+**Pontos de defesa:** *"não é só tentar até dar certo?"* → sonda fixa de 3 passos, aplicada igual; o veredito é determinístico, não tateio. *"você escolheu a versão safe que convém?"* → o critério de "idiomática" + o registro tornam a escolha auditável.
+
+**Fronteiras (não invadir):** **4.3.2** decide *o que* é safe×unsafe e o que prova — aqui é só *como se olha*; **4.3.3** traz os resultados/mapa — aqui, nenhum; **cap. 5** tem o caso completo — aqui, no máximo snippets mínimos.
+
+**Apoios:** `rustc` (verificador), inspeção de `Send`/`Sync`, `miri` (UB em testes do que recair em `unsafe`); fora de escopo: `cargo-call-stack` (outra classe).
+
+### 4.3.2 Critério — estrutura de redação (blocos)
+
+**Missão:** fixar as definições que tornam a fronteira *decidível* — o que é estar de cada lado e o que **prova** cada veredito. Sem isto, "fronteira" é metáfora.
+
+**Perguntas que responde:** o que define operacionalmente safe e unsafe; qual a evidência primária e as secundárias; por qual *mecanismo* o DR fica inexprimível; como distinguir "não compila por DR" de "não compila por outro motivo".
+
+**Blocos (ordem de escrita):**
+1. **Definição operacional dos dois lados** — *safe*: sem `unsafe`, garantia no tipo (`AtomicU32`, `Mutex`, o `Producer`/`Consumer` do split da `heapless::spsc`); *unsafe*: bloco `unsafe`, FFI, registrador de periférico, `static mut`.
+2. **Hierarquia de evidência** — primária: compila vs. não-compila; secundária: a mensagem específica (`E0277` para `Send`/`Sync` ausente, borrow, lifetime) — é a mensagem que **identifica a causa**.
+3. **O mecanismo** — `Send` + `Sync` + borrow checking: nenhum valor não-`Sync` cruza de contexto sem sincronização que o torne `Sync`. É o **eixo transversal 5** (convenção em C → obrigação de tipo em Rust).
+4. **Critério de atribuição de causa** — só conta como evidência de fronteira se a recusa for atribuível ao DR: amarrar a mensagem (bloco 2) à definição operacional de DR da 4.2.1.
+
+**Pontos de defesa:** *"compila/não-compila é evidência?"* → evidência por construção da exploratória (4.1, Wazlawick): tipo = especificação, compilador = verificador determinístico. *"e se não compilar por outro motivo?"* → o critério de atribuição de causa resolve.
+
+**Fronteiras (não invadir):** **4.3.1** é *como se olha* (roteiro), aqui é *o que se decide*; **4.3.3** aplica o critério aos padrões que cruzam; **4.4** trata o leque dentro do safe — aqui o critério é binário.
+
+**Apoios:** lista dos códigos de erro (`E0277` etc.) como âncora; cross-ref à definição de DR (4.2.1).
+
+### 4.3.3 Padrões que Cruzam a Fronteira — estrutura de redação (blocos)
+
+**Missão:** entregar o resultado mais honesto do obj 2 — a fronteira **atravessa** padrões em vez de classificá-los inteiros — e consolidar o mapa.
+
+**Perguntas que responde:** a fronteira separa padrões inteiros ou passa por dentro; qual o exemplo mais claro; o que isso significa para a honestidade da tese (eixo 4); como fica o mapa consolidado.
+
+**Blocos (ordem de escrita):**
+1. **O fenômeno** — a fronteira não particiona "padrões safe × padrões unsafe"; corta *dentro* de um mesmo padrão (parte em safe, parte — borda de hardware — em `unsafe`).
+2. **Exemplo canônico (P2)** — a fila SPSC é safe e o split garante posse exclusiva (DR no buffer inexprimível); **mas** configurar DMA / ler registrador do ADC é `unsafe` na HAL. Um padrão, dois lados.
+3. **Os outros padrões à luz disso** — verificar P1/P3/P4: quais ficam inteiramente em safe (ex.: P1 com `AtomicU32` puro) e quais reintroduzem `unsafe` na borda. Classificar: fronteira interna vs. inteiramente safe.
+4. **Implicação para a tese (eixo 4)** — é onde o Rust *não* cobre por construção; o `unsafe` é *declarado*, isolável e **mensurável** (LoC) — gancho para 4.4 (custo) e 4.6 (medição).
+5. **O mapa consolidado (entregável)** — tabela P1→P4: onde a fronteira passa, o que fica safe, o que força unsafe, evidência. Consolida 4.3.1–4.3.3 e fecha a seção.
+
+**Pontos de defesa:** *"então Rust não resolve?"* → resolve a parte expressável em safe (a maior parte do código de controle); o `unsafe` residual é pequeno, confinado e auditável — vs. C, onde *todo* o código carrega o risco não-marcado. O ponto é *deslocar e confinar* o risco, não eliminá-lo 100%. *"fronteira da linguagem ou da Aule?"* → da linguagem; a Aule instancia; sua contribuição é mapeá-la em controle.
+
+**Fronteiras (não invadir):** **4.3.1/4.3.2** — aplicar, não reexplicar; **4.4** — o que fazer com a parte safe é lá; **cap. 5** — o caso ISR/DMA *completo* é resultado material, aqui só como exemplo.
+
+**Apoios:** a tabela mapa-da-fronteira; o P2 como fio condutor; ligação explícita ao eixo transversal 4.
 
 ---
 
 ## 4.4 Método: Catalogação do Espaço de Design das Garantias (obj 3)
 
-**Perguntas que a seção responde:**
-- Para os padrões do **lado safe**, quais as **alternativas** de implementar a sincronização que torna o data race inexprimível? Candidatos a eixos: atomics / lock-free; `Mutex` / critical-section; message-passing (SPSC `heapless::Queue`); recursos do RTIC (priority-ceiling); `Arc` / refcount; cópia *owned* (sem compartilhar ponteiro).
-- O que é um **"eixo"** do espaço de design? (dimensão de escolha independente — ex.: cópia vs. compartilhamento; bloqueante vs. lock-free; estático/`no_std` vs. heap)
-- Qual o **critério** para considerar o espaço "catalogado"? (cada padrão safe mapeado às opções viáveis em `no_std`, com trade-offs anotados: custo de runtime, ergonomia, footprint, determinismo)
-- Como o catálogo **alimenta o obj 4**? (cada eixo → um candidato a implementar na Aule — "um por eixo")
+> **Renomeação fixada (2026-06-11):** a subseção antes chamada "Eixos de Design" passa a **"Dimensões de Design"**. "Eixos" fica reservado às dimensões do *problema* (a taxonomia, 4.2.2); usar a mesma palavra para a *solução* induz a banca a confundir taxonomia com espaço de design. Reflexo no esqueleto `.tex` fino (adiante) já aplicado.
 
-**Saída (entregável do obj 3):** o catálogo do espaço de design. **Fecha a parte da qualificação.**
+**Missão da seção:** para os padrões do lado safe, catalogar as **alternativas** de implementar a garantia que torna o DR inexprimível, com os **trade-offs** em `no_std`. É **onde o "custo" do título da tese é argumentado** e materializa o **eixo transversal 3** (garantia por tipos × runtime). **Saída (entregável do obj 3):** o catálogo do espaço de design. **Fecha a parte da qualificação.**
+
+### 4.4.1 Dimensões de Design — estrutura de redação (blocos)  *(hoje rotulada "Eixos de Design" no `.tex` — renomear)*
+
+**Missão:** definir o espaço e **catalogar as alternativas** de garantia para cada padrão safe — o "o que existe", antes do "a que custo" (4.4.2).
+
+**Perguntas que responde:** o que é o espaço de design e o que é uma "dimensão"; quais as alternativas concretas de codificar a garantia; quais se aplicam a quais padrões; por que essas e não outras.
+
+**Blocos (ordem de escrita):**
+1. **Definição + a renomeação** — espaço = formas de codificar a garantia de um padrão safe; dimensão = escolha independente (cópia vs. compartilhamento; bloqueante vs. lock-free; estático vs. heap). **Fixar a renomeação** "eixos→dimensões" e justificar: "eixos" já nomeia as dimensões do *problema* (4.2.2); reusar a palavra para a *solução* induz a banca a erro.
+2. **O catálogo** — atomics/lock-free; `Mutex`/critical-section; message-passing (`heapless` SPSC/canal); recursos do RTIC (priority-ceiling); `Arc`/refcount; cópia *owned*. Cada uma em uma linha (o que garante, como).
+3. **Mapeamento padrão → alternativas** — P1 → atomic puro / cópia owned / RTIC resource; P2 → SPSC / RTIC; P3 → `Mutex` do bloco / publicação por troca de ponteiro; P4 → RMW atômico (onde houver) / critical-section.
+4. **Ancoragem** — são as construções idiomáticas do ecossistema Rust embedded, não invenção (fonte = literatura/ecossistema; busca é sua, Regra 7).
+
+**Pontos de defesa:** *"isto não é a taxonomia de novo?"* → não: taxonomia = *problemas*, espaço de design = *soluções*; fecha a direção eixos→garantia. *"é exaustivo?"* → representativo (humildade da 4.1).
+
+**Fronteiras (não invadir):** **4.2** — a garantia *exigida* é lá, as *alternativas* aqui; **4.3** — o espaço é só do lado safe; **4.4.2** — aqui se *lista/mapeia*, os *trade-offs* são lá; **4.5** — *catalogar* aqui, *escolher* o que vai à Aule é lá.
+
+**Apoios:** tabela alternativa → (o que garante · como); a renomeação documentada.
+
+### 4.4.2 Trade-offs em `no_std` — estrutura de redação (blocos)
+
+**Missão:** comparar as alternativas pelas dimensões de custo — **é aqui que o "custo" do título da tese é argumentado**. Transforma o catálogo (4.4.1) de "lista" em "opções com consequências".
+
+**Perguntas que responde:** por quais dimensões as alternativas diferem em custo; qual o custo específico em controle (determinismo); como o alvo (Cortex-M0/ARMv6-M) muda os trade-offs; o que é "catalogado"; o custo é medido ou argumentado.
+
+**Blocos (ordem de escrita):**
+1. **As dimensões de trade-off** — runtime (ciclos, bloqueio), ergonomia (boilerplate, legibilidade), footprint (RAM/flash), **determinismo** (jitter, *priority inversion*) — a mais crítica em controle e a mais subestimada.
+2. **O gancho ARMv6-M (P4)** — Cortex-M0 sem LDREX/STREX → sem RMW atômico em HW → cai em seção crítica (`critical-section`/`portable-atomic`), que desabilita interrupções → custo de latência/determinismo. Evidência mais direta de que a segurança no safe **tem preço**. ⚠️ **Confirmar/citar o ARMv6-M antes de afirmar** (pendência aberta).
+3. **A matriz** — padrão (P1–P4) × alternativa × dimensões de trade-off; o entregável da 4.4. Células = anotação qualitativa (não número).
+4. **Critério de "catalogado"** — cada padrão safe mapeado às opções viáveis com trade-offs anotados; representativo, não exaustivo.
+
+**Pontos de defesa:** *"o custo é medido?"* → **não** na qualificação; é **argumentado** aqui (qualitativo) e **medido** em 4.6 (pós-qual). *"os trade-offs são opinião?"* → ancorados em propriedades arquiteturais (seção crítica desabilita IRQ = fato do ARMv6-M) e na literatura de RTOS — daí citar o ARMv6-M. *"por que determinismo pesa mais?"* → o domínio tem deadlines; jitter de lock pode violar o período de controle (conecta custo-de-garantia a viabilidade-no-domínio).
+
+**Fronteiras (não invadir):** **4.4.1** — aqui se *compara/custeia*, o catálogo é lá; **4.6** — *argumentar* ≠ *medir* (DWT cycle counter); **4.2** — não reabrir a individuação dos padrões.
+
+**Apoios:** a matriz padrão × alternativa × trade-off; a pendência ARMv6-M.
+
+> **Frase de fecho da 4.4** (sem subseção — decisão do plano): ponte ao obj 4 — cada dimensão → um candidato a instanciar na Aule ("um por dimensão") + rastreabilidade. Fecha a fase exploratória/qualificação inteira.
 
 ---
 
@@ -332,7 +421,7 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
   - `\subsection` critério (compila/não-compila · `Send`/`Sync` · borrow)
   - `\subsection` padrões que cruzam a fronteira (fila safe + registrador `unsafe`)
 - `\section{...}` (4.4 — "Espaço de design das garantias")
-  - `\subsection` eixos de design (atomics · lock/critical-section · message-passing · RTIC resources · owned-copy)
+  - `\subsection` **dimensões de design** (atomics · lock/critical-section · message-passing · RTIC resources · owned-copy) — *renomeado de "eixos de design" (2026-06-11): "eixos" fica reservado à taxonomia (4.2.2); aqui é "dimensões" (a solução)*
   - `\subsection` trade-offs em `no_std` (runtime · ergonomia · footprint · determinismo)
   - *(sem subseção)* **frase de fecho** do 4.4 (decisão 4/jun): ponte para o obj 4 — critério "um por eixo" + rastreabilidade. Não vira subseção própria.
 
