@@ -3,6 +3,7 @@
 
 % Nesta seção, serão apresentados os procedimentos metodológicos adotados no trabalho
 
+% 4.1
 \section{Caracterização da Pesquisa}
 
 Utilizando a separação de tipos de pesquisa, em ciência da computação, descrita na seção 2.6 de \cite{wazlawick2009metodologia}, essa pesquisa possui carater exploratório-empírico. Exploratório, pois os objetivos iniciais buscam uma taxonomia, a caracterização de uma fronteira e a catalogação de um espaço de design. Onde o método desta fase exploratória é aprofundada em 4.2, 4.3 e 4.4; e Empírico pois os objetivos seguintes são essencialmente experimentais (descrito em mais detalhes em 4.6 e 4.7), pois buscam a implementação, avaliação e comparação das garantias mapeadas nos objetivos anteriores. Note que não são duas pesquisas disjuntas, mas um sequenciamento, pois para a fase empírica ser realizada é necessário que a fase exploratória seja concluída. Para a qualificação, a entrega é a fase exploratória em conjunto com o protocolo da fase empírica, enquanto na dissertação final, a entrega é a junção de todas as fases, incluíndo a fase empírica.
@@ -11,48 +12,60 @@ Para \cite{wazlawick2009metodologia} as pesquisas em ciencias de computação, p
 
 Os objetivo específico, descrito no capítulo 1, são mapeados a seções no capítulo presente. Desta forma, a seção 4.2 aborda como deve ser realizada a taxonomia de padrões de data race (Objetivo 1). Já na seção 4.3, está descrito os procedimentos para a caracterização da fronteira safe/unsafe (Objetivo 2). Na seção 4.4, o foco é catalogação do espaço de design das garantias (Objetivo 3). Na seção 4.5, é descrito a metodologia de construção da biblioteca Aule, a qual é o veículo utilizado para instanciação das garantias exploradas (Objetivo 4). Na seção 4.6, o protocolo dos experimentos de medição dos custos de cada abordagem (Objetivos 5, 6 e 7). E por último, na seção 4.7 é descrito como é realizada a comparação da verificação por Tipos, do Rust, com o modelo atual com C, MISRA e Sanitizers (Objetivo 8). 
 
+% 4.2
 \section{Taxonomia de Padrões de Data Race}
 
+% 4.2.1
 \subsection{Método de Levantamento}
 
 fontes + critério de inclusão
 
+% 4.2.2
 \subsection{Os Três Eixos}
 
 par de contextos - estrutura do dado - padrão de acesso
 
+%4.2.3
 \subsection{A Taxonomia}
 
 tabela P1-P7
 
+% 4.3
 \section{Caracterização da Fronteira safe/unsafe}
 
+% 4.3.1
 \subsection{Procedimento}
 
 exprimir em safe; observar a recusa do compilador
 
+% 4.3.2
 \subsection{Critério}
 
 compila/não-compila - \texttt{Send}/\texttt{Sync} - borrow
 
+% 4.3.3
 \subsection{Padrões que Cruzam a Fronteira}
 
 fila safe + registrador \texttt{unsafe}
 
+% 4.4
 \section{Catalogação do Espaço de Design das Garantias}
 
+% 4.4.1
 \subsection{Eixos de Design}
 
 atomics - lock/critical-section - message-passing - RTIC resources - owned-copy
 
+% 4.4.2
 \subsection{Trade-offs em \texttt{no\_std}}
 
 runtime - ergonomia - footprint - determinismo
 
+% 4.5
 \section{A Aule como Veículo de Instanciação}
 
-
+% 4.6
 \section{Protocolo do experimento de Custo}
 
-
+% 4.7
 \section{Verificação por Tipos vs. C+MISRA+Sanitizers}
