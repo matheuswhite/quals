@@ -5,6 +5,7 @@ co-authors:
   - Claude (claude-opus-4-8), 2026-06-05
   - Claude (claude-opus-4-8), 2026-06-10
   - Claude (claude-opus-4-8), 2026-06-11
+  - Claude (claude-opus-4-8), 2026-06-13
 ---
 
 <!-- LTeX: enabled=false -->
@@ -161,6 +162,12 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 3. **Método de levantamento** — os padrões vêm de **dedução estruturada pelos 3 eixos** (4.2.2) + **poda por ocorrência em controle real** (4.2.3). Explicitar que **NÃO é revisão sistemática** da literatura — é dedução do espaço + filtro por domínio. "Representativo, não exaustivo" (coerente com a exploratória da 4.1).
 4. **Fontes** — literatura de concorrência embedded/RTOS + modelo de memória C11/Rust + os casos do cap. 5 (+ a tabela "classe de bug × onde aparece em controle" de [`rust_memory_safety_em_controle.md`](rust_memory_safety_em_controle.md)). [Bibliotecário: a busca é sua, Regra 7.]
 5. **Critério de inclusão/exclusão (explícito)** — inclui se: ocorre em controle real **E** é data race especificamente. Exclui: outras classes de memory bug (OOB/UAF/uninit — ver Nota de escopo).
+
+> **Decisão (2026-06-13) — o bloco 4 NÃO é bloco autônomo.** Separar duas coisas que o rótulo "Fontes" mistura:
+> - **(a) Citações que sustentam uma afirmação específica → diluídas *in situ*:** C11/modelo do Rust no bloco 1 (definição); Helmbold/Netzer no bloco 2 (DR × race); literatura embedded/RTOS dentro do bloco 3 (sustentando "ocorre em controle real"). Citação convence colada à frase que apoia; lista de fontes avulsa numa subseção curta vira corpo estranho.
+> - **(b) Declaração de *proveniência da dedução* → fundida no bloco 3, não avulsa.** A defesa do bloco 3 ("dedução + poda, não revisão sistemática") *exige* nomear o material bruto, senão a objeção é "dedução a partir de quê?". "Fontes" aqui é **afirmação metodológica de proveniência** (categorias de fonte), não bibliografia antecipada.
+> - **Casos do cap. 5 + tabela `rust_memory_safety…`** = *artefatos de análise próprios*, não literatura externa → mencionar como **entradas da dedução** ("padrões confrontados com os casos"), não como citação, pra não citar-se a si mesmo como autoridade.
+> - **Efeito prático:** a 4.2.1 fica com **4 movimentos**, não 5 — definição (1) → distinção (2) → método+proveniência (3+4 fundidos) → critério (5).
 
 **Pontos de defesa:** por que dedução e não revisão sistemática (área emergente + recorte específico de controle embarcado; a revisão sistemática responderia outra pergunta); cada eixo/padrão é rastreável a uma fonte (não "da cabeça").
 
