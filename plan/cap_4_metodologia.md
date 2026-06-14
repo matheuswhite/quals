@@ -201,6 +201,8 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
    - *"mecanismo de sincronização"* → consequência, não entrada (ver bloco 4).
 6. **Geração da matriz** — produto cartesiano dos 3 eixos → células = padrões candidatos. Nem toda célula é povoada → aponta p/ critério de inclusão (4.2.1) e **passa o bastão à 4.2.3** (poda). A 4.2.2 mostra o *mecanismo de geração*; **não** lista os 4 padrões finais.
 
+> **Pergunta de banca a blindar (guardada 2026-06-14) — completude dos eixos.** *"Como garantir que esses 3 eixos geram o espaço **completo**, e não só o que vocês imaginaram?"* É o desafio de **suficiência** do conjunto de dimensões — distinto de *necessidade* (bloco 2) e *ortogonalidade* (bloco 3). Surgiu ao explicar "modelo generativo" na 4.2.1 (a força do generativo depende de os eixos serem as dimensões certas). Linha de defesa a desenvolver no bloco 5: (a) cada eixo **deriva de uma cláusula da definição de DR** (≥2 contextos → eixo 1; granularidade da atomicidade → eixo 2; padrão de acesso → eixo 3) — vêm da definição, não da imaginação; (b) **representativo, não exaustivo** (humildade da 4.1); (c) o filtro de domínio + confronto com casos (4.2.1) são a rede que pega o que a dedução perdeu. **Não alegar completude absoluta** — só completude *relativa às dimensões da definição de DR*.
+
 **Fronteiras (não invadir):** não re-derivar def. de DR/fontes (4.2.1); não nomear/podar padrões nem trazer a tabela final (4.2.3); não catalogar garantias (4.4).
 
 **Apoios (sua escolha):** figura = cubo 3D dos eixos ou tabela por coluna (matriz *povoada* fica em 4.2.3); ordem dos eixos sugerida = par → estrutura → acesso (espelha P1→P4); manter a humildade da 4.1 (**representativo, não exaustivo**).
