@@ -6,6 +6,7 @@ co-authors:
   - Claude (claude-opus-4-8), 2026-06-10
   - Claude (claude-opus-4-8), 2026-06-11
   - Claude (claude-opus-4-8), 2026-06-13
+  - Claude (claude-opus-4-8), 2026-06-14
 ---
 
 <!-- LTeX: enabled=false -->
@@ -156,9 +157,11 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 
 **Perguntas que responde:** o que é DR (definição operacional); DR × race condition; como os padrões são levantados (método); de onde (fontes); critério de inclusão/exclusão.
 
+> **Revisão (2026-06-14) — peso conceitual migra para o cap. 3.** Ao criar o lar do modelo de memória no cap. 3 (ver [`cap_3_fundamentacao.md`](cap_3_fundamentacao.md), seção 3.3), os blocos 1 e 2 mudam de *ensinar* para *adotar/invocar*. Princípio: **fundamentação explica; metodologia decide/aplica.** A definição formal de DR, happens-before, C11/Rust e a distinção DR×race condition (com Helmbold/Netzer) são **ensinadas em 3.3**; a 4.2.1 só as **usa** via `\ref`. Risco a evitar: se a frase na 4.2.1 começar a explicar happens-before, vazou pro cap. 3.
+
 **Blocos (ordem de escrita):**
-1. **Definição operacional de DR** — ancorar em C11/Rust: ≥2 acessos concorrentes ao mesmo endereço · ≥1 escrita · sem happens-before · ≥1 não-atômico. É a definição que todo o capítulo usa.
-2. **DR × race condition** — separar o subconjunto (DR, o que o tipo do Rust rejeita) do conceito amplo (race condition). Gancho de literatura: Helmbold & McDowell (1996) + Netzer & Miller (1992). ⚠️ Armadilha terminológica: a "data race" deles ≠ a sua (C11/Rust, com a cláusula de atomicidade). Citar quando validar as refs.
+1. **Definição operacional de DR** — ~~definir do zero~~ → **adotar o critério**. As 4 cláusulas (≥2 acessos concorrentes ao mesmo endereço · ≥1 escrita · sem happens-before · ≥1 não-atômico) são *ensinadas* em 3.3; aqui faz **recall compacto (1 frase) + `\ref`** e adota como critério operacional de inclusão. A cláusula de atomicidade tem de aparecer no recall (sustenta P1/P4).
+2. **DR × race condition** — ~~explicar a distinção~~ → **invocar a distinção pra justificar o recorte**. Movimento de escopo/defesa: a taxonomia é de DR estrito (Seção 3.3), **não** race condition em geral — o Rust mecaniza ausência de DR, não de toda corrida. As refs Helmbold & McDowell (1996) / Netzer & Miller (1992) e a nota histórica **migram para 3.3** (não citar aqui).
 3. **Método de levantamento** — os padrões vêm de **dedução estruturada pelos 3 eixos** (4.2.2) + **poda por ocorrência em controle real** (4.2.3). Explicitar que **NÃO é revisão sistemática** da literatura — é dedução do espaço + filtro por domínio. "Representativo, não exaustivo" (coerente com a exploratória da 4.1).
 4. **Fontes** — literatura de concorrência embedded/RTOS + modelo de memória C11/Rust + os casos do cap. 5 (+ a tabela "classe de bug × onde aparece em controle" de [`rust_memory_safety_em_controle.md`](rust_memory_safety_em_controle.md)). [Bibliotecário: a busca é sua, Regra 7.]
 5. **Critério de inclusão/exclusão (explícito)** — inclui se: ocorre em controle real **E** é data race especificamente. Exclui: outras classes de memory bug (OOB/UAF/uninit — ver Nota de escopo).
