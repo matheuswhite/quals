@@ -11,7 +11,7 @@ What lives here (and not in `CLAUDE.md`):
 
 - [User profile](user_profile.md) — Matheus, mestrando UFAL IC; tese no nível do fenômeno (B-dominante) sobre a fronteira de segurança de memória do Rust em data races de controle concorrente — a lib Aule é o veículo
 - [Personal project boundary](personal_project_boundary.md) — projeto pessoal acadêmico; nunca citar empregador nem email corporativo em nada deste repo ou memória
-- [Ponto de retomada](ponto_retomada.md) — Cap. 4: 4.1 e 4.2.1 REDIGIDAS e revisadas (banca, 8 pontos fechados em 14/jun); 3.3 adiada; próximo = redigir 4.2.2 (Os Três Eixos) — pergunta de completude dos eixos já guardada no plano
+- [Ponto de retomada](ponto_retomada.md) — Cap. 4: 4.1, 4.2.1 e 4.2.2 REDIGIDAS e revisadas (banca); 3.3 adiada; próximo = redigir 4.2.3 (A Taxonomia, tabela dos 4 padrões). Cap.4 ~2150 palavras
 - [Review checklist enforce](review_checklist_enforce.md) — ao revisar o texto da tese, cobrar `plan/checklist_revisao.md` (taxonomia de padrões de data race, F7)
 
 What lives in `CLAUDE.md` (not duplicated here):
