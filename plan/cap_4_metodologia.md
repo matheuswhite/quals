@@ -184,24 +184,23 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 
 **Perguntas que responde:** por que *três* e por que *estes*; necessidade de cada eixo; ortogonalidade; por que não outros eixos; como geram a matriz.
 
-**Blocos (ordem de escrita):**
-1. **Enunciar os três eixos** — par de contextos · estrutura do dado · padrão de acesso. Definir "eixo" = dimensão descritiva independente de um DR.
-2. **Necessidade de cada eixo** (por que importa p/ DR):
+**Blocos (ordem de escrita) — reordenado 2026-06-14 (fusão 1+2; agora 5 blocos):**
+1. **Enunciar os três eixos + necessidade de cada um** *(fusão dos antigos blocos 1 e 2 — "enunciar" sozinho era só uma lista + 1 frase de definição, magro demais)*. Enunciar: par de contextos · estrutura do dado · padrão de acesso; definir "eixo" = dimensão descritiva independente de um DR; fixar a tese da seção (necessários, independentes, geram o espaço). Em seguida, a necessidade de cada um (por que importa p/ DR):
    - Eixo 1 — par de contextos: DR exige ≥2 contextos (def. 4.2.1); a natureza do par condiciona quais garantias são aplicáveis (ISR não bloqueia em mutex; DMA não executa código).
    - Eixo 2 — estrutura do dado: decide se há atômico de HW que cobre o dado inteiro (escalar→atomic; agregado multi-palavra c/ invariante→não há; buffer→posse). Granularidade consistência vs. acesso atômico (= distinção P1×P3).
    - Eixo 3 — padrão de acesso: fixados os outros 2, leitor↔escritor ≠ RMW (RMW exige atomicidade da sequência; lost update) (= distinção P1×P4, gancho ARMv6-M).
-3. **Prova de ortogonalidade** (argumento mais forte) — fixar 2 eixos, variar 1, a garantia muda:
+   - *(opcional)* adiantar aqui a exclusão **autossuficiente** *"tipo de bug de memória = recorte (4.2.1), não eixo"* para definir por contraste — **só esta**; as outras exclusões dependem dos blocos 2–3 e ficam no bloco 4.
+2. **Prova de ortogonalidade** *(era bloco 3)* — fixar 2 eixos, variar 1, a garantia muda:
    - varia acesso: P1 atomic × P4 seção crítica → eixo 3 independente;
    - varia estrutura: P1 atomic × P3 mutex/snapshot → eixo 2 independente;
    - varia par: tarefa↔tarefa × ISR↔tarefa → eixo 1 condiciona o *mecanismo* **mesmo sem mudar a classe de garantia** → por isso **P5 é variante de P1, não padrão novo**. Converte a aparente fraqueza em rigor.
-4. **Trava anti-circularidade** — os 3 eixos = causa/descrição (entrada); a garantia = consequência (catalogada em 4.4). Direção **eixos → garantia**. Corolário: *"mecanismo de sincronização"* **não pode ser um 4º eixo** (classificar pelas soluções → circular). Dizer explicitamente.
-5. **Delimitação negativa** (banca cobra "por que não X?"):
-   - *"tipo de bug de memória"* → recorte, não eixo (DR, 4.2.1);
-   - *"prioridade/preempção"* → absorvido no eixo 1;
-   - *"mecanismo de sincronização"* → consequência, não entrada (ver bloco 4).
-6. **Geração da matriz** — produto cartesiano dos 3 eixos → células = padrões candidatos. Nem toda célula é povoada → aponta p/ critério de inclusão (4.2.1) e **passa o bastão à 4.2.3** (poda). A 4.2.2 mostra o *mecanismo de geração*; **não** lista os 4 padrões finais.
-
-> **Pergunta de banca a blindar (guardada 2026-06-14) — completude dos eixos.** *"Como garantir que esses 3 eixos geram o espaço **completo**, e não só o que vocês imaginaram?"* É o desafio de **suficiência** do conjunto de dimensões — distinto de *necessidade* (bloco 2) e *ortogonalidade* (bloco 3). Surgiu ao explicar "modelo generativo" na 4.2.1 (a força do generativo depende de os eixos serem as dimensões certas). Linha de defesa a desenvolver no bloco 5: (a) cada eixo **deriva de uma cláusula da definição de DR** (≥2 contextos → eixo 1; granularidade da atomicidade → eixo 2; padrão de acesso → eixo 3) — vêm da definição, não da imaginação; (b) **representativo, não exaustivo** (humildade da 4.1); (c) o filtro de domínio + confronto com casos (4.2.1) são a rede que pega o que a dedução perdeu. **Não alegar completude absoluta** — só completude *relativa às dimensões da definição de DR*.
+3. **Trava anti-circularidade** *(era bloco 4)* — os 3 eixos = causa/descrição (entrada); a garantia = consequência (catalogada em 4.4). Direção **eixos → garantia**. Corolário: *"mecanismo de sincronização"* **não pode ser um 4º eixo** (classificar pelas soluções → circular). Dizer explicitamente.
+4. **Delimitação negativa + completude** *(era bloco 5 + a pergunta guardada)* — *agora que os blocos 2–3 montaram a máquina, as rejeições que dependiam dela ficam de pé*:
+   - *"prioridade/preempção"* → absorvido no eixo 1 (bloco 1);
+   - *"mecanismo de sincronização"* → consequência, não entrada (bloco 3);
+   - *"tipo de bug de memória"* → recorte (4.2.1), não eixo *(se não foi adiantada no bloco 1)*.
+   - ⚠️ **Pergunta de banca a blindar (guardada 2026-06-14) — completude/suficiência dos eixos.** *"Como garantir que esses 3 eixos geram o espaço **completo**, e não só o que vocês imaginaram?"* Distinto de necessidade (bloco 1) e ortogonalidade (bloco 2). Surgiu ao explicar "modelo generativo" na 4.2.1 (a força do generativo depende de os eixos serem as dimensões certas). Linha de defesa: (a) cada eixo **deriva de uma cláusula da definição de DR** (≥2 contextos → eixo 1; granularidade da atomicidade → eixo 2; padrão de acesso → eixo 3) — vêm da definição, não da imaginação; (b) **representativo, não exaustivo** (humildade da 4.1); (c) o filtro de domínio + confronto com casos (4.2.1) são a rede que pega o que a dedução perdeu. **Não alegar completude absoluta** — só *relativa às dimensões da definição de DR*.
+5. **Geração da matriz** *(era bloco 6)* — produto cartesiano dos 3 eixos → células = padrões candidatos. Nem toda célula é povoada → aponta p/ critério de inclusão (4.2.1) e **passa o bastão à 4.2.3** (poda). A 4.2.2 mostra o *mecanismo de geração*; **não** lista os 4 padrões finais.
 
 **Fronteiras (não invadir):** não re-derivar def. de DR/fontes (4.2.1); não nomear/podar padrões nem trazer a tabela final (4.2.3); não catalogar garantias (4.4).
 
