@@ -7,6 +7,7 @@ co-authors:
   - Claude (claude-opus-4-8), 2026-06-11
   - Claude (claude-opus-4-8), 2026-06-13
   - Claude (claude-opus-4-8), 2026-06-14
+  - Claude (claude-opus-4-8), 2026-06-15
 ---
 
 <!-- LTeX: enabled=false -->
@@ -43,6 +44,22 @@ A fase exploratória (obj 1–3) **entrega seus resultados no próprio cap. 4**:
 > 3. **Validar com o Icaro:** neste programa, construções conceituais (taxonomia/framework) vão em Metodologia ou em Resultados? Barato perguntar; caro descobrir na defesa.
 >
 > **Reversível:** se depois optar pela Arquitetura A, é *recortar e realocar* a 4.2.3 (e equivalentes) para o cap. 5 — **não** reescrever.
+
+---
+
+### Decisão (2026-06-15) — migração de plataforma: Cortex-M0/ARMv6-M → ESP32 Xtensa dual-core
+
+**O quê:** o alvo de HW passa a ser **ESP32** (Xtensa LX6/LX7, dual-core). **Multi-core/SMP fica fora do escopo de toda a dissertação** por decisão deliberada (reduz complexidade).
+
+**Multi-core = restrição declarada, não fato de HW.** Como o chip tem 2 núcleos, "não ocorre no HW" não cola mais. Tornar single-core uma **condição operacional real** (confinar o controle a 1 núcleo; o outro fica fora do escopo). Justificar o corte com: (1) regime de memória qualitativamente distinto (coerência de cache, ordenação) → pediria um eixo novo; (2) garantias dos 4 padrões teriam de ser re-derivadas sob paralelismo real; (3) custo single-core ≠ custo SMP; (4) escopo de qualificação → multi-core é cap. 6 (trabalho futuro).
+
+**Custo (ponto crítico) — re-centrar do P4 para o P3.** O gancho ARMv6-M (sem LDREX/STREX → seção crítica) **enfraquece** no Xtensa (tem `S32C1I` → provável CAS atômico). Mover o peso do argumento de custo para o **P3** (agregado multi-palavra com invariante: nenhuma ISA tem atômico desse tamanho → exclusão mútua ou snapshot/publicação obrigatória → custo **ISA-independente**). Reframe geral: em safe Rust **não dá pra *não* sincronizar**; em C dá (e o bug nasce daí). O P4/ARMv6-M vira **ilustração** de uma classe de MCUs (ARMv6-M, RISC-V sem ext. A) — honesto que a placa-alvo provavelmente tem atômico. Efeito bom: o custo deixa de depender de um detalhe de um chip → menos atacável.
+
+**Ripple (o que muda nos docs/`.tex`):** pergunta de pesquisa (obj 5 nomeia "Cortex-M0" → re-redigir; F12 reabre em [`banca_pergunta_pesquisa.md`](banca_pergunta_pesquisa.md)); 4.1 (alvo + restrição single-core); 4.2.2 (eixo 1 "Núcleo-Núcleo" mantido visível, cortado à vista); 4.2.3 (P7 = restrição declarada, não "fato de HW"); 4.4.2 (custo re-centrado no P3); 4.6 (plataforma + `CCOUNT` no lugar do DWT); 3.2 ([`cap_3_fundamentacao.md`](cap_3_fundamentacao.md): LL/SC genérico + Xtensa).
+
+**Pendências a confirmar (não afirmar sem fonte):** atômicos do Xtensa na config do ESP32 (`S32C1I`; o que `core::sync::atomic`/`portable-atomic` cobrem nativo × fallback) — **decide quão fraco fica o P4**; registrador de ciclos do ESP32 (`CCOUNT`) p/ medir overhead; suporte de HAL da Aule a ESP32 (`../aule`).
+
+**Off-ramp registrado:** uma variante **single-core sem extensão atômica** (ex.: ESP32-C3, RV32IMC) preservaria o gancho de custo **e** o single-core como fato de HW (menor disrupção) — não adotada por opção pela plataforma dual-core.
 
 ---
 
@@ -120,7 +137,7 @@ Explicitar que a **qualificação cobre a fase exploratória + o *desenho* da em
 | P4 | ISR↔tarefa | escalar | RMW (read-modify-write) | contador/acumulador de encoder | ✓ entra (4º padrão) |
 | P5 | ISR↔tarefa | flag | leitor↔escritor | flag de emergência / watchdog | → variante de P1 (sub-bullet) |
 | P6 | tarefa↔tarefa | buffer | produtor→consumidor | trajetória planejamento→low-level | → funde em P2 (variante de contexto) |
-| P7 | core↔core | struct/escalar | leitor↔escritor | controlador↔supervisório (multi-core) | ✗ cortado — fora do escopo (Cortex-M0 single-core) → limitação declarada |
+| P7 | core↔core | struct/escalar | leitor↔escritor | controlador↔supervisório (multi-core) | ✗ cortado — **restrição de escopo declarada** (SMP/multi-core fora de toda a dissertação; o ESP32 é dual-core → corte deliberado, não "fato de HW" — ver Decisão 2026-06-15) → trabalho futuro |
 
 Critério de inclusão (obj 1): ocorre em controle real **e** é data race (≥2 contextos, ≥1 escrita, sem sincronização garantida). Critério de "vira caso": cobre combinação de eixos distinta + contraste C-vs-Rust didático.
 
@@ -137,11 +154,11 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 
 - **P5** (flag ISR↔tarefa) = **sub-bullet de P1** — mesma garantia (atomic load/store), muda só o par de contexto.
 - **P6** (trajetória tarefa↔tarefa) = **nota em P2** — mesmo padrão produtor-consumidor, par de contexto diferente.
-- **P7** (core↔core) = **limitação declarada** — fora do escopo de hardware (Cortex-M0 single-core); candidato a trabalho futuro.
+- **P7** (core↔core) = **restrição de escopo declarada** — SMP/multi-core fora de toda a dissertação por decisão (não mais "fato de HW": o ESP32-alvo é dual-core — ver Decisão 2026-06-15). Tornar single-core uma *condição operacional* (confinar o controle a 1 núcleo); candidato a trabalho futuro (cap. 6).
 
 **Distinção P1 × P3 (granularidade da atomicidade):** P1 = dado cabe na largura atômica → load/store atômico resolve (unidade de acesso = unidade de consistência). P3 = agregado multi-palavra com invariante entre campos → não há atomic desse tamanho → exclusão mútua ou publicação por troca de ponteiro (unidade de consistência > unidade de acesso).
 
-**Distinção P1 × P4 (padrão de acesso):** P1/P5 = leitor↔escritor (um só lê, outro só escreve). P4 = RMW do mesmo valor (lost update); `c += 1` é load→add→store, não atômico. No Cortex-M0 (ARMv6-M) **não há LDREX/STREX** → sem RMW atômico em HW → cai em **seção crítica** (`critical-section`/`portable-atomic`): evidência direta do *custo* da segurança (conferir/citar o detalhe do ARMv6-M antes de afirmar).
+**Distinção P1 × P4 (padrão de acesso):** P1/P5 = leitor↔escritor (um só lê, outro só escreve). P4 = RMW do mesmo valor (lost update); `c += 1` é load→add→store, não atômico. *(O gancho de custo migrou — ver Decisão 2026-06-15: no ESP32 Xtensa o RMW atômico provavelmente existe (`S32C1I`), então o custo se re-centra no **P3** (ISA-independente); o caso "sem RMW atômico → seção crítica" vira ilustração de uma classe de MCUs (ARMv6-M, RISC-V sem ext. A). Pendência: confirmar atômicos do Xtensa.)*
 
 **Alerta de coerência (defesa contra circularidade):** os 3 eixos (par de contexto · estrutura · acesso) são as **dimensões descritivas** (causa); a garantia é o que cada combinação **exige** (consequência, catalogada em 4.4). Direção = eixos → garantia. Tornar isso explícito na 4.2 evita a objeção "a taxonomia é dos eixos ou das soluções?".
 
@@ -188,7 +205,7 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 1. **Enunciar os três eixos + necessidade de cada um** *(fusão dos antigos blocos 1 e 2 — "enunciar" sozinho era só uma lista + 1 frase de definição, magro demais)*. Enunciar: par de contextos · estrutura do dado · padrão de acesso; definir "eixo" = dimensão descritiva independente de um DR; fixar a tese da seção (necessários, independentes, geram o espaço). Em seguida, a necessidade de cada um (por que importa p/ DR):
    - Eixo 1 — par de contextos: DR exige ≥2 contextos (def. 4.2.1); a natureza do par condiciona quais garantias são aplicáveis (ISR não bloqueia em mutex; DMA não executa código).
    - Eixo 2 — estrutura do dado: decide se há atômico de HW que cobre o dado inteiro (escalar→atomic; agregado multi-palavra c/ invariante→não há; buffer→posse). Granularidade consistência vs. acesso atômico (= distinção P1×P3).
-   - Eixo 3 — padrão de acesso: fixados os outros 2, leitor↔escritor ≠ RMW (RMW exige atomicidade da sequência; lost update) (= distinção P1×P4, gancho ARMv6-M).
+   - Eixo 3 — padrão de acesso: fixados os outros 2, leitor↔escritor ≠ RMW (RMW exige atomicidade da sequência; lost update) (= distinção P1×P4; gancho de custo re-centrado no P3 — ver Decisão 2026-06-15).
    - *(opcional)* adiantar aqui a exclusão **autossuficiente** *"tipo de bug de memória = recorte (4.2.1), não eixo"* para definir por contraste — **só esta**; as outras exclusões dependem do bloco 2 + da trava de direção e ficam no bloco 3.
 2. **Prova de ortogonalidade** *(era bloco 3)* — fixar 2 eixos, variar 1, a garantia muda:
    - varia acesso: P1 atomic × P4 seção crítica → eixo 3 independente;
@@ -211,28 +228,43 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 
 > Seção-entregável do obj 1. Auto-suficiente (vai ser citada depois).
 
-**Missão:** entregar os **4 padrões** como resultado de **povoar + podar** a matriz da 4.2.2, com a garantia exigida no safe como critério de individuação.
+**Missão:** entregar os **4 padrões (P1–P4)** como resultado de **reduzir** as 36 células da 4.2.2, com **cada descarte rastreável a um motivo nomeado** e a garantia no safe como **relação de equivalência** (consequência), nunca critério de entrada.
 
-**Perguntas que responde:** quais os padrões; como se chega neles a partir da matriz; por que 4 e não 7; o que individua cada um; como alimenta 4.3/4.4.
+**Perguntas que responde:** quais os padrões; como se chega neles a partir das 36 células; por que 4 (e por que cada célula saiu); o que individua P1/P3/P4; como alimenta 4.3/4.4.
+
+> **Roteiro refeito 2026-06-15** — poda em **3 motivos de descarte** (não 1); P7 = restrição declarada (migração ESP32); contagem corrigida (36→25→18→11→4).
+
+**Três motivos de descarte (não confundir — é o que blinda a defesa):**
+- **(i) inexpressibilidade** — a célula não pode existir (`PC⟹Buffer`: ⟨ε,Escalar,PC⟩=4 + ⟨ε,Struct,PC⟩=4; ⟨DMA,ε,RMW⟩=3 → **11 células**, 36→25).
+- **(ii) fora de escopo declarado** — plano **Núcleo-Núcleo** (P7); multi-core fora de toda a dissertação por decisão (ESP32 dual-core → corte deliberado, ver Decisão 2026-06-15). 9 células, **menos 2 já contadas em (i)** → 7 novas, 25→18.
+- **(iii) não-factível no domínio** — exprimível e single-core, mas não instancia em algoritmo de controle (lista abaixo) → 7 células, 18→11.
+- depois, **colapso por equivalência de garantia** funde as 11 restantes nos **4 padrões + 2 variantes**.
+
+**Células descartadas por domínio (iii) — candidatas (sua decisão, Regra 7):**
+- **Buffer × Leitor-Escritor** (3: ISR/DMA/Tarefa) — buffer in-place como "último valor" não ocorre; em controle, buffer = fila (PC) ou snapshot de agregado. Se só importa o último, é escalar; se há buffer, querem-se os itens (PC).
+- **Buffer × RMW** (2: ISR, Tarefa — DMA-Buf-RMW já é (i)) — "array de acumuladores/histograma" é padrão de instrumentação, não de malha (PID/realimentação/estimador não têm arrays acumuladores compartilhados). ⚠️ Descartar por domínio **não** enfraquece a não-redundância do eixo Estrutura — aquele argumento só exige que `Buffer×RMW` seja *exprimível*, não que ocorra.
+- **DMA × {Escalar, Struct} × Leitor-Escritor** (2) — DMA transfere blocos com flag de conclusão; escalar único via DMA é atípico (vira leitura direta / PC de 1 item) e struct via DMA é transferência de bloco (padrão PC/flag), não o hazard de atualização parcial in-place que define P3.
+- *(Borda — sua escolha domínio × colapso: DMA-Esc-LW pode ser visto como "colapsa em P1"; Struct-RMW colapsa em P3. Decida conscientemente.)*
 
 **Blocos (ordem de escrita):**
-1. **Transição matriz → padrões** (1 parágrafo) — a matriz (4.2.2) gera as células; aplica-se o critério de inclusão (4.2.1: ocorre em controle real **E** é DR) + o **critério de equivalência** (células que exigem a mesma garantia = mesmo padrão); resultam **4 padrões + 2 variantes + 1 limitação**. ⚠️ Trava anti-circularidade de novo: a garantia entra como *relação de equivalência sobre as células* (consequência), não como entrada.
-2. **A tabela** (entregável) — tabela consolidada, ordem P1→P4, colunas: **# / Nome · (Par · Estrutura · Acesso) · Exemplo em controle · Garantia exigida no safe**. Transcrever da "Nomenclatura fechada" (não reinventar). A garantia aqui = *propriedade exigida* (critério); as **alternativas de implementação** ficam em 4.4.
-3. **A poda explicada** (por que 4 e não 7) — P5→variante de P1 (mesma garantia, muda o par); P6→variante de P2 (mesmo produtor-consumidor, par diferente); P7→limitação declarada (core↔core fora do escopo Cortex-M0 single-core; trabalho futuro). É a aplicação concreta do critério de equivalência do bloco 1.
-4. **As distinções finas** (defesa de que P1/P3/P4 são distintos):
-   - **P1×P3** (granularidade da atomicidade): P1 dado cabe na palavra (acesso = consistência) × P3 agregado multi-palavra c/ invariante (consistência > acesso → mutex/publicação).
-   - **P1×P4** (padrão de acesso): P1/P5 leitor↔escritor × P4 RMW do mesmo valor (lost update; `c += 1` = load→add→store).
-5. **Forward-pointer** (1–2 frases) — alimenta 4.3 (fronteira por padrão) e 4.4 (espaço de design por padrão); comprometer-se a manter a ordem P1→P4 em 4.3/4.4/cap. 5.
+1. **Transição + os 3 motivos de descarte** — retoma as 36 células e anuncia (i)/(ii)/(iii) + o colapso por equivalência. Re-trava anti-circularidade: garantia = relação de equivalência (consequência).
+2. **Filtro de possibilidade (inexprimíveis)** *(já no seu draft — ajustar a conta p/ 25)* — `PC⟹Buffer` (unifica os dois) + `DMA×RMW`; manter a nota de não-redundância (`Buffer×RMW` exprimível) **aqui** (4.2.3), não na 4.2.2.
+3. **Corte de escopo declarado (Núcleo-Núcleo / P7)** — restrição deliberada (não "fato de HW"); single-core como condição operacional (confinar a 1 núcleo); multi-core → cap. 6. ⚠️ não contar 2× (2 das 9 já caíram em (i)).
+4. **Não-factível no domínio + colapso por equivalência** — remove as 7 de domínio (acima); colapsa **P5→P1** (muda o par) e **P6→P2** (par diferente); sobram 4 + 2 variantes.
+5. **A tabela** (entregável) — ordem P1→P4; colunas: **# / Nome · ⟨Par · Estrutura · Acesso⟩ · Exemplo em controle · Garantia exigida no safe**. Transcrever da "Nomenclatura fechada" (não reinventar). Garantia = *propriedade exigida*; alternativas ficam em 4.4. *(Corrigir o `tabela P1-P7` do esqueleto.)*
+6. **As distinções finas** — **P1×P3** (granularidade: cabe na palavra, acesso = consistência × agregado c/ invariante, consistência > acesso → mutex/publicação); **P1×P4** (acesso: P1/P5 leitor↔escritor × P4 RMW do mesmo valor, lost update; `c += 1` = load→add→store).
+7. **Forward-pointer** (1–2 frases) — alimenta 4.3 (fronteira por padrão) e 4.4 (espaço de design por padrão); manter a ordem P1→P4 em 4.3/4.4/cap. 5.
 
-**Pontos de defesa:** "organiza pelos eixos ou pela garantia?" → garantia = equivalência derivada dos eixos (bloco 1); "por que só 4?" → poda por inclusão + equivalência; **representativo, não exaustivo**; "P5/P6 não eram padrões?" → colapsam na mesma garantia (bloco 3); "e multi-core?" → P7 fora do escopo de HW (trabalho futuro).
+**Pontos de defesa:** "cadê as 32?" → cada uma sai por motivo nomeado (i/ii/iii) ou colapsa; conta fecha 36→25→18→11→4. "Multi-core não acontece? o chip tem 2 núcleos" → restrição declarada (regime distinto; cap. 6). "`PC⟹Buffer` acopla os eixos?" → gera células vazias (inexpressibilidade ≠ não-ortogonalidade); `Buffer×RMW` exprimível → eixo Estrutura não-redundante. "por que só 4?" → 3 filtros + equivalência; **representativo, não exaustivo**.
 
-**Fronteiras (não invadir):** 4.2.2 (não re-derivar eixos); 4.3 (só *nomear* que há fronteira, não caracterizá-la); 4.4 (nomear a garantia *exigida*, não catalogar alternativas/trade-offs).
+**Fronteiras (não invadir):** 4.2.2 (não re-derivar eixos); 4.3 (só *nomear* a fronteira, não caracterizá-la); 4.4 (nomear a garantia *exigida*, não alternativas/trade-offs). ⚠️ **Custo** re-centrado no P3 — fica em 4.3/4.4, **fora** da 4.2.3 (descritiva).
 
-**Micro-decisões (suas) + pendência:**
-- formato: tabela consolidada + parágrafo de poda + parágrafo de distinções (recomendado);
-- figura: reusar o cubo/matriz da 4.2.2 com células povoadas destacadas e podadas riscadas (visual da poda);
-- marcar com ✦ as células que viram caso no cap. 5 (P1, P2, P3; P1+P2 garantidos sob aperto, P3 pode ficar descritivo);
-- ⚠️ **ARMv6-M:** o gancho de custo do P4 (Cortex-M0 sem LDREX/STREX → seção crítica) é argumento de **custo** — manter fora da 4.2.3 (descritiva); usar em 4.3/4.4. **Confirmar/citar o detalhe do ARMv6-M antes de afirmar** (pendência aberta).
+**Micro-decisões (suas) + pendências:**
+- formato: filtro (impossível + escopo + domínio) → colapso → tabela → distinções (recomendado);
+- contagem: `⟨ε,Esc,PC⟩`=4 + `⟨ε,Struct,PC⟩`=4 + `⟨DMA,ε,RMW⟩`=3 = **11** → 25; Núcleo **7 novas** → 18; domínio **7** → 11; equivalência → 4. Exiba a conta ou só descreva, mas seja consistente;
+- figura: cubo da 4.2.2 com povoadas destacadas, **impossíveis riscadas**, **plano Núcleo sombreado "fora de escopo"** (3 motivos visuais); ✦ nas que viram caso no cap. 5 (P1, P2, P3);
+- LaTeX (você corrige): `\subsection{...}\label{subsec:three-axis}` (não 2º argumento); tuplas em math → `\langle\rangle` + `\text{...}`; definir `\label{sec:prod-cons}`;
+- pendência: confirmar atômicos do Xtensa (afeta 4.4, não esta).
 
 ---
 
@@ -332,19 +364,19 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 
 **Missão:** comparar as alternativas pelas dimensões de custo — **é aqui que o "custo" do título da tese é argumentado**. Transforma o catálogo (4.4.1) de "lista" em "opções com consequências".
 
-**Perguntas que responde:** por quais dimensões as alternativas diferem em custo; qual o custo específico em controle (determinismo); como o alvo (Cortex-M0/ARMv6-M) muda os trade-offs; o que é "catalogado"; o custo é medido ou argumentado.
+**Perguntas que responde:** por quais dimensões as alternativas diferem em custo; qual o custo específico em controle (determinismo); como o alvo (**ESP32 Xtensa** — ver Decisão 2026-06-15) muda os trade-offs; o que é "catalogado"; o custo é medido ou argumentado.
 
 **Blocos (ordem de escrita):**
 1. **As dimensões de trade-off** — runtime (ciclos, bloqueio), ergonomia (boilerplate, legibilidade), footprint (RAM/flash), **determinismo** (jitter, *priority inversion*) — a mais crítica em controle e a mais subestimada.
-2. **O gancho ARMv6-M (P4)** — Cortex-M0 sem LDREX/STREX → sem RMW atômico em HW → cai em seção crítica (`critical-section`/`portable-atomic`), que desabilita interrupções → custo de latência/determinismo. Evidência mais direta de que a segurança no safe **tem preço**. ⚠️ **Confirmar/citar o ARMv6-M antes de afirmar** (pendência aberta).
+2. **O gancho de custo — re-centrado no P3 (ISA-independente)** *(reframe 2026-06-15, ver Decisão)* — nenhuma arquitetura tem atômico que cubra um agregado multi-palavra com invariante entre campos → o lado safe é **obrigado** a exclusão mútua (seção crítica/`Mutex`) ou snapshot/publicação (double-buffer + troca de ponteiro) → custo de latência/jitter/RAM. Esse custo **não depende da ISA**. Reframe geral: em safe Rust **não dá pra *não* sincronizar**; em C dá (e o bug nasce daí). **Ilustração secundária (P4):** há uma classe de MCUs (ARMv6-M sem LDREX/STREX; RISC-V sem ext. A) onde até o escalar paga seção crítica (`critical-section`/`portable-atomic`) — honesto que o ESP32 Xtensa provavelmente tem atômico (`S32C1I`). ⚠️ **Confirmar atômicos do Xtensa** (pendência).
 3. **A matriz** — padrão (P1–P4) × alternativa × dimensões de trade-off; o entregável da 4.4. Células = anotação qualitativa (não número).
 4. **Critério de "catalogado"** — cada padrão safe mapeado às opções viáveis com trade-offs anotados; representativo, não exaustivo.
 
-**Pontos de defesa:** *"o custo é medido?"* → **não** na qualificação; é **argumentado** aqui (qualitativo) e **medido** em 4.6 (pós-qual). *"os trade-offs são opinião?"* → ancorados em propriedades arquiteturais (seção crítica desabilita IRQ = fato do ARMv6-M) e na literatura de RTOS — daí citar o ARMv6-M. *"por que determinismo pesa mais?"* → o domínio tem deadlines; jitter de lock pode violar o período de controle (conecta custo-de-garantia a viabilidade-no-domínio).
+**Pontos de defesa:** *"o custo é medido?"* → **não** na qualificação; é **argumentado** aqui (qualitativo) e **medido** em 4.6 (pós-qual). *"os trade-offs são opinião?"* → ancorados em propriedades arquiteturais (no P3 nenhuma ISA tem atômico do tamanho do agregado → exclusão mútua é obrigatória e serializa/desabilita IRQ = fato independente de chip) e na literatura de RTOS. *"por que determinismo pesa mais?"* → o domínio tem deadlines; jitter de lock pode violar o período de controle (conecta custo-de-garantia a viabilidade-no-domínio).
 
-**Fronteiras (não invadir):** **4.4.1** — aqui se *compara/custeia*, o catálogo é lá; **4.6** — *argumentar* ≠ *medir* (DWT cycle counter); **4.2** — não reabrir a individuação dos padrões.
+**Fronteiras (não invadir):** **4.4.1** — aqui se *compara/custeia*, o catálogo é lá; **4.6** — *argumentar* ≠ *medir* (registrador de ciclos — `CCOUNT` no ESP32); **4.2** — não reabrir a individuação dos padrões.
 
-**Apoios:** a matriz padrão × alternativa × trade-off; a pendência ARMv6-M.
+**Apoios:** a matriz padrão × alternativa × trade-off; pendência = atômicos do Xtensa no ESP32 (ver Decisão 2026-06-15).
 
 > **Frase de fecho da 4.4** (sem subseção — decisão do plano): ponte ao obj 4 — cada dimensão → um candidato a instanciar na Aule ("um por dimensão") + rastreabilidade. Fecha a fase exploratória/qualificação inteira.
 
@@ -372,18 +404,18 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 
 **Perguntas que a seção responde:**
 - **Planta-alvo (DECIDIDO 2026-06-04):** pêndulo invertido + realimentação de estados (state feedback). Kalman/observador entra como opção (estado estimado compartilhado → célula "struct coerente" da taxonomia). Smith Predictor e MPC aposentados.
-- **Plataforma:** Cortex-M0 (dos objetivos). Placa específica indefinida — plano: simulação host + HIL via `probe-rs` (já na Aule). Decidir se fecha agora ou na execução.
+- **Plataforma:** **ESP32 (Xtensa dual-core), operado em núcleo único** (multi-core fora do escopo — ver Decisão 2026-06-15). *(Antes: Cortex-M0; o obj 5 ainda diz "Cortex-M0" → re-redigir, ver F12.)* Placa específica indefinida — plano: simulação host + HIL via `probe-rs` (já na Aule). Decidir se fecha agora ou na execução.
 - **Implementações comparadas:** C + FreeRTOS + MISRA (estado da arte) vs. Rust + `heapless` + RTIC.
 - **Métricas:** overhead de tempo de execução — ciclos/iteração (obj 5); perda de deadlines (obj 6); comparação dos dois entre Rust e C (obj 7).
-- **Como medir** overhead/deadlines em Cortex-M0? (DWT cycle counter; instrumentação via `probe-rs`)
+- **Como medir** overhead/deadlines no ESP32? (registrador de ciclos `CCOUNT` no lugar do DWT do Cortex-M; instrumentação via `probe-rs`) ⚠️ confirmar `CCOUNT`.
 - **Controle de variáveis:** mesmo algoritmo, mesma plataforma, mesmas condições de carga.
 - Hipótese a refutar: "Rust é mais lento" — esperado empate; como evidenciar.
 
 **Nota:** apresentado como **protocolo** — o experimento é conceito hoje, nada implementado.
 
 **Critérios — o que fecha na qualificação (DECIDIDO 2026-06-04):**
-- **Fecha agora:** critério qualitativo central completo (data race no lado safe → o código que o produziria **não compila** / é forçado à forma segura = sucesso); eixos quantitativos com **operacionalização** (overhead via DWT cycle counter; "deadline perdido" = estourar o período de controle; fronteira `unsafe` = LoC em blocos `unsafe`; boilerplate de segurança eliminado).
-- **Adia p/ dissertação:** thresholds numéricos (ex.: "empate" = Δ < X%), placa Cortex-M0 específica, escala (nº de cenários e repetições).
+- **Fecha agora:** critério qualitativo central completo (data race no lado safe → o código que o produziria **não compila** / é forçado à forma segura = sucesso); eixos quantitativos com **operacionalização** (overhead via registrador de ciclos — `CCOUNT` no ESP32; "deadline perdido" = estourar o período de controle; fronteira `unsafe` = LoC em blocos `unsafe`; boilerplate de segurança eliminado).
+- **Adia p/ dissertação:** thresholds numéricos (ex.: "empate" = Δ < X%), placa ESP32 específica, escala (nº de cenários e repetições).
 - Regra: fechar *o que* medir e *como*; adiar *quanto*.
 
 ---

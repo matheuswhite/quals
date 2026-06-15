@@ -1,6 +1,8 @@
 ---
 author: Claude (claude-opus-4-8)
 created: 2026-05-31
+co-authors:
+  - Claude (claude-opus-4-8), 2026-06-15
 ---
 
 <!-- LTeX: enabled=false -->
@@ -252,7 +254,7 @@ Furos da rodada 6 — RESOLVIDOS:
   dissertação (obj. 4), com verbo "implementar" e citando a lib. Pergunta e geral seguem
   SEM citar o Aulë → claim central no nível do fenômeno: **B-dominante intacto**. A
   contribuição de conhecimento (obj. 1–3: propor/caracterizar/catalogar) segue legível.
-- **F12** ✅ — plataforma nomeada (Cortex-M0).
+- **F12** ✅ — plataforma nomeada (Cortex-M0). ⚠️ **REABERTO (2026-06-15):** plataforma migrada p/ **ESP32 Xtensa dual-core** (operada em núcleo único; multi-core fora do escopo). O obj 5 acima ainda diz "Cortex-M0" → **re-redigir** (Matheus, Regra 1). Decisão e ripple em [`cap_4_metodologia.md`](cap_4_metodologia.md) §"Decisão (2026-06-15)".
 - **F13** ✅ — eixos separados: custo (obj. 5–6) × garantia qualitativa (obj. 7,
   tipo/compilação × MISRA+sanitizers). Sanitizers fora do objetivo de custo.
 - **F14** ✅ em grande parte — tarefa (realimentação de estados) + planta (pêndulo

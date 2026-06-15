@@ -1,6 +1,8 @@
 ---
 author: Claude (claude-opus-4-8)
 created: 2026-06-14
+co-authors:
+  - Claude (claude-opus-4-8), 2026-06-15
 ---
 
 <!-- LTeX: enabled=false -->
@@ -23,8 +25,8 @@ Hoje a `fundamentacao.tex` tem 4 seções largas (Controle · Arquitetura · Eng
 | Seção | Subseção (tópico a cobrir) | Consumidor (cap. posterior) |
 |---|---|---|
 | **3.1 Sistemas de Controle** *(existe)* | malhas / tempo real / período / deadline; estimadores (estado `x̂`+`P`) | 4.6 (deadlines); gancho de P3 |
-| **3.2 Arquitetura e Organização** *(existe)* | instruções atômicas e barreiras (load/store atômico, LDREX/STREX = LL/SC) | 4.4 (garantias); base de P1/P4 |
-| | caso **Cortex-M0 / ARMv6-M**: sem LDREX/STREX → sem RMW atômico em HW | 4.4 / 4.3 (gancho de custo de P4) ⚠️ pendência: confirmar/citar |
+| **3.2 Arquitetura e Organização** *(existe)* | instruções atômicas e barreiras (load/store atômico; LL/SC — LDREX/STREX no ARM, `S32C1I` no Xtensa do ESP32) | 4.4 (garantias); base de P1/P4 |
+| | **classe de MCUs sem RMW atômico** (ARMv6-M sem LDREX/STREX; RISC-V sem ext. A) → ilustração de custo; o alvo é **ESP32 Xtensa** (provável `S32C1I` → tem atômico) → custo re-centrado no **P3** | 4.4 / 4.3 (custo) ⚠️ confirmar atômicos do Xtensa (ver Decisão 2026-06-15 em [`cap_4_metodologia.md`](cap_4_metodologia.md)) |
 | **3.3 Concorrência e Modelo de Memória** *(NOVA)* | contextos de execução concorrente (ISR, tarefa/RTOS, DMA, núcleos) | 4.2.2 eixo 1 (par de contextos) |
 | | relação **happens-before** e sincronização | 4.2.1 (def. operacional remete aqui) |
 | | **modelo de memória do C11** (DR formal, §5.1.2.4) | 4.2.1 (âncora `\cite`); 4.7 (lado C) |

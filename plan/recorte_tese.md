@@ -6,6 +6,7 @@ modified:
   - 2026-05-30: Claude (claude-opus-4-8) — registrada a frase-núcleo re-redigida pelo Matheus (classe data race; verbo "tornam inexprimíveis"; cortado "multi-thread")
   - 2026-05-30: Claude (claude-opus-4-8) — P2 fechada (baseline MISRA + estado-da-arte; critério por construção; falsificabilidade = sincronização forçada mais cara que C instabiliza); registrados os 2 casos de data race
   - 2026-06-01: Claude (claude-opus-4-8) — obj. 4 chegou a ser movido para a qualificação pelo Matheus e foi revertido para pós-qualificação no mesmo dia; conflito com a postergação do bloco out-of-box / roadmap resolvido, linhas de decisão preservadas
+  - 2026-06-15: Claude (claude-opus-4-8) — registrada a migração de plataforma-exemplar (Cortex-M0 → ESP32 Xtensa dual-core, núcleo único); multi-core fora do escopo; custo re-centrado no P3
 ---
 
 <!-- LTeX: enabled=false -->
@@ -30,6 +31,7 @@ Status: **núcleo de pé** (sujeito · contexto concorrente · verbo · classe �
 - **Classe:** **data race / aliasing concorrente** — estado mutável compartilhado entre contextos (ISR ↔ tarefa); prevenido por `Send`/`Sync` + aliasing-XOR-mutabilidade, em compilação. *(Revisada de "lifetime de referência" em 30/mai — ver §"Por que a classe mudou".)*
 - **Caso `ISR↔DMA`:** **exemplo demonstrativo fora da Aule** (Rust puro: RTIC / atomic / `Send`-`Sync`) entra **na qualificação** — é o único cenário do recorte onde a classe vira bug de memória real. O **bloco out-of-box da Aule** que trata isso ergonomicamente = **pós-qualificação** (proposto no cap. 6; anotado em `roadmap_escrita.md`).
 - **Papel da Aule (memory safety):** a Aule **herda e preserva** a memory safety do Rust safe — estática, `no_std`, via forward — **com ergonomia**. Ela **não gera** memory safety (todo Rust safe já é memory-safe). Enunciar sempre como "herda e preserva", nunca "traz".
+- **Plataforma-exemplar (migrada 2026-06-15):** de Cortex-M0 → **ESP32 (Xtensa dual-core), operado em núcleo único**; multi-core/SMP **fora de toda a dissertação** por decisão (trabalho futuro). Afeta os objetivos (obj 5 nomeia "Cortex-M0" → re-redigir, Regra 1) e o argumento de **custo** (re-centrado no P3, ISA-independente; o gancho ARMv6-M vira ilustração). Detalhe, ripple e pendências em [`cap_4_metodologia.md`](cap_4_metodologia.md) §"Decisão (2026-06-15)".
 
 ## Estado das pendências (30/mai — bloco de arranque encerrado)
 
