@@ -28,6 +28,7 @@ Deste modo, o critério para a inclusão é o seguinte: se o padrão é especifi
 
 % 4.2.2
 \subsection{Os Três Eixos}
+\label{subsec:three-axis}
 
 Para ter o espaço de padrões é necessário ter eixos que geram esse espaço. Um eixo, neste caso, pode ser definido como uma dimensão descritiva e independente de um data race. Desta forma, um data race é descrito por esses três eixos independentes (ou dimensões). Os 3 eixos independentes são: par de contextos, estrutura do dado e padrão de acesso. O eixo par de contextos é derivado a partir da definição de data race que indica que deve existir pelo menos um par de contextos de acesso concorrente. É descrito um par de contextos, ao invés de um grupo, pois a definição de data race é de 2 ações conflitantes. Sendo assim, a menor unidade é um par e um grupo de data race pode ser decomposto em vários pares de data races. Dessa forma, a natureza de cada par de contextos define o modelo de concorrência da interação, podendo ser: preempção assimétrica, onde uma ISR interrompe uma tarefa, mas a tarefa é incapaz de interromper a ISR; paralelismo real de hardware, onde uma DMA transfere dados independente da tarefa em execução; e preempção de um escalonador, onde 2 tarefas se interrompem dependendo de suas prioridades e da política em execução no escalonador. O segundo eixo, estrutura do dado, é derivado do conflito de acesso, quando pelo menos um dos acessos não é atômico. Nesse eixo é definido se a consistência necessária de um valor cabe em um acesso atômico ou não. Enquanto o eixo anterior foi derivado da não-atomicidade do conflito, o último eixo, padrão de acesso, é derivado da presença, e da composição, de escrita no conflito de acesso. Deste modo, um conflito que requer uma atomicidade de sequência de operações é diferente de um conflito que requer uma atomicidade de uma única operação.
 
@@ -58,7 +59,17 @@ A quantidade total de células candidatas é o produto da quantidade de possibil
 %4.2.3
 \subsection{A Taxonomia}
 
-tabela P1-P7
+Neste ponto, tem-se um espaço com 36 células candidatas e é feito uma redução da quantidade de células candidatas, utilizando duas ferramentas: a primeira é a poda através de um filtro de possibilidades. O filtro de possibilidades é responsável por podar as células que se tornem inexpremíveis ou impossíveis de serem realizadas. Além disso, esse filtro também avalia se a célula candidata é factível no domínio deste trabalho; A segunda ferramenta consiste no colapso por equivalência de garantia. Neste caso, esta ferramenta funde duas ou mais células que produzem a mesma categoria de data race. Deste modo, células com as mesmas garantias (ou modelos de concorrência) são classificadas como equivalentes, vide o experimento de ortogonalidade da subseção \ref{subsec:three-axis}.
+
+% TODO: Descrever na subseção de tres eixos que <E1, E2, E3> é uma forma de descrever uma célula candidata no espaço.
+% TODO: Também descrever que o Simbolo ε será usado para qualquer entrada.
+Aplicando primeiramente o filtro de possibilidades, para a poda das células candidatas que são impossíveis, tem-se a eliminação seguintes células candidatas: $\langle\epsilon, \text{Escalar}, \text{Produtor-Consumidor}\rangle$, $\langle\epsilon, \text{Struct composta}, \text{Produtor-Consumidor}\rangle$ e $\langle\text{DMA-Tarefa}, \epsilon, \text{RMW}\rangle$, restando apenas 25 células candidatas. Detalhando o que motiva o corte em cada um destes casos, tem-se a mesma justificativa para o primeiro e segundo caso: Produtor-Consumidor necessita de um buffer (ou fila), por definição \ref{sec:prod-cons}, visto que os valores produzidos são unicos e não podem ser sobre-escritos. Deste modo, um escalar, ou uma struct composta, representa apenas uma posisão para Produtor-Consumir, tornando-o apenas um Leitor-Escritor. Note que, o acoplamento entre Produtor-Consumidor (eixo 3) e Buffer (eixo 2), não torna um dos eixos inválidos, pois o sentido contrário é inválido, já que é possivel ter Buffer (eixo 2) com um RMW (eixo 3). O terceiro caso, já foi enunciado previamente, que é a combinação de DMA-Tarefa (eixo 2) e RMW (eixo 3). Essa combinação é impossível pois uma DMA não executa código e o RMW exige uma sequencia de carregar, modificar e armazenar. Assim, uma DMA não consegue modificar, pois só transfere dados de um lado para outro (carregar e armazenar).
+
+Partindo para a fase de avaliação das células candidatas contra o domínio do trabalho, tem-se que toda célula $\langle\text{Núcleo-Núcleo},\epsilon,\epsilon\rangle$ são cortadas deste trabalho, pois o escopo do trabalho é apenas focado em single-core (\ref{sec:scope}) e o multi-core será realizado em trabalhos futuros. Com isso, tem-se o corte de 7 células candidatas, restando apenas 18 células candidatas. 
+
+- A tabela (entregável)
+- As distinções finas
+- Forward-pointer
 
 % 4.3
 \section{Caracterização da Fronteira safe/unsafe}
