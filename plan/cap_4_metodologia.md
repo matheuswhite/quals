@@ -135,8 +135,8 @@ Explicitar que a **qualificação cobre a fase exploratória + o *desenho* da em
 | P2 | ISR/DMA↔tarefa | buffer/fila | produtor→consumidor | amostras de ADC → loop | ✓ entra · ✦ central |
 | P3 | tarefa↔tarefa (estimador↔ctrl) | struct coerente (`x̂`+`P`) | leitor↔escritor / RMW | estado do observador | ✓ entra · ✦ composto |
 | P4 | ISR↔tarefa | escalar | RMW (read-modify-write) | contador/acumulador de encoder | ✓ entra (4º padrão) |
-| P5 | ISR↔tarefa | flag | leitor↔escritor | flag de emergência / watchdog | → variante de P1 (sub-bullet) |
-| P6 | tarefa↔tarefa | buffer | produtor→consumidor | trajetória planejamento→low-level | → funde em P2 (variante de contexto) |
+| P5 | ISR↔tarefa | flag | leitor↔escritor | flag de emergência / watchdog | → variante de par de P1 — **não nomeada** (Opção A, 2026-06-15) |
+| P6 | tarefa↔tarefa | buffer | produtor→consumidor | trajetória planejamento→low-level | → variante de par de P2 — **não nomeada** (Opção A, 2026-06-15) |
 | P7 | core↔core | struct/escalar | leitor↔escritor | controlador↔supervisório (multi-core) | ✗ cortado — **restrição de escopo declarada** (SMP/multi-core fora de toda a dissertação; o ESP32 é dual-core → corte deliberado, não "fato de HW" — ver Decisão 2026-06-15) → trabalho futuro |
 
 Critério de inclusão (obj 1): ocorre em controle real **e** é data race (≥2 contextos, ≥1 escrita, sem sincronização garantida). Critério de "vira caso": cobre combinação de eixos distinta + contraste C-vs-Rust didático.
@@ -152,13 +152,12 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 | P3 | **Tipo composto compartilhado** | agregado > palavra + invariante entre campos | exclusão mútua do bloco **ou** snapshot/publicação |
 | P4 | **Read-modify-write compartilhado** | atualização não-atômica do mesmo valor | RMW atômico **ou** seção crítica |
 
-- **P5** (flag ISR↔tarefa) = **sub-bullet de P1** — mesma garantia (atomic load/store), muda só o par de contexto.
-- **P6** (trajetória tarefa↔tarefa) = **nota em P2** — mesmo padrão produtor-consumidor, par de contexto diferente.
+- **Variantes de par — NÃO nomear (Decisão 2026-06-15, "Opção A").** Variar **só o par de contexto** mantém a garantia (a garantia é função de estrutura × acesso; o par é transversal) → gera *variante dentro do mesmo padrão*, não padrão novo. Enunciar **uma vez como regra geral**; ilustrar com 1–2 cenários reconhecíveis (flag de emergência ISR↔tarefa → P1; hand-off de trajetória tarefa↔tarefa → P2) **sem** canonizá-los. **Por quê (anti-banca):** entre as células finais há **4** variantes só-de-par — ⟨ISR,Esc,LW⟩, ⟨T↔T,Buf,PC⟩, ⟨ISR,Str,LW⟩, ⟨T↔T,Esc,RMW⟩ — e nomear só 2 (os antigos "P5/P6", herdados da lista pré-matriz) era seleção arbitrária. A regra geral cobre as 4 sem *special pleading* e simplifica a conta (colapso → **4**, sem "+2 variantes").
 - **P7** (core↔core) = **restrição de escopo declarada** — SMP/multi-core fora de toda a dissertação por decisão (não mais "fato de HW": o ESP32-alvo é dual-core — ver Decisão 2026-06-15). Tornar single-core uma *condição operacional* (confinar o controle a 1 núcleo); candidato a trabalho futuro (cap. 6).
 
 **Distinção P1 × P3 (granularidade da atomicidade):** P1 = dado cabe na largura atômica → load/store atômico resolve (unidade de acesso = unidade de consistência). P3 = agregado multi-palavra com invariante entre campos → não há atomic desse tamanho → exclusão mútua ou publicação por troca de ponteiro (unidade de consistência > unidade de acesso).
 
-**Distinção P1 × P4 (padrão de acesso):** P1/P5 = leitor↔escritor (um só lê, outro só escreve). P4 = RMW do mesmo valor (lost update); `c += 1` é load→add→store, não atômico. *(O gancho de custo migrou — ver Decisão 2026-06-15: no ESP32 Xtensa o RMW atômico provavelmente existe (`S32C1I`), então o custo se re-centra no **P3** (ISA-independente); o caso "sem RMW atômico → seção crítica" vira ilustração de uma classe de MCUs (ARMv6-M, RISC-V sem ext. A). Pendência: confirmar atômicos do Xtensa.)*
+**Distinção P1 × P4 (padrão de acesso):** P1 = leitor↔escritor (um só lê, outro só escreve). P4 = RMW do mesmo valor (lost update); `c += 1` é load→add→store, não atômico. *(O gancho de custo migrou — ver Decisão 2026-06-15: no ESP32 Xtensa o RMW atômico provavelmente existe (`S32C1I`), então o custo se re-centra no **P3** (ISA-independente); o caso "sem RMW atômico → seção crítica" vira ilustração de uma classe de MCUs (ARMv6-M, RISC-V sem ext. A). Pendência: confirmar atômicos do Xtensa.)*
 
 **Alerta de coerência (defesa contra circularidade):** os 3 eixos (par de contexto · estrutura · acesso) são as **dimensões descritivas** (causa); a garantia é o que cada combinação **exige** (consequência, catalogada em 4.4). Direção = eixos → garantia. Tornar isso explícito na 4.2 evita a objeção "a taxonomia é dos eixos ou das soluções?".
 
@@ -207,10 +206,10 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
    - Eixo 2 — estrutura do dado: decide se há atômico de HW que cobre o dado inteiro (escalar→atomic; agregado multi-palavra c/ invariante→não há; buffer→posse). Granularidade consistência vs. acesso atômico (= distinção P1×P3).
    - Eixo 3 — padrão de acesso: fixados os outros 2, leitor↔escritor ≠ RMW (RMW exige atomicidade da sequência; lost update) (= distinção P1×P4; gancho de custo re-centrado no P3 — ver Decisão 2026-06-15).
    - *(opcional)* adiantar aqui a exclusão **autossuficiente** *"tipo de bug de memória = recorte (4.2.1), não eixo"* para definir por contraste — **só esta**; as outras exclusões dependem do bloco 2 + da trava de direção e ficam no bloco 3.
-2. **Prova de ortogonalidade** *(era bloco 3)* — fixar 2 eixos, variar 1, a garantia muda:
-   - varia acesso: P1 atomic × P4 seção crítica → eixo 3 independente;
-   - varia estrutura: P1 atomic × P3 mutex/snapshot → eixo 2 independente;
-   - varia par: tarefa↔tarefa × ISR↔tarefa → eixo 1 condiciona o *mecanismo* **mesmo sem mudar a classe de garantia** → por isso **P5 é variante de P1, não padrão novo**. Converte a aparente fraqueza em rigor.
+2. **Independência dos eixos** *(era "Prova de ortogonalidade"; reframe 2026-06-15 — Opção A)* — ⚠️ **separar duas afirmações que NÃO são a mesma** (conflá-las = furo de banca / special pleading):
+   - **(a) Ortogonalidade descritiva** — os 3 eixos são coordenadas independentes (nenhuma derivável das outras; toda combinação é descrição válida e distinta). Argumentar **uniforme** para os três; o par é independente por **condicionar o mecanismo realizável** (ISR não bloqueia em mutex; DMA não executa código), **não** por mudar a garantia.
+   - **(b) Organização por garantia** — a partição em padrões é mais grossa que a grade de células: a garantia é função de (estrutura × acesso), o par é **transversal** a ela. Ilustrar: varia acesso → P1 atomic × P4 seção crítica; varia estrutura → P1 atomic × P3 mutex/snapshot (a variação **cruza** a partição). Para o par, **não** cruza → variar só o par = variante dentro do padrão (regra geral, Opção A — não nomear).
+   - ⚠️ **Não aplicar a régua "varia 1 → a garantia muda" aos três eixos.** Vale p/ estrutura e acesso; **falha** p/ o par (a garantia não muda). Usá-la uniformemente é *special pleading* ("por que o critério do eixo 1 é outro?"). A independência do par defende-se por (a) — não por (b).
 3. **Trava de direção + delimitação negativa + completude** *(funde os antigos blocos 3 e 4 — o bloco 2 já cravou o anti-circularidade local ("garantia = testemunha, não critério"), então a trava sozinha ficou magra)*:
    - **Abre travando a direção** (anti-circularidade global): os 3 eixos = causa/descrição (**entrada**); a garantia = **consequência**, catalogada em 4.4. Direção **eixos → garantia**. Generaliza o "testemunha, não critério" do bloco 2 — de *local da prova* para *arquitetura da taxonomia* (classifica-se pelos eixos descritivos, nunca pela garantia).
    - **Delimitações negativas** (banca cobra "por que não X?"), agora todas de pé porque a direção foi travada acima:
@@ -238,7 +237,7 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 - **(i) inexpressibilidade** — a célula não pode existir (`PC⟹Buffer`: ⟨ε,Escalar,PC⟩=4 + ⟨ε,Struct,PC⟩=4; ⟨DMA,ε,RMW⟩=3 → **11 células**, 36→25).
 - **(ii) fora de escopo declarado** — plano **Núcleo-Núcleo** (P7); multi-core fora de toda a dissertação por decisão (ESP32 dual-core → corte deliberado, ver Decisão 2026-06-15). 9 células, **menos 2 já contadas em (i)** → 7 novas, 25→18.
 - **(iii) não-factível no domínio** — exprimível e single-core, mas não instancia em algoritmo de controle (lista abaixo) → 7 células, 18→11.
-- depois, **colapso por equivalência de garantia** funde as 11 restantes nos **4 padrões + 2 variantes**.
+- depois, **colapso por equivalência de garantia** funde as 11 restantes nos **4 padrões** (Opção A — variar só o par = variante, enunciada como regra geral; **sem** nomear variantes).
 
 **Células descartadas por domínio (iii) — candidatas (sua decisão, Regra 7):**
 - **Buffer × Leitor-Escritor** (3: ISR/DMA/Tarefa) — buffer in-place como "último valor" não ocorre; em controle, buffer = fila (PC) ou snapshot de agregado. Se só importa o último, é escalar; se há buffer, querem-se os itens (PC).
@@ -246,13 +245,31 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 - **DMA × {Escalar, Struct} × Leitor-Escritor** (2) — DMA transfere blocos com flag de conclusão; escalar único via DMA é atípico (vira leitura direta / PC de 1 item) e struct via DMA é transferência de bloco (padrão PC/flag), não o hazard de atualização parcial in-place que define P3.
 - *(Borda — sua escolha domínio × colapso: DMA-Esc-LW pode ser visto como "colapsa em P1"; Struct-RMW colapsa em P3. Decida conscientemente.)*
 
+**Tabela de verificação — as 11 restantes → 4 padrões** (apoio à "conta explícita" escolhida pelo Matheus; andaime de planejamento, **não** entra inteira no texto — Regra 4):
+
+| Célula ⟨Par · Estrutura · Acesso⟩ | Garantia exigida no safe | Padrão |
+|---|---|---|
+| ⟨T↔T, Escalar, LW⟩ | atomic load/store | P1 |
+| ⟨ISR, Escalar, LW⟩ | atomic load/store | P1 *(variante de par)* |
+| ⟨ISR, Buffer, PC⟩ | fila SPSC / canal | P2 |
+| ⟨DMA, Buffer, PC⟩ | fila SPSC / canal | P2 |
+| ⟨T↔T, Buffer, PC⟩ | fila SPSC / canal | P2 *(variante de par)* |
+| ⟨T↔T, Struct, LW⟩ | mutex do bloco / snapshot | P3 |
+| ⟨T↔T, Struct, RMW⟩ | mutex do bloco / snapshot | P3 |
+| ⟨ISR, Struct, LW⟩ | mutex do bloco / snapshot | P3 |
+| ⟨ISR, Struct, RMW⟩ | mutex do bloco / snapshot | P3 |
+| ⟨ISR, Escalar, RMW⟩ | RMW atômico / seção crítica | P4 |
+| ⟨T↔T, Escalar, RMW⟩ | RMW atômico / seção crítica | P4 |
+
+11 células → **4 classes de garantia**. "*(variante de par)*" = mesma garantia, par diferente → não nomeada (Opção A). Distribuição: P1=2, P2=3, P3=4, P4=2. As 4 variantes só-de-par estão visíveis aqui (2 com rótulo herdado, 2 sem) — justifica a regra geral única.
+
 **Blocos (ordem de escrita):**
 1. **Transição + os 3 motivos de descarte** — retoma as 36 células e anuncia (i)/(ii)/(iii) + o colapso por equivalência. Re-trava anti-circularidade: garantia = relação de equivalência (consequência).
 2. **Filtro de possibilidade (inexprimíveis)** *(já no seu draft — ajustar a conta p/ 25)* — `PC⟹Buffer` (unifica os dois) + `DMA×RMW`; manter a nota de não-redundância (`Buffer×RMW` exprimível) **aqui** (4.2.3), não na 4.2.2.
 3. **Corte de escopo declarado (Núcleo-Núcleo / P7)** — restrição deliberada (não "fato de HW"); single-core como condição operacional (confinar a 1 núcleo); multi-core → cap. 6. ⚠️ não contar 2× (2 das 9 já caíram em (i)).
-4. **Não-factível no domínio + colapso por equivalência** — remove as 7 de domínio (acima); colapsa **P5→P1** (muda o par) e **P6→P2** (par diferente); sobram 4 + 2 variantes.
+4. **Não-factível no domínio + colapso por equivalência** — remove as 7 de domínio (acima); colapso por garantia → sobram **4 padrões**. Enunciar **uma vez** a regra *variar só o par = variante dentro do padrão* (Opção A, 2026-06-15 — sem nomear P5/P6); ilustrar com 1–2 cenários (flag de emergência → P1; hand-off de trajetória → P2) sem canonizá-los.
 5. **A tabela** (entregável) — ordem P1→P4; colunas: **# / Nome · ⟨Par · Estrutura · Acesso⟩ · Exemplo em controle · Garantia exigida no safe**. Transcrever da "Nomenclatura fechada" (não reinventar). Garantia = *propriedade exigida*; alternativas ficam em 4.4. *(Corrigir o `tabela P1-P7` do esqueleto.)*
-6. **As distinções finas** — **P1×P3** (granularidade: cabe na palavra, acesso = consistência × agregado c/ invariante, consistência > acesso → mutex/publicação); **P1×P4** (acesso: P1/P5 leitor↔escritor × P4 RMW do mesmo valor, lost update; `c += 1` = load→add→store).
+6. **As distinções finas** — **P1×P3** (granularidade: cabe na palavra, acesso = consistência × agregado c/ invariante, consistência > acesso → mutex/publicação); **P1×P4** (acesso: P1 leitor↔escritor × P4 RMW do mesmo valor, lost update; `c += 1` = load→add→store).
 7. **Forward-pointer** (1–2 frases) — alimenta 4.3 (fronteira por padrão) e 4.4 (espaço de design por padrão); manter a ordem P1→P4 em 4.3/4.4/cap. 5.
 
 **Pontos de defesa:** "cadê as 32?" → cada uma sai por motivo nomeado (i/ii/iii) ou colapsa; conta fecha 36→25→18→11→4. "Multi-core não acontece? o chip tem 2 núcleos" → restrição declarada (regime distinto; cap. 6). "`PC⟹Buffer` acopla os eixos?" → gera células vazias (inexpressibilidade ≠ não-ortogonalidade); `Buffer×RMW` exprimível → eixo Estrutura não-redundante. "por que só 4?" → 3 filtros + equivalência; **representativo, não exaustivo**.
