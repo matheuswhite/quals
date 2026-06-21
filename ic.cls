@@ -142,6 +142,29 @@ de Curso e Dissertacoes]
 \definecolor{purple}{rgb}{0.8,0,0.3}
 \definecolor{orange}{rgb}{1,0.4,0}
 
+\lstdefinelanguage{Rust}{
+  sensitive=true,
+  morekeywords={fn,let,mut,struct,impl,trait,enum,match,unsafe,pub,use,mod,for,while,loop,if,else,return,self,Self,static,const,as,ref,move,where},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+}
+
+\newcommand{\coderust}[3]{
+  \mbox{
+    \lstset{framexleftmargin=5mm, frame=shadowbox, rulesepcolor=\color{gray}}
+    \lstinputlisting[language=Rust,
+      breaklines=true,
+      basicstyle=\footnotesize\ttfamily,
+      keywordstyle=\bfseries\color{dkgreen},
+      commentstyle=\itshape\color{purple},
+      identifierstyle=\color{blue},
+      stringstyle=\color{orange},
+      showstringspaces=false,
+      caption=#1,label=#2]{#3}
+  }
+}
+
 \newcommand{\codejava}[3]{
   \mbox{
     \lstset{framexleftmargin=5mm, frame=shadowbox, rulesepcolor=\color{gray}}
