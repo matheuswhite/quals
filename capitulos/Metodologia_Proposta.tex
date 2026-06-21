@@ -58,6 +58,7 @@ A quantidade total de células candidatas é o produto da quantidade de possibil
 
 %4.2.3
 \subsection{A Taxonomia}
+\label{subsec:taxonomy}
 
 Neste ponto, tem-se um espaço com 36 células candidatas e é feito uma redução da quantidade de células candidatas, utilizando duas ferramentas: a primeira é a poda através de um filtro de possibilidades. O filtro de possibilidades é responsável por podar as células que se tornem inexpremíveis ou impossíveis de serem realizadas. Além disso, esse filtro também avalia se a célula candidata é factível no domínio deste trabalho; A segunda ferramenta consiste no colapso por equivalência de garantia. Neste caso, esta ferramenta funde duas ou mais células que exigem a mesma garantia. Deste modo, células com as mesmas garantias são classificadas como equivalentes.
 
@@ -118,6 +119,7 @@ Aqui, é necessário ser honesto e assumir que a linguagem de programação Rust
 
 % 4.3.1
 \subsection{Procedimento}
+\label{subsec:border-procedure}
 
 O procedimento para encontrar a fronteira em cada padrão é dividido em 3 etapas, com cada etapa possuindo subetapas. Esse procedimento é igual e deve ser realizado igualmente para cada um dos padrões. Na primeira etapa, monta-se o cenário e codifica-lo; na segunda etapa, compila este cenário e o observa; e na última etapa é localizada a fronteira.
 
@@ -129,6 +131,7 @@ Por último, é comparado os vereditos das duas formas e identificado onde a lin
 
 % 4.3.2
 \subsection{Critério}
+\label{subsec:unsafe-criteria}
 
 Na subseção anterior, foi posto na segunda estapa a verificação se dada forma de implementar o cenário montado compila ou não compila. Nesta subseção, é mostrado por que essa verificação é uma evidencia por verificação e não uma simples verificação por sintaxe ou um teste em runtime. Para mostrar isso, o procedimento da subseção anterior é dividido em 3 pilares: especificação, verificador e deterministico. Especificação, pois o sistema de tipos do Rust é uma linguagem de especificação. Quando se escreve um código rust com um AtomicU32 ou se exige que um tipo implemente a trait Send, o que está acontecendo de verdade é a declaração de propriedades que o programa precisa atender. O verificador significa que o compilador do Rust é um proof checker. Pois o compilador verifica que a prova (o programa construído do cenário montado) é valido ou não. Com isso, compilar o programa, neste caso, é uma verificação estática, o que é diferente de uma execução. Por último, temos o deterministico. Este pilar significa que, fixado a toolchain, não importa quem execute, ou de quando é executado e nem da variancia do escalonamento, o resultado do veridito é sempre o mesmo. Além disso, o resultado é universal. Isto quer dizer que o resultado é valido para qualquer execução possível, seja variando o escalonamento ou a entrada, incluído aquelas não observadas.
 
@@ -139,10 +142,21 @@ As mensagens do compilador, descritas anteriormente, não descrevem explicitamen
 % 4.3.3
 \subsection{Padrões que Cruzam a Fronteira}
 
-fila safe + registrador \texttt{unsafe}
+Dado o que foi dito na subseção \ref{subsec:border-procedure}, a fronteira pode ser classificada em 3 possibilidades: totalmente safe, totalmente unsafe e um fronteira interna ao padrão com safe e unsafe. Note que a fronteira não divide padrões, mas define bordas dentro de um padrão, onde a porção safe fica na borda de sincronização do data race, enquanto a porçao residual de unsafe fica na borda de hardware. Um exemplo disso é o caso P2. Note que a sincronização neste caso, é um fila de Single-Producer Single-Consumer, o que é safe e torna do DR inexpremível, através da garantia de posse exclusiva. Porém, a interação com o hardware, configuração do DMA e leitura do registrador do ADC é unsafe na HAL. Na listagem \ref{code:p2-snippet} é demonstrado este exemplo.
+
+\coderust{Interação ISR-Tarefa com leitura de ADC}{code:p2-snippet}{src/p2_snippet.rs}
+
+Quando é aplicada a sonda para os padrões P1, P2, P3 e P4, tem-se o seguinte resultado:
+
+% TODO Tabela com o resultado da sonda.
+
+Os padrões P1, P3 e P4, resultam no desfecho de inteiramente safe. O padrão P2 resulta do desfecho de fronteira interna, no caso de ISR com Tarefa. No caso de Tarefa-Tarefa, é modificado para inteiramente safe. Isso não quebra o foi dito na subseção \ref{subsec:taxonomy}, pois lá o objetivo é classificar os padrões, por isso, variar o par gera a mesma garantia e o mesmo padrão. Já nesta subseção, o objetivo é encontrar a fonteira, mesmo que seja dentro de variantes do mesmo padrão. Note que nenhum padrão resultou no desfecho inteiramente unsafe, apesar deste ser definido anteriormente aos resultados. Isso mostra que os data races descritos na taxonomia, ou são inteiramente safe ou possuem um fronteira interna, onde a porção unsafe está na borda de interação de hardware e nao na sincronização do data race. Essa distinção ocorre, pois o unsafe é de sincronização de data race se, ao remove-lo, a versão safe for recusada por um erro mapeado como data race, na subseção \ref{subsec:unsafe-criteria}, ao contário de um unsafe de interação com o hardware (acesso a periférico), pois neste caso é unsafe independente da linguagem.
+
+Toda definição da fronteira, descrita nessa seção, tem o propósido de mostrar que utilizar Rust em algoritmos de controle desloca e confina o risco de código inseguro, ao contrário da abordagem de utilizar somente C, pelos seguintes motivos: Em rust, pode-se perceber que o unsafe está confinado as interações de hardware (configuração de DMA e leitura de registradores do ADC) o que sempre será unsafe, independente da linguagem utilizada. Isso é diferente de C, onde o unsafe pode estar em qualquer lugar, sendo permitido pelo compilador. Por Rust possuir garantias em tempo de compilaçao, temos um verificação de prova da ausencia de data races nos algoritmos de controle em Rust. Já em C, isso é movido para tempo de execução com a utilização de Sanitizers. Além disso, em Rust, o trecho inseguro é localizavel através do bloco unsafe, enquanto em C, não se tem isso. Entretanto, as garantias do Rust tem um custo, que será detalhado na seção \ref{sec:cost}.
 
 % 4.4
 \section{Catalogação do Espaço de Design das Garantias}
+\label{sec:cost}
 
 % 4.4.1
 \subsection{Eixos de Design}
