@@ -8,6 +8,7 @@ co-authors:
   - Claude (claude-opus-4-8), 2026-06-13
   - Claude (claude-opus-4-8), 2026-06-14
   - Claude (claude-opus-4-8), 2026-06-15
+  - Claude (claude-opus-4-8), 2026-06-21
 ---
 
 <!-- LTeX: enabled=false -->
@@ -296,6 +297,8 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 
 **Missão da seção:** para cada padrão P1–P4, localizar e caracterizar a fronteira — o que o Rust safe codifica no tipo (recusa o DR em compilação) e onde a garantia escapa do compilador (força `unsafe`). Materializa o **eixo transversal 4** (o que Rust *não* garante) — o que protege a tese de soar exagerada. **Saída (entregável do obj 2):** o mapa da fronteira por padrão (consolidado na 4.3.3).
 
+> **Pendência de registro (Regra 6, anotada 2026-06-21):** os roteiros de 4.3.1/4.3.2/4.3.3 abaixo **antecedem** os refinamentos que entraram no `.tex` durante a redação (18/jun) e a revisão (21/jun). A incorporar aqui quando houver tempo: na **abertura**, o vocabulário safe/unsafe + a honestidade (UB confinável via bloco `unsafe`); na **4.3.1**, os 3 desfechos nomeados (A inteiramente safe · B fronteira interna · C inteiramente unsafe) + registro construção/veredito/fronteira; na **4.3.2**, os 3 pilares + os 2 grupos de erro + o critério dos 2 requisitos + soundness; na **4.3.3**, o **critério contrafactual** `unsafe`-sincronização × `unsafe`-hardware, o escopo "data races da taxonomia" (não universal) e a defesa par-transversal × par-decide-a-fronteira. O `.tex` é a fonte atual; este plano está atrás.
+
 ### 4.3.1 Procedimento — estrutura de redação (blocos)
 
 **Missão:** descrever *como se investiga* a fronteira em cada padrão — o protocolo, não as conclusões.
@@ -359,6 +362,8 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 
 **Missão da seção:** para os padrões do lado safe, catalogar as **alternativas** de implementar a garantia que torna o DR inexprimível, com os **trade-offs** em `no_std`. É **onde o "custo" do título da tese é argumentado** e materializa o **eixo transversal 3** (garantia por tipos × runtime). **Saída (entregável do obj 3):** o catálogo do espaço de design. **Fecha a parte da qualificação.**
 
+> **Consolidação do roteiro (2026-06-21):** a tríade 4.2→4.3→4.4 **fecha aqui** — a 4.2 *nomeou* a garantia exigida, a 4.3 *localizou* a fronteira, a 4.4 *cataloga as soluções e seu custo* (completa a trava anti-circularidade: classifica-se pelos eixos do problema; a garantia é consequência, catalogada aqui). **Escopo herdado da 4.3:** a 4.4 trata **só do lado safe** — o `unsafe` da borda de HW (P2) não é escolha de design, não entra; seu custo é medição (4.6).
+
 ### 4.4.1 Dimensões de Design — estrutura de redação (blocos)  *(hoje rotulada "Eixos de Design" no `.tex` — renomear)*
 
 **Missão:** definir o espaço e **catalogar as alternativas** de garantia para cada padrão safe — o "o que existe", antes do "a que custo" (4.4.2).
@@ -371,9 +376,9 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 3. **Mapeamento padrão → alternativas** — P1 → atomic puro / cópia owned / RTIC resource; P2 → SPSC / RTIC; P3 → `Mutex` do bloco / publicação por troca de ponteiro; P4 → RMW atômico (onde houver) / critical-section.
 4. **Ancoragem** — são as construções idiomáticas do ecossistema Rust embedded, não invenção (fonte = literatura/ecossistema; busca é sua, Regra 7).
 
-**Pontos de defesa:** *"isto não é a taxonomia de novo?"* → não: taxonomia = *problemas*, espaço de design = *soluções*; fecha a direção eixos→garantia. *"é exaustivo?"* → representativo (humildade da 4.1).
+**Pontos de defesa:** *"isto não é a taxonomia de novo?"* → não: taxonomia = *problemas*, espaço de design = *soluções*; fecha a direção eixos→garantia. *"é exaustivo?"* → representativo (humildade da 4.1). *"cópia owned não resolve tudo barato?"* → para escalar (P1) é barato; para agregado (P3) é snapshot com custo de RAM/banda → vira trade-off (4.4.2), não bala de prata.
 
-**Fronteiras (não invadir):** **4.2** — a garantia *exigida* é lá, as *alternativas* aqui; **4.3** — o espaço é só do lado safe; **4.4.2** — aqui se *lista/mapeia*, os *trade-offs* são lá; **4.5** — *catalogar* aqui, *escolher* o que vai à Aule é lá.
+**Fronteiras (não invadir):** **4.2** — a garantia *exigida* é lá, as *alternativas* aqui; **4.3** — o espaço é só do lado **safe** (o `unsafe` da borda de HW não entra — não é escolha de design); **4.4.2** — aqui se *lista/mapeia*, os *trade-offs* são lá; **4.5** — *catalogar* aqui, *escolher* o que vai à Aule é lá.
 
 **Apoios:** tabela alternativa → (o que garante · como); a renomeação documentada.
 
@@ -385,13 +390,13 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 
 **Blocos (ordem de escrita):**
 1. **As dimensões de trade-off** — runtime (ciclos, bloqueio), ergonomia (boilerplate, legibilidade), footprint (RAM/flash), **determinismo** (jitter, *priority inversion*) — a mais crítica em controle e a mais subestimada.
-2. **O gancho de custo — re-centrado no P3 (ISA-independente)** *(reframe 2026-06-15, ver Decisão)* — nenhuma arquitetura tem atômico que cubra um agregado multi-palavra com invariante entre campos → o lado safe é **obrigado** a exclusão mútua (seção crítica/`Mutex`) ou snapshot/publicação (double-buffer + troca de ponteiro) → custo de latência/jitter/RAM. Esse custo **não depende da ISA**. Reframe geral: em safe Rust **não dá pra *não* sincronizar**; em C dá (e o bug nasce daí). **Ilustração secundária (P4):** há uma classe de MCUs (ARMv6-M sem LDREX/STREX; RISC-V sem ext. A) onde até o escalar paga seção crítica (`critical-section`/`portable-atomic`) — honesto que o ESP32 Xtensa provavelmente tem atômico (`S32C1I`). ⚠️ **Confirmar atômicos do Xtensa** (pendência).
+2. **O gancho de custo — re-centrado no P3 (ISA-independente)** *(reframe 2026-06-15, ver Decisão)* — nenhuma arquitetura tem atômico que cubra um agregado multi-palavra com invariante entre campos → o lado safe é **obrigado** a exclusão mútua (seção crítica/`Mutex`) ou snapshot/publicação (double-buffer + troca de ponteiro) → custo de latência/jitter/RAM. Esse custo **não depende da ISA**. Reframe geral: em safe Rust **não dá pra *não* sincronizar**; em C dá (e o bug nasce daí). **Ilustração secundária (P4):** há uma classe de MCUs (ARMv6-M sem LDREX/STREX; RISC-V sem ext. A) onde até o escalar paga seção crítica (`critical-section`/`portable-atomic`) — honesto que o ESP32 Xtensa provavelmente tem atômico (`S32C1I`). ⚠️ **Confirmar atômicos do Xtensa** (pendência). **Enquadramento (2026-06-21):** custo = **preço da garantia forçada, não deficiência do Rust** — liga ao "desloca e confina o risco" da 4.3.3; o custo aparece só onde C estaria *errado* (sem sincronizar).
 3. **A matriz** — padrão (P1–P4) × alternativa × dimensões de trade-off; o entregável da 4.4. Células = anotação qualitativa (não número).
 4. **Critério de "catalogado"** — cada padrão safe mapeado às opções viáveis com trade-offs anotados; representativo, não exaustivo.
 
-**Pontos de defesa:** *"o custo é medido?"* → **não** na qualificação; é **argumentado** aqui (qualitativo) e **medido** em 4.6 (pós-qual). *"os trade-offs são opinião?"* → ancorados em propriedades arquiteturais (no P3 nenhuma ISA tem atômico do tamanho do agregado → exclusão mútua é obrigatória e serializa/desabilita IRQ = fato independente de chip) e na literatura de RTOS. *"por que determinismo pesa mais?"* → o domínio tem deadlines; jitter de lock pode violar o período de controle (conecta custo-de-garantia a viabilidade-no-domínio).
+**Pontos de defesa:** *"o custo é medido?"* → **não** na qualificação; é **argumentado** aqui (qualitativo) e **medido** em 4.6 (pós-qual). *"os trade-offs são opinião?"* → ancorados em propriedades arquiteturais (no P3 nenhuma ISA tem atômico do tamanho do agregado → exclusão mútua é obrigatória e serializa/desabilita IRQ = fato independente de chip) e na literatura de RTOS. *"por que determinismo pesa mais?"* → o domínio tem deadlines; jitter de lock pode violar o período de controle (conecta custo-de-garantia a viabilidade-no-domínio). *"se o custo só é medido na dissertação, isto não é especulação?"* → não: a qualificação entrega o **catálogo + o argumento arquitetural + o desenho do experimento (4.6)** — é a **hipótese que o experimento testa**, não chute. *"então Rust é só mais lento?"* → o custo aparece **só onde C estaria errado** (sem sincronizar); comparar custo só faz sentido contra um C **também correto** — e isso é 4.6/4.7.
 
-**Fronteiras (não invadir):** **4.4.1** — aqui se *compara/custeia*, o catálogo é lá; **4.6** — *argumentar* ≠ *medir* (registrador de ciclos — `CCOUNT` no ESP32); **4.2** — não reabrir a individuação dos padrões.
+**Fronteiras (não invadir):** **4.4.1** — aqui se *compara/custeia*, o catálogo é lá; **4.6** — *argumentar* ≠ *medir* (registrador de ciclos — `CCOUNT` no ESP32); **4.2** — não reabrir a individuação dos padrões; **4.3** — só o lado safe (o `unsafe` de HW não entra); **4.7 ⚠️** — a **comparação estruturada Rust × C+MISRA+sanitizers é lá**; aqui C entra **só como contraste conceitual** (por que existe custo: C não sincroniza → bug) e o custo catalogado é **intra-Rust** (entre as alternativas safe). É a linha que a 4.3.3 quase cruzou (correção 2026-06-21).
 
 **Apoios:** a matriz padrão × alternativa × trade-off; pendência = atômicos do Xtensa no ESP32 (ver Decisão 2026-06-15).
 
