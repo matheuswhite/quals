@@ -1,4 +1,4 @@
-\mychapter{Metodologia Proposta}{cap:Metodologia Proposta} 
+\mychapter{Metodologia Proposta}{cap:Metodologia Proposta}
 \label{Metodologia Proposta}
 
 % Nesta seção, serão apresentados os procedimentos metodológicos adotados no trabalho
@@ -160,6 +160,7 @@ Toda definição da fronteira, descrita nessa seção, tem o propósido de mostr
 
 % 4.4.1
 \subsection{Dimensões de Design}
+\label{subsec:impl-safe}
 
 Na seção anterior, o objetivo é localizar o lado safe da fronteira de cada padrão. Nesta seção, o objetivo é encontrar as formas em que as garantias podem ser cofificadas no lado safe da fronteira. Para isso, é definido um espaço de design. Este espaço contém o conjunto de soluções que implementam no safe as garatias que toram data race inexpremíveis. Entretanto, este espaço não é apenas uma lista solta, mas uma maneira estruturada de encontrar essas formas. Essa estrutura vem das dimensões deste espaço. As dimensões do espaço de design são as escolhas independentes que são feitas para a implementação de cada solução. Desta forma, a primeira dimensão é cópia de um valor versus o compartilhamento deste versus a transferencia (da posse) do valor; a segunda, sincronização bloqueante versus lock-free; a terceira, uso de alocação dinâmica versus alocação estática. Note que não é o produto cartesiano, mas sim uma árvore de decisão, onde uma escolha pode afetar a outra. Outro ponto é que essas dimensões são representativas e não exaustivas. Note também que não foi utilizado o termo "eixo", mas sim "dimensão". Essa escolha foi feita para não confundir o espaço de design com a taxonomia. Lá o objetivo é classificar os padrões de data race (problemas). Aqui o objetivo é classificar as implementações (soluções).
 
@@ -197,7 +198,7 @@ Com o espaço definido, é possível associar as alternativas de implementação
        & Cópia owned & Não há compartilhamento \\
     P2 & Transferência de Mensagens & Tranfere a posse de um valor \\
     P3 & Mutex & Acesso exclusivo ao valor agredado inteiro \\
-       & Cópia ownex & Não há compartilhamento, pois cada contexto possui o agregado completo \\
+       & Cópia owned & Não há compartilhamento, pois cada contexto possui o agregado completo \\
        & Snapshot e publicação & Acesso somente ao valor novo ou antigo, nunca um valor com inconsistencia interna \\
     P4 & Atomics & Implementa acesso atomico de read-modify-write a um valor (Se o hardware suportar) \\
        & Mutex & Acesso exclusivo para a operação de read-modify-write \\
@@ -205,12 +206,43 @@ Com o espaço definido, é possível associar as alternativas de implementação
   \end{tabularx}
 \end{table}
 
-Perceba que a implementação \texttt{Arc} não está listada na tabela \ref{tab:impl-pattern}. Isso ocorre pois essa implementação só permite o compartilhamento imutável, o que não ocorre em nenhum dos padrões. Para o compartilhamento mutável, o \texttt{Arc} deve ser um encapsulamento de um \texttt{Mutex} ou \texttt{Atomic}. Cada alternativa catalogada são construções idiomáticas e estabelecidas. A alterativa Atomics vem de \cite{}; enquanto a alternativa Mutex, pode ser encontrada em \cite{}; já a alternativa snapshot e publicação vem de \cite{}; a transferencia de mensagens é bem fundamentada em \cite{}; O reference counter é explicado em \cite{} e a cópia owned é explorada em \cite{}. Essas alternativas são representativas e não exaustivas. Foram deixada de lado alternativas que são específicas de frameworks, como o priority-ceiling do RTOS RTIC \cite{}. Pois, essa alternativa impediria a implementação em ambientes com outros RTOS, como Embassy, ou em bare-metal.
+Perceba que a implementação \texttt{Arc} não está listada na tabela \ref{tab:impl-pattern}. Isso ocorre pois essa implementação só permite o compartilhamento imutável, o que não ocorre em nenhum dos padrões. Para o compartilhamento mutável, o \texttt{Arc} deve ser um encapsulamento de um \texttt{Mutex} ou \texttt{Atomic}.
+
+Cada alternativa catalogada são construções idiomáticas e estabelecidas. A alterativa Atomics, \texttt{Arc} e Copia owned vem de \cite{}; enquanto a alternativa Mutex, pode ser encontrada em \cite{}; já a alternativa snapshot e publicação vem de \cite{}; a transferencia de mensagens é bem fundamentada em \cite{}. Essas alternativas são representativas e não exaustivas. Foram deixada de lado alternativas que são específicas de frameworks, como o priority-ceiling do RTOS RTIC \cite{}. Pois, essa alternativa impediria a implementação em ambientes com outros RTOS, como Embassy, ou em bare-metal.
 
 % 4.4.2
 \subsection{Trade-offs em \texttt{no\_std}}
+\label{subsec:cost-impl}
 
-runtime - ergonomia - footprint - determinismo
+Enquanto na subseção anterior (\ref{subsec:impl-safe}) o objetivo foi definir um espaço de design com as alternativas de implementação para as garantias no lado safe do Rust, nesta subseção, o objetivo é definir um espaço para a avaliação do custo destas alternativas de implementação. No espaço anterior, as dimensões estavam relacionada a escolhas, enquanto aqui as dimensões estão relacionadas aos custos de cada garantia. Nesse espaço, serão descritos 4 dimensões: runtime, ergonomia, footprint e determinismo. A dimensão Runtime, mede o custo de ciclos adicionais e se possui bloqueio ou não. A ergonomia mede o quanto de boilerplate é necessário adicionar e a legibilidade do conjunto completo. O footprint mede o quanto de RAM (dados do programa) e Flash (instruções) é utilizado. E por último o mais crítico e mais subestimado é o determinismo, cuja a medida são jitter e inversão de prioridade. O determinismo é o mais crítico no domínio deste trabalho (algoritmos de controle), pois vai determinar o risco do algoritmo perder deadlines e é o mais subestimado, pois existe uma armadilha em achar que se a dimensão de runtime está correta, então o algoritmo de controle não vai perder deadline. Isso não é verdade, pois apesar de gastar poucos cíclos, o algorítmo pode executar muito tempo depois, por conta de uma seção crítica estar bloqueada por uma outra parte do sistema.
+
+Perceba que a garantia do padrão P3 pede um agregado invariante, por exemplo 2 matrizes que compoe o estado de um estimador ($\hat{x} + P$) que devem ser alteradas ao mesmo tempo e não pode ser vista uma atualização parcial por outro contexto. Dado isso, tem-se que nenhum ISA possui um atomico deste tamanho. Isso força a utilização de um Mutex ou de um snapshot com publicação. Para implementar o Mutex, tem o custo de ser bloqueante. Já o snapshot com publicação é lock-free, porém exige mais RAM, pois necessita da duplicação do valor a ser compartilhado. Isso mostra que a implementação das garantias possui um custo inerente das propriedades arquiteturais dos padrões. Em safe Rust, não dá para não sincronizar, atribuíndo um custo a implementação. Em C é possível não ter essa sincronização, entretanto o bug surge neste ponto. Ter o risco deslocado e confinado do Rust, exige um custo.
+
+Desta forma, é mostrado na tabela \ref{tab:cost-impl} a relação entre implementação e custo. Nesta tabela, a primeira coluna nomeia a padrão de data race (descrito na taxonomia). Na segunda coluna, é descrito as alternativas de implementação para cada padrão. E na terceira coluna, são descritas as dimensões de avaliação, de forma qualitativa.
+
+\begin{table}[ht]
+  \centering
+  \caption{Avaliação qualitativa das implementações safe dos padrões de data races}
+  \label{tab:cost-impl}
+  \begin{tabularx}{\textwidth}{>{\hsize=0.5\hsize}X >{\hsize=1.0\hsize}X >{\hsize=1.5\hsize}X}
+    \toprule
+    Padrão & Implementação safe & Avaliação qualitativa  \\
+    \midrule
+    P1 & Atomics & Poucos ciclos e sem bloqueio, o determinismo é grande por não possuir bloqueio e com baixo uso de RAM. Entretanto pode piorar a ergonomia se o tipo usado não for suportado por atomics, como float, sendo necessários mais instruções (mais Flash) para a conversão do atomic inteiro para um float \\
+       & Cópia owned & Poucos ciclos e sem bloqueio, o determinismo é grande por não possuir bloqueio. Porém necessário mais RAM por ter cópias \\
+    P2 & Transferência de Mensagens & Mais ciclos (pois precisa mover o valor para o canal), porém sem bloquei. Possui um aumento de RAM, pois o canal é um buffer dos valores, e também tem aumento de Flash (por conta das instruções de mover). A ergonomia é boa, pois não inclui muito boilerplate e a legibilidade é direta. Também não afeta o determinismo, pois não tem bloqueio. \\
+    P3 & Mutex & Possui poucos ciclos mas tem o bloqueio. Isso afeta fortemente o determinismo. Além disso, a ergonomia é afetada pois é necessário bloquear o mutex no uso, além disso aumenta a quantidade de instruções em Flash. Não aumenta a quantidade de RAM utilizada. \\
+       & Cópia owned & Mais ciclos por o tamanho ser maior e sem bloqueio, o determinismo é grande por não possuir bloqueio. Porém necessário mais RAM por ter cópias e o tamanho da cópia é maior do que de um escalar. \\
+       & Snapshot e publicação & Possui mais ciclos para a cópia dos valores, porém não tem bloqueio. Isso afeta pouco o determinismo. A ergonomia também é afetada pois é necessário fazer a cópia dos valores e a mudança de referencia. Além disso, aumenta muito o custo em RAM por duplicar agregados, que geralmente são grandes em tamanho. \\
+    P4 & Atomics & Poucos ciclos e sem bloqueio, o determinismo é grande por não possuir bloqueio e com baixo uso de RAM. Entretanto pode piorar a ergonomia se o tipo usado não for suportado por atomics, como float, sendo necessários mais instruções (mais Flash) para a conversão do atomic inteiro para um float. Além disso, o hardware tem que suportar Atomic RMW, se não suportar é necessário Mutex com critical section, tendo os mesmos custos deste caso. \\
+       & Mutex & Possui poucos ciclos mas tem o bloqueio. Isso afeta fortemente o determinismo. Além disso, a ergonomia é afetada pois é necessário bloquear o mutex no uso, além disso aumenta a quantidade de instruções em Flash. Não aumenta a quantidade de RAM utilizada. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Na tabela \ref{tab:cost-impl} foi descrita a avaliação de forma qualitativa e não quantitativa. A avaliação de forma quantitativa é descrito na seção \ref{sec:cost-exp-proc} e medido na seção \ref{sec:cost-exp}.
+
+Portanto, cada padrão safe foi mapeado a uma (ou mais) implementação e cada implementação foi descrita com seus custos de forma qualitativa, apresentando os trade-offs de cada implementação. Desta forma, temos um candidato por dimensão e é fechada a metodologia da fase de qualificação. Na próxima seção, será descrito como a biblioteca Aule foi desenvolvida para instanciar cada implementação.
 
 % 4.5
 \section{A Aule como Veículo de Instanciação}
