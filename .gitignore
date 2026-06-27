@@ -2,6 +2,7 @@
 # created: 2026-05-20
 # modified:
 #   - 2026-05-20: Claude (claude-opus-4-7) — removed .vscode/ blanket ignore; project-level VS Code settings should be versioned (Rule 6). Only per-device overrides are ignored.
+#   - 2026-06-26: Claude (claude-opus-4-8) — ignore *.upa/*.upb (LaTeX aux sidecars) and **/target/ (cargo build artifacts under src/).
 
 # === LaTeX build artifacts ===
 # Aux / log / toc family
@@ -53,6 +54,10 @@
 *.tdo
 *.lol
 
+# misc aux sidecars (under-tilde etc.)
+*.upa
+*.upb
+
 # Final compiled output (regenerable from source)
 main.pdf
 
@@ -72,3 +77,6 @@ Thumbs.db
 # === Claude Code (per-device local settings) ===
 # Note: .claude/memory/ is versioned (see CLAUDE.md Rule 6). Only local-overrides are ignored.
 .claude/settings.local.json
+
+# === Rust / cargo (code snippets under src/) ===
+**/target/
