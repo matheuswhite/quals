@@ -159,9 +159,53 @@ Toda definição da fronteira, descrita nessa seção, tem o propósido de mostr
 \label{sec:cost}
 
 % 4.4.1
-\subsection{Eixos de Design}
+\subsection{Dimensões de Design}
 
-atomics - lock/critical-section - message-passing - RTIC resources - owned-copy
+Na seção anterior, o objetivo é localizar o lado safe da fronteira de cada padrão. Nesta seção, o objetivo é encontrar as formas em que as garantias podem ser cofificadas no lado safe da fronteira. Para isso, é definido um espaço de design. Este espaço contém o conjunto de soluções que implementam no safe as garatias que toram data race inexpremíveis. Entretanto, este espaço não é apenas uma lista solta, mas uma maneira estruturada de encontrar essas formas. Essa estrutura vem das dimensões deste espaço. As dimensões do espaço de design são as escolhas independentes que são feitas para a implementação de cada solução. Desta forma, a primeira dimensão é cópia de um valor versus o compartilhamento deste versus a transferencia (da posse) do valor; a segunda, sincronização bloqueante versus lock-free; a terceira, uso de alocação dinâmica versus alocação estática. Note que não é o produto cartesiano, mas sim uma árvore de decisão, onde uma escolha pode afetar a outra. Outro ponto é que essas dimensões são representativas e não exaustivas. Note também que não foi utilizado o termo "eixo", mas sim "dimensão". Essa escolha foi feita para não confundir o espaço de design com a taxonomia. Lá o objetivo é classificar os padrões de data race (problemas). Aqui o objetivo é classificar as implementações (soluções).
+
+Deste modo, as implementações idiomáticas para um contexto embarcado (ou no\_std) são descritas da tabela \ref{tab:impl-safe-rust}. Nesta tabela, a primeira coluna indica o nome que representa a implementação; a segunda, representa a garantia que está sendo implementada; a terceira, indica como a implementação está cumprindo a garantia e a quarta representa as dimensões escolhidas.
+
+\begin{table}[ht]
+  \centering
+  \caption{Implementação das garantias em safe Rust}
+  \label{tab:impl-safe-rust}
+  \begin{tabularx}{\textwidth}{>{\hsize=0.6\hsize}X >{\hsize=1.0\hsize}X >{\hsize=1.5\hsize}X >{\hsize=0.9\hsize}X}
+    \toprule
+    Implementação & Garantia & Mecanismo & Dimensões \\
+    \midrule
+    Atomics & acesso indivisível e ordenado do valor & Tipo \texttt{Atomic} é \texttt{Sync} e possui suporte a load/store/RMW atômicos. & Compartilhamento e Lock-free \\
+    Mutex & exclusão mútua implicando happens-before & Critical section que mascara IRQ & Compartilhamento e Sincronização bloqueante \\
+    Snapshot e publicação & valor agregado observado como bloco indivisível & Dois buffers com troca atomica de ponteiro. O leitor nunca acessa estado inconsistente interno & Compartilhamento e lock-free \\
+    Transferencia de Mensagens & transferência de posse & Divisão de Producer e Consumer, sendo ambos \texttt{Send} & Transferencia \\
+    Reference Counter & Aliasing seguro (lifetime/ownership), sem mutação & Possui contagem atomica de referencias e \texttt{Arc<T>: Send+Sync} se \texttt{T: Send+Sync} & Compartilhamento, lock-free e Alocação dinamica \\
+    Copia owned & ausência de compartilhamento & valor passado por cópia ou por transferencia & Copia \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Com o espaço definido, é possível associar as alternativas de implementação aos padrões definidos na tabela de taxonomia \ref{tab:taxonomia}. Esta associação é feita na tabela \ref{tab:impl-pattern}
+
+\begin{table}[ht]
+  \centering
+  \caption{Associação de implementações safe com padrões de data races}
+  \label{tab:impl-pattern}
+  \begin{tabularx}{\textwidth}{>{\hsize=0.5\hsize}X >{\hsize=1.0\hsize}X >{\hsize=1.5\hsize}X}
+    \toprule
+    Padrão & Implementação safe & Justificativa  \\
+    \midrule
+    P1 & Atomics & Implementa acesso atomico a um valor \\
+       & Cópia owned & Não há compartilhamento \\
+    P2 & Transferência de Mensagens & Tranfere a posse de um valor \\
+    P3 & Mutex & Acesso exclusivo ao valor agredado inteiro \\
+       & Cópia ownex & Não há compartilhamento, pois cada contexto possui o agregado completo \\
+       & Snapshot e publicação & Acesso somente ao valor novo ou antigo, nunca um valor com inconsistencia interna \\
+    P4 & Atomics & Implementa acesso atomico de read-modify-write a um valor (Se o hardware suportar) \\
+       & Mutex & Acesso exclusivo para a operação de read-modify-write \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Perceba que a implementação \texttt{Arc} não está listada na tabela \ref{tab:impl-pattern}. Isso ocorre pois essa implementação só permite o compartilhamento imutável, o que não ocorre em nenhum dos padrões. Para o compartilhamento mutável, o \texttt{Arc} deve ser um encapsulamento de um \texttt{Mutex} ou \texttt{Atomic}. Cada alternativa catalogada são construções idiomáticas e estabelecidas. A alterativa Atomics vem de \cite{}; enquanto a alternativa Mutex, pode ser encontrada em \cite{}; já a alternativa snapshot e publicação vem de \cite{}; a transferencia de mensagens é bem fundamentada em \cite{}; O reference counter é explicado em \cite{} e a cópia owned é explorada em \cite{}. Essas alternativas são representativas e não exaustivas. Foram deixada de lado alternativas que são específicas de frameworks, como o priority-ceiling do RTOS RTIC \cite{}. Pois, essa alternativa impediria a implementação em ambientes com outros RTOS, como Embassy, ou em bare-metal.
 
 % 4.4.2
 \subsection{Trade-offs em \texttt{no\_std}}
