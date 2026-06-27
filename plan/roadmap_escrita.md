@@ -7,6 +7,7 @@ modified:
   - 2026-06-09: Claude (claude-opus-4-8) — replanejamento integral para o novo prazo (fim de agosto/2026, parede dura). Recalibrado ao estado real (só 4.1 + rascunho de 1.2 escritos) e ao ritmo observado (~1 seção/semana). Janela reorganizada em 11 semanas de escrita + bloco final de revisão/feedback sem folga depois de 31/ago.
   - 2026-06-11: Claude (claude-opus-4-8) — recalibrado ao ritmo real de ~1 seção nova por sábado e ao loop de feedback semanal/quinzenal com o Icaro (noites = incorporar feedback + planejar + ler; sábado = escrever novo). Tabela semana-a-semana refeita; marcos do cap. 4 e cap. 5 movidos para ~05/jul e ~19/jul; escrita agora sem folga até o congelamento (~15/ago).
   - 2026-06-21: Claude (claude-opus-4-8) — reconciliado com a estrutura real do cap. 4 (4.1–4.7 fechada; a §4.3 virou 4 unidades de escrita e não cabia em "1 sábado" como a tabela previa) e com o estado de 21/jun (4.1, 4.2 e §4.3 abertura+4.3.1+4.3.2 redigidas e revisadas; restam 4.3.3, 4.4, 4.5, 4.6, 4.7). Tabela refeita p/ W3–W12; marcos do cap. 4 e cap. 5 escorregaram ~2 semanas (~19/jul e ~02/ago), absorvendo o tamanho real da §4.3 + a migração ESP32; janela de revisão (W11–W12) preservada, mas o colchão antes da parede encolheu de ~6 p/ ~4 semanas.
+  - 2026-06-26: Claude (claude-opus-4-8) — §4.4 inteira (4.4.1 + 4.4.2) redigida e revisada; núcleo analítico (obj 1–3) completo ~1 semana adiantado vs. a tabela de 21/jun (que previa 4.4 só na W4). Tabela W3–W10 deslizada ~1 semana p/ a esquerda; cap. 4 antecipa p/ ~12/jul, cap. 5 p/ ~26/jul; W10 vira colchão recuperado (margem antes da parede de ~4 p/ ~5 semanas). Resta na §4.4 só acabamento (ortografia · 7 `\cite` vazios na 4.4.1 · nomes entre as 3 tabelas).
 ---
 
 <!-- LTeX: enabled=false -->
@@ -27,8 +28,8 @@ Reconciliação com a estrutura **real** do cap. 4 (ver [`cap_4_metodologia.md`]
 
 **Estrutura do cap. 4 — FECHADA em 4.1–4.7 (método-por-objetivo):** 4.1 caracterização · 4.2 taxonomia (obj 1) · 4.3 fronteira safe/unsafe (obj 2) · 4.4 espaço de design + custo (obj 3) · 4.5 Aule como veículo (obj 4, pós-qual) · 4.6 protocolo do experimento (obj 5–7, pós-qual) · 4.7 verificação por tipos vs C+MISRA (obj 8, pós-qual).
 
-**Feito e revisado (banca):** 4.1 · 4.2.1 · 4.2.2 · 4.2.3 · §4.3 abertura + 4.3.1 + 4.3.2.
-**Resta no cap. 4:** 4.3.3 · 4.4.1 · 4.4.2 · 4.5 · 4.6 · 4.7.
+**Feito e revisado (banca):** 4.1 · 4.2 (4.2.1–4.2.3) · §4.3 completa (abertura + 4.3.1 + 4.3.2 + 4.3.3) · **§4.4 completa (4.4.1 + 4.4.2), redigida e revisada 26/jun** — resta só acabamento (ortografia · 7 `\cite` vazios na 4.4.1 · nomes entre as 3 tabelas).
+**Resta no cap. 4:** 4.5 · 4.6 · 4.7 (todas pós-qual, mais leves).
 
 **Onde a tabela de 11/jun errou (corrigir, não só atrasar):**
 - Previa **"4.3 + 4.4 no mesmo sábado"** (sem. 2). Irreal: a §4.3 virou **4 unidades de escrita** (abertura + 4.3.1 + 4.3.2 + 4.3.3), consumiu o slot de 15–21/jun inteiro (e a 4.3.3 ainda falta); a 4.4 nem começou. O throughput real segue ~**1 seção/semana**, mas "seção" da §4.3/§4.4 = subseção-cluster, **não** a `\section` inteira.
@@ -66,14 +67,14 @@ Datas ancoradas ao calendário real (semana = seg–dom; **hoje é dom 21/jun**,
 | Sem. | Período | Foco (escrever novo) | Saída esperada |
 |---|---|---|---|
 | ~~Atual~~ **W2** (fechada) | 15–21 jun | §4.3 — abertura + 4.3.1 + 4.3.2. | ✅ feito e revisado (18/jun). **4.3.3 e 4.4 não entraram** (a tabela antiga previa "4.3+4.4 num sábado" — irreal). |
-| **W3** | 22–28 jun | **4.3.3** (padrões que cruzam a fronteira — entregável do obj 2) → **§4.3 completa**; abrir 4.4. | 4.3.3 escrita |
-| **W4** | 29 jun–05 jul | **4.4.1 + 4.4.2** (espaço de design + custo — *o "custo" do título*, central) → **núcleo analítico obj 1–3 completo**. | 4.4 escrita |
-| **W5** | 06–12 jul | **4.5** (Aule como veículo — forward/`Signal` + ponto-de-virada) **+ 4.6** (protocolo do experimento) — pós-qual, mais leves. | 4.5 e 4.6 escritas |
-| **W6** | 13–19 jul | **4.7** (verificação por tipos vs C+MISRA+sanitizers) → **cap. 4 completo. Enviar ao Icaro.** | **Cap. 4 completo** |
-| **W7** | 20–26 jul | **Cap. 5 — casos 1 e 2** (setpoint escalar; ISR/DMA→buffer) como código compila/não-compila. | 2 casos escritos |
-| **W8** | 27 jul–02 ago | **Cap. 5 — caso 3** (estado composto estimador↔ctrl) **+ estado da Aule + limitações** → **cap. 5 completo. Enviar ao Icaro.** *(protocolo do experimento agora vive em 4.6 — Arquitetura B; não duplicar.)* | **Cap. 5 completo** |
-| **W9** | 03–09 ago | **Cap. 3 (núcleo enxuto):** classes de bug de memória + ownership/borrow/lifetimes + modelo de memória (3.3: DR formal, happens-before, C11/Rust — carrega mais peso desde 14/jun) + A&OC mínimo + `no_std`/embedded. (Regra de corte nº 1: não inflar.) | Cap. 3 completo |
-| **W10** | 10–16 ago | **Cap. 2 (Relacionados) + tabela comparativa + Cap. 1 lapidado** (intro + incidentes + 1.3). Cap. 6, cap. 7 e pré-textuais já em noites. **Travar a escrita ~15/ago.** ⚠️ **semana sobrecarregada — gatilho dos cortes.** | **Documento textualmente completo** |
+| ~~**W3**~~ ✅ | 22–28 jun | **4.3.3** (21/jun) → §4.3 completa **+ 4.4.1 + 4.4.2** (26/jun) → **núcleo analítico obj 1–3 completo**. Absorveu a W4 (~1 sem. adiantado). | §4.3 e §4.4 redigidas e revisadas; resta acabamento |
+| **W4** | 29 jun–05 jul | **4.5** (Aule como veículo — forward/`Signal` + ponto-de-virada) **+ 4.6** (protocolo do experimento) — pós-qual, mais leves; puxadas da W5. | 4.5 e 4.6 escritas |
+| **W5** | 06–12 jul | **4.7** (verificação por tipos vs C+MISRA+sanitizers) → **cap. 4 completo. Enviar ao Icaro** (~1 sem. antes do marco antigo de 19/jul). | **Cap. 4 completo** |
+| **W6** | 13–19 jul | **Cap. 5 — casos 1 e 2** (setpoint escalar; ISR/DMA→buffer) como código compila/não-compila. | 2 casos escritos |
+| **W7** | 20–26 jul | **Cap. 5 — caso 3** (estado composto estimador↔ctrl) **+ estado da Aule + limitações** → **cap. 5 completo. Enviar ao Icaro.** *(protocolo do experimento vive em 4.6 — Arquitetura B; não duplicar.)* | **Cap. 5 completo** |
+| **W8** | 27 jul–02 ago | **Cap. 3 (núcleo enxuto):** classes de bug de memória + ownership/borrow/lifetimes + modelo de memória (3.3: DR formal, happens-before, C11/Rust) + A&OC mínimo + `no_std`/embedded. (Regra de corte nº 1: não inflar.) | Cap. 3 completo |
+| **W9** | 03–09 ago | **Cap. 2 (Relacionados) + tabela comparativa + Cap. 1 lapidado** (intro + incidentes + 1.3). Cap. 6, cap. 7 e pré-textuais já em noites. | Capítulos de texto completos |
+| **W10** | 10–16 ago | **Colchão recuperado** (do adianto da §4.4): buffer p/ atrasos, acabamento pendente (ortografia/`\cite`/`.bib`) ou revisão antecipada. **Travar a escrita ~15/ago.** | **Documento textualmente completo** |
 | **W11** | 17–23 ago | **Revisão integral:** consistência entre capítulos, os 5 eixos transversais, `\ref`/`\label` quebrados, fluxo do argumento, compilação limpa; incorporar o feedback final do Icaro. | Draft completo e coeso |
 | **W12** | 24–31 ago | **Revisão fina + margem dura:** prosa, figuras, tabelas, `.bib` (completo e citado — ver pendências), siglas, PDF final. **31/ago = entrega. Sem folga depois.** | PDF final pronto pra banca |
 
@@ -83,8 +84,8 @@ Datas ancoradas ao calendário real (semana = seg–dom; **hoje é dom 21/jun**,
 
 ## Marcos de controle (datas que disparam alarme se passarem)
 
-- **~19 jul (W6):** **cap. 4 fechado e enviado ao Icaro.** *(era ~05/jul; escorregou ~2 semanas — §4.3 maior que o previsto + retrabalho da migração ESP32.)*
-- **~02 ago (W8):** **cap. 5 fechado e enviado ao Icaro.** *(era ~19/jul.)* Núcleo nas mãos dele com **~4 semanas** de margem antes da parede (era ~6) — ainda dá pra incorporar, mas o colchão encolheu.
+- **~12 jul (W5):** **cap. 4 fechado e enviado ao Icaro.** *(era ~19/jul; recuperou ~1 semana com a §4.4 fechada adiantada na W3.)*
+- **~26 jul (W7):** **cap. 5 fechado e enviado ao Icaro.** *(era ~02/ago.)* Margem antes da parede recomposta p/ **~5 semanas** (era ~4) com o adianto da §4.4 — ainda sem folga a queimar, mas com mais respiro pra revisão.
 - **~15 ago (W10):** **documento textualmente completo + congelamento de conteúdo** (todos os capítulos + pré-textuais, sem `\lipsum`). A partir daqui só revisão — nada de seção nova.
 - **31 ago:** entrega. Parede.
 
