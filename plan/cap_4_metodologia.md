@@ -9,6 +9,7 @@ co-authors:
   - Claude (claude-opus-4-8), 2026-06-14
   - Claude (claude-opus-4-8), 2026-06-15
   - Claude (claude-opus-4-8), 2026-06-21
+  - Claude (claude-opus-4-8), 2026-06-26
 ---
 
 <!-- LTeX: enabled=false -->
@@ -372,8 +373,10 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 
 **Blocos (ordem de escrita):**
 1. **Definição + a renomeação** — espaço = formas de codificar a garantia de um padrão safe; dimensão = escolha independente (cópia vs. compartilhamento; bloqueante vs. lock-free; estático vs. heap). **Fixar a renomeação** "eixos→dimensões" e justificar: "eixos" já nomeia as dimensões do *problema* (4.2.2); reusar a palavra para a *solução* induz a banca a erro.
-2. **O catálogo** — atomics/lock-free; `Mutex`/critical-section; message-passing (`heapless` SPSC/canal); recursos do RTIC (priority-ceiling); `Arc`/refcount; cópia *owned*. Cada uma em uma linha (o que garante, como).
-3. **Mapeamento padrão → alternativas** — P1 → atomic puro / cópia owned / RTIC resource; P2 → SPSC / RTIC; P3 → `Mutex` do bloco / publicação por troca de ponteiro; P4 → RMW atômico (onde houver) / critical-section.
+2. **O catálogo** — atomics/lock-free; `Mutex`/critical-section; message-passing (`heapless` SPSC/canal); `Arc`/refcount (⚠️ **exige `alloc`** — fora do core `no_std` da Aule; entra como *condição de aplicabilidade*, não como custo — o custo é 4.4.2; e **só muta com `Mutex`/atomic dentro** — `Arc<T>` puro é compartilhamento imutável, não cobre DR de escrita); cópia *owned*; **snapshot/publicação por troca de ponteiro** (double-buffer + `AtomicPtr`, ou `arc-swap` c/ `alloc`) — a alternativa **lock-free** do P3. Cada uma em uma linha (o que garante, como).
+   - **Critério de inclusão do catálogo (decisão 2026-06-26):** só construções **gerais da linguagem/ecossistema**, não presas a um framework. → **RTIC fica de fora** (priority-ceiling é específico do RTOS RTIC; quem usa Embassy ou bare-metal não tem). `critical-section`/`heapless`/atomics/`Arc` passam (genéricos). No máximo, mencionar que frameworks (RTIC) oferecem mecanismos equivalentes — sem catalogá-los como linha.
+   - [pendência: confirmar a config `no_std`/`alloc` da Aule em `../aule`.]
+3. **Mapeamento padrão → alternativas** — P1 → atomic puro / cópia owned; P2 → SPSC; P3 → `Mutex` do bloco / snapshot-publicação por troca de ponteiro (lock-free) / cópia da struct; P4 → RMW atômico (onde houver) / critical-section. *(RTIC removido — ver critério no bloco 2.)*
 4. **Ancoragem** — são as construções idiomáticas do ecossistema Rust embedded, não invenção (fonte = literatura/ecossistema; busca é sua, Regra 7).
 
 **Pontos de defesa:** *"isto não é a taxonomia de novo?"* → não: taxonomia = *problemas*, espaço de design = *soluções*; fecha a direção eixos→garantia. *"é exaustivo?"* → representativo (humildade da 4.1). *"cópia owned não resolve tudo barato?"* → para escalar (P1) é barato; para agregado (P3) é snapshot com custo de RAM/banda → vira trade-off (4.4.2), não bala de prata.
