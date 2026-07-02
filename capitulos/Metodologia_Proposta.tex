@@ -250,14 +250,30 @@ Portanto, cada padrão safe foi mapeado a uma (ou mais) implementação e cada i
 % 4.5.1
 \subsection{Adequação e maturidade do veículo}
 
+Nos experimentos planejados para o capítulo \ref{cap:results} é necessário que a implementação dos casos P1 a P4, estejam contidos em algoritmos de controle realistas, onde esses casos podem efetivamente ocorrer. Deste modo, é utilizado neste trabalho, a biblioteca Aule como meio de implementação, pois com ela é possível implementar os algoritmos de controle não triviais em hardware, permitindo que sejam medidos os custos de cada garantia. Outro ponto importante é a possibilidade de simular a planta no mesmo ecosistema para facilitar o desenvolvimento e validação dos algoritmos de controle, antes dos testes com a planta real. Note que a biblioteca Aule possui foco do núcleo de controle e não na interação com o hardware, onde o unsafe da fronteira do caso P2, mora.
+
+Como dito antes, é fundamental que a bibiloteca utilizada para implementar os algoritmos de controle possua as seguintes características: Simulação no mesmo ecosistema, ferramentas de controle não triviais e compatibilidade com sistemas embarcados. A bibiloteca Aule cumpre os três requisitos das seguintes formas:
+
+A bibiloteca Aule possui 3 abstrações importantes que permitem a simulação de plantas de controle, utilizando a forma de encadeamento de blocos: a trait Block, os tipos Signal e Simulation. Além dessas três abstrações, a biblioteca também disponibiliza integradores como Euler e Runge-Kutta de quarta ordem, para a integração de blocos contínuos.
+
+Para as ferramentas de controle não triviais, a biblioteca conta com blocos focados em controle, como PID com anti-windup, bem como com blocos focados em simulações, como Funções Transferencia e Espaço de Estados, ambos contínuos e discretos. Além disso, conta com o bloco observador de Luenberger, o qual pode ser utilizado para demonstrar o caso P3, com um estado composto do estimador.
+
+Por último, a biblioteca Aule possui compatibilidade com sistemas embarcados, na medida em que é possível compilar a biblioteca para no_std, apenas desabilitando as features do crate. A biblioteca separa suas funcionalidades por meio de features. Para cada necessidade um feature pode ser habilitada. Em caso da simulação em Desktop, é possível habilitar a feature std. Caso seja necessário alocação dinamica, tanto no Desktop como no embarcado, é possível habilitar a feature alloc. Para a comunicação com o Desktop, é possível habilitar a feature swd. Perceba, que a habilitação da feature std, a única que impede o uso no embarcado, só é necessária quando for utilizar funcionalidades do sistema operacional do Desktop, como a escrita de arquivos CSV e o plote de um gráfico na interface gráfica. Nenhuma dessas funcionalidades são necessárias para o uso no embarcado. A habilitação da feature alloc, é necessário para a utilização de blocos com matrizes, como os blocos de espaço de estados e o observador de Luenberger, enquanto para blocos do núcleo no_std puro, como PID, blocos de entrada, trait Block, e tipos Simulation e Signal, não são necessários. O uso de alloc (ou heap) adiciona um custo a mais na dimensão determinismo, porém esse custo advém do veículo (Aule) e não de uma garantia.
+
+Portanto, a biblioteca Aule é suficiente para a implementação dos algoritmos de controle dado que cumpre os 3 requisitos. Entretanto, o encadeamento de blocos, apresentado como funcionalidade que satisfaz a restrição da simulação ocorrer no mesmo ecosistema, não é apenas uma questão de ergonomia de API, mas sim uma decisão de design que possui consequencias de memory safety. Essa decisão de design, bem como o porquê dela direcionar o programa para o memory safety, é apresentado na subseção \ref{subsec:design-choice}.
+
 % 4.5.2
 \subsection{Composição forward como decisão de memory safety}
+\label{subsec:design-choice}
+
+% A bibiloteca Aule possui 3 abstrações importantes que permitem a simulação de plantas de controle, utilizando a forma de encadeamento de blocos. A abstração que permite o desenvolvedor executar uma simulação vem do tipo Simulation (e EndlessSimulation) implementa a trait Iterator. Essa simulação executa por uma quantidade fixa de segundos (ou sem limite para o EndlessSimulation) em que cada passo da simulação possui um intervalo definido previamente pelo desenvolvedor. Um objeto do tipo Simulation pode ser utilizado em um loop do tipo for, pois implementa o trait Iterator. Com isso, dentro deste loop de simulação, é utilizado a segunda abstração, o trait Block. Todo bloco de controle dentro da biblioteca Aule, implementa esse trait, pois ele permite o encademento de blocos, fazendo com que a saída de um bloco seja a entrada do outro. Este encadeamento é feito através da sobrecarga do operador de multiplicação entre um Block e um Signal. Em Rust, a sobrecarga de operadores é realizada através da implementação de uma Trait. E a última peça é o tipo Signal, cuja a função é encapsular um tipo genérico, como por exemplo: f32, f64, Complex32, DMatrix, etc, e o estado atual da simulação, com o delta de tempo entre o passo atual e o anterior e o tempo total de simulação.
 
 % 4.5.3
 \subsection{Instanciação do catálogo e política de unsafe}
 
 % 4.6
 \section{Protocolo do experimento de Custo}
+\label{sec:experiment-proc}
 
 % 4.6.1
 \subsection{Planta e plataforma}
