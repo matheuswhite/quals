@@ -11,7 +11,7 @@ What lives here (and not in `CLAUDE.md`):
 
 - [User profile](user_profile.md) — Matheus, mestrando UFAL IC; tese no nível do fenômeno (B-dominante) sobre a fronteira de segurança de memória do Rust em data races de controle concorrente — a lib Aule é o veículo
 - [Personal project boundary](personal_project_boundary.md) — projeto pessoal acadêmico; nunca citar empregador nem email corporativo em nada deste repo ou memória
-- [Ponto de retomada](ponto_retomada.md) — Cap. 4: §4.4 COMPLETA (4.4.1+4.4.2 redigidas/revisadas, 26/jun); próxima = 4.5 (Aule) ou passada de revisão da 4.4. Acabamento: ortografia + 7 `\cite` vazios (4.4.1) + `src/p2_snippet.rs` a versionar
+- [Ponto de retomada](ponto_retomada.md) — Cap. 4: §4.5.1 (adequação/maturidade da Aule) REDIGIDA e fechada (01/jul, commit `d3f641d`); próxima = 4.5.2 (composição forward). Acabamento: ortografia da 4.5.1 + reconferir fatos da Aule no `../aule`. Pendências: `src/p2_snippet.rs` a versionar; ESP32/HAL
 - [Citações pendentes](citacoes_pendentes.md) — `\cite` faltando no `.bib` da §4.3.2: `rust-error-index` (Matheus traz URL → Claude formata) e `rust-safe-soundness` (busca do Matheus — linha RustBelt)
 - [Review checklist enforce](review_checklist_enforce.md) — ao revisar o texto da tese, cobrar `plan/checklist_revisao.md` (taxonomia de padrões de data race, F7)
 

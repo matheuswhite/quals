@@ -1,6 +1,6 @@
 ---
 name: ponto-retomada
-description: "Cap. 4: §4.4 COMPLETA (4.4.1 blocos 1-4 + 4.4.2, redigidas/revisadas 26/jun). Proxima = 4.5 (Aule) ou passada de revisao da 4.4. Acabamento: ortografia + 7 cite vazios (4.4.1 bloco 4) + nomes entre as 3 tabelas + refs sec:cost-exp* (4.6). src/p2_snippet.rs criado, a versionar."
+description: "Cap. 4: §4.5.1 (adequacao/maturidade da Aule como veiculo) REDIGIDA, revisada e FECHADA no argumento (01/jul, commit d3f641d). Proxima = 4.5.2 (composicao forward). Acabamento: ortografia da 4.5.1 + reconferir fatos da Aule no ../aule (roadmap 20/mai, repo ausente neste device). Pendencias: src/p2_snippet.rs a versionar; ESP32/HAL."
 author: Claude (claude-opus-4-8)
 created: 2026-05-31
 co-authors:
@@ -11,41 +11,42 @@ co-authors:
   - Claude (claude-opus-4-8), 2026-06-18
   - Claude (claude-opus-4-8), 2026-06-21
   - Claude (claude-opus-4-8), 2026-06-26
+  - Claude (claude-opus-4-8), 2026-07-01
 metadata:
   type: project
 ---
 
-**Ponto de retomada — fim da sessão de 26/jun/2026.**
+**Ponto de retomada — fim da sessão de 01/jul/2026.**
 
 ## Estado do Cap. 4
-- **4.1 e 4.2 — REDIGIDAS e revisadas.** §4.3 (Fronteira safe/unsafe) — **COMPLETA** (fechada 21/jun).
-- **§4.4 (Catalogação do Espaço de Design das Garantias, obj 3) — REDIGIDA, revisada (banca) e conceitualmente COMPLETA (26/jun):**
-  - **4.4.1 (Dimensões de Design):** bloco 1 (definição + renomeação eixo→dimensão; dimensão 1 **ternária** cópia/compartilhamento/transferência, **árvore de decisão** não-ortogonal, "representativas não exaustivas") · bloco 2 (catálogo `tab:impl-safe-rust`, 6 implementações) · bloco 3 (mapeamento `tab:impl-pattern`, P1–P4; **Arc fora do mapa** — só imutável, nota explicando) · bloco 4 (ancoragem + critério geral×framework / RTIC fora).
-  - **4.4.2 (Trade-offs em `no_std`):** desambiguação "dimensão" (design × custo); 4 dimensões (runtime/ergonomia/footprint/**determinismo**, o mais crítico); custo **re-centrado no P3** (Mutex bloqueante × Snapshot lock-free+RAM); reframe "**preço da garantia forçada / em safe não dá pra não sincronizar**"; matriz `tab:cost-impl` (8 células, qualitativa) com **P4-Atomics ressalvando HW** (RMW atômico / fallback critical-section).
+- **4.1, 4.2, 4.3 — COMPLETAS.** **§4.4 (Catalogação do Espaço de Design, obj 3) — COMPLETA** (redigida/revisada 26/jun; acabamento de ortografia + 7 `\cite` vazios pendente, ver abaixo).
+- **§4.5.1 (Adequação e maturidade do veículo) — REDIGIDA, revisada (banca), FECHADA no argumento (01/jul; commit `d3f641d`).**
+  - **Estrutura:** par 1 = adequação (Aule = veículo de implementação/medição; **foco no núcleo de controle**, o `unsafe` do P2 fica na **borda de HW** → coerência com 4.3.3); par 2–4 = maturidade pelos **3 requisitos**; par 5 = **ponte para 4.5.2** (`\label{subsec:design-choice}`).
+  - **3 requisitos:** (1) simulação no mesmo ecossistema (`Block`/`Signal`/`Simulation` + integradores Euler/RK4); (2) controle não-trivial (PID+anti-windup, TF/SS contínuo+discreto, **observador de Luenberger → demonstra P3**); (3) `no_std` por features (`std`/`alloc`/`swd`; só `std` impede embarcado).
+  - **Ressalva-chave (honestidade):** blocos matriciais (SS, observador) exigem **`alloc`**; heap custa **determinismo**, mas esse custo é do **veículo (Aule), não da garantia** → **confound a isolar em 4.6**.
 
-## Decisões da sessão (26/jun)
-- Catálogo = 6 implementações: Atomics · Mutex/critical-section · **Snapshot/publicação** (double-buffer + `AtomicPtr`, opção **lock-free do P3**) · Transferência de Mensagens (SPSC) · Reference Counter (`Arc`, imutável, exige `alloc`, **fora do mapa**) · Cópia owned.
-- **Critério de inclusão do catálogo:** construções **gerais** da linguagem/ecossistema, NÃO framework → **RTIC fora** (priority-ceiling é do RTIC; Embassy/bare-metal não têm).
-- Custo **argumentado** aqui (qualitativo); **medido** em 4.6.
+## Decisões da sessão (01/jul) — revisão da 4.5.1
+- **Justificativa da Aule re-centrada:** removido "herda memory safety do Rust" (é de todo Rust safe → não justifica ESTA lib) → trocado por "implementa controle não-trivial em HW + permite medir custo". Razão forte = `no_std` real + HIL + controle não-trivial.
+- **P2-fora-da-Aule = coerência, não exceção:** a borda de HW (ISR/DMA/ADC) fica fora por construção (casa 4.3.3: `unsafe` na borda de HW); a Aule veicula o **domínio** (algoritmo), não os **mecanismos** de sincronização (que são genéricos do Rust — evita o furo "por que não Rust puro?").
+- **Flanco cortado:** removidos Smith Predictor e identificação de sistemas do texto (aposentados/irrelevantes ao recorte → abriam pergunta de banca).
+- **Detalhe do mecanismo forward** movido para **comentário na 4.5.2** (não invadir a irmã).
+- **Bloco 3 (lacunas de toolbox) DESCARTADO deliberadamente:** listar MIMO/MPC/frequência abre flanco e é irrelevante (Aule = veículo, não objeto). **Viés veículo×autor = defesa ORAL, não texto** (claim é B-dominante: avalia-se o Rust *através* da Aule).
 
-## Acabamento pendente da §4.4 (NÃO é conteúdo — Claude aponta, Matheus aplica)
-- **Passada de ortografia** acumulada (4.4.1 + 4.4.2): `bloquei`, `perdar`, `compoe`, `cíclos`, `algorítmo`, `relacionada`, `descritos`, `atribuíndo`, `nenhum ISA`, concordâncias da frase-ponte, etc.
-- **7 `\cite{}` vazios** no bloco 4 da 4.4.1 (ancoragem) → `[?]`. Busca/escolha é do Matheus (Regra 7); Claude formata. Tipo de fonte: Atomics/`Arc`/cópia = doc oficial; snapshot (RCU/seqlock) + SPSC = literatura de concorrência; RTIC = doc RTIC.
-- **Nomes consistentes** entre as 3 tabelas (`Transferencia`/`Copia` sem acento na `tab:impl-safe-rust` × com acento nas outras).
-- **Refs `sec:cost-exp-proc` / `sec:cost-exp`** (4.4.2 → 4.6) → `??` até a 4.6 existir.
-
-## Build (instalado nesta sessão)
-- **MiKTeX + latexmk 4.88 + Strawberry Perl** instalados; PDF compila (32 páginas). ⚠️ resolver "MiKTeX updates" (latexmk reclama). **Falta poppler (`pdftoppm`)** → Claude não renderiza o PDF (diagnostica pelo `.log`).
-- **`src/p2_snippet.rs` FOI CRIADO** (untracked) — é o arquivo do `\coderust` da 4.3.3 (linha 147); **a versionar** senão o build quebra em quem clonar. `src/p2/` (cargo) untracked; `target/` já ignorado (`.gitignore`, commit `11fcc37`).
+## Acabamento pendente da §4.5.1 (Claude aponta, Matheus aplica — NÃO é conteúdo)
+- **Ortografia/gramática:** `bibiloteca` (3×), `ecosistema`, `memory safefy`→safety, `decisão design`→"de design", `um questão`→uma, `consequencias`, `Funções Transferencia`→"de Transferência", `dinamica`, `um feature`→uma, `é necessário`→necessária, `não são necessários`→não é necessária, `Perceba, que`, `foco do núcleo`→no, vírgulas `P2, mora` / `P1 a P4, estejam`; `\texttt{}` nos tipos.
+- **Build:** confirmar que `\ref{cap:results}` tem `\label` no cap. 5 (senão vira `??`).
 
 ## Próxima etapa
-- **4.5 (A Aule como Veículo de Instanciação, obj 4)** — pós-qual, apresentar como plano — OU a **passada de revisão/ortografia da §4.4** antes. Depois: 4.6 (protocolo, cria os labels `sec:cost-exp*`), 4.7 (verificação por tipos × C+MISRA).
+- **4.5.2 (Composição forward como decisão de memory safety)** — gancho já plantado no fecho da 4.5.1 (encadeamento = decisão de design, não ergonomia). **Notas de honestidade p/ o roteiro:** forward = **enabler, não prova**; encadeamento via operador `*` usa `&mut dyn Block` (**dispatch dinâmico** → NÃO alegar zero-custo; o caminho monomorfizado é `.output()` direto); custo do **backward** (`Rc<RefCell>`/arena/`unsafe`) = argumento técnico + literatura, **não medido**. **Rascunho comentado no `.tex`** (~linha 260) com o mecanismo (`Simulation`/`EndlessSimulation`/`Iterator`, operador `*`, `Signal` encapsula f32/f64/Complex32/DMatrix) — **reconferir no `../aule`**.
+- Depois: 4.5.3 (instanciação do catálogo + política de `unsafe`), 4.6 (protocolo, cria labels `sec:cost-exp*`), 4.7.
 
-## Pendências antigas (não bloqueiam)
-- Atômicos do **Xtensa** (`S32C1I`) — peso do P4 / "RMW atômico" no alvo.
+## Pendências (não bloqueiam)
+- ⚠️ **`../aule` NÃO está neste device**; roadmap de 20/mai → **reconferir fatos de maturidade da 4.5.1** antes da defesa: existe `EndlessSimulation`? observador/SS exigem `alloc`? nome da feature `swd`? refator `Controller`/`Block` saiu do papel?
+- ⚠️ **ESP32 / HAL da Aule** — sustenta "implementar em hardware" (4.5.1) + plataforma (4.6). Atômicos do Xtensa (`S32C1I`) — peso do P4. (Decisão 2026-06-15.)
+- **`src/p2_snippet.rs`** (+`src/p2/`) AINDA untracked — `\coderust` da 4.3.3; build quebra para quem clonar. `refs/` (PDF Helmbold & McDowell) a decidir versionar × gitignore.
+- Acabamento §4.4: 7 `\cite{}` vazios (4.4.1 bloco 4) + ortografia + nomes entre as 3 tabelas + refs `sec:cost-exp*`.
+- Citações 4.3.2: `rust-error-index`, `rust-safe-soundness` — ver [[citacoes-pendentes]].
 - `referencias.bib`: ~46 herdadas a limpar; validar 12; autores de `sharma2024rust`.
-- `refs/` (PDF Helmbold & McDowell) a decidir versionar × gitignore.
-- Citações da 4.3.2: `rust-error-index`, `rust-safe-soundness` — ver [[citacoes-pendentes]].
 
 ## Roadmap / prazo
-- W4 = §4.4 ✓. Cap. 4 completo ~19/jul; cap. 5 ~02/ago; **parede dura 31/ago/2026**; ~1 seção/semana.
+- §4.5.1 ✓. Cap. 4 completo ~12–19/jul; cap. 5 ~02/ago; **parede dura 31/ago/2026**; ~1 seção/semana.
