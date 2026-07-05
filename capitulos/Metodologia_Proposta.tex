@@ -285,6 +285,29 @@ Por fim, existe um ponto final para destacar. A utilização do operador de mult
 
 % 4.5.3
 \subsection{Instanciação do catálogo e política de unsafe}
+\label{subsec:catalog-n-unsafe-policy}
+
+Na seção \ref{sec:cost} é apresentado um espaço de design. Na subseção atual é apresentado como esse espaço de design será implementado na Aule. Para isso, um representante de cada dimensão será implementado. Isso mostra que o objetivo não será implementar de forma exaustiva, mas sim representativa.
+
+Cada representante será implementado em um bloco dentro da biblioteca Aule. A implementação de cada bloco será trabalho da pós-qualificação. Na qualificação é apresentado o design dos blocos, bem como a rastreabilidade entre o bloco que será implementado e dimensão de design. Note que esses novos blocos de sincronização (ou blocos sync, para simplificação) não entram em conflito com a afirmação que o encadeamento forward mantém o núcleo de controle safe, pois esses blocos sync estão nas pontas do pipeline forward, para apenas comunicar as entradas e saídas de outros contextos de concorrencia, encapsulando dentro de uma API safe e recebendo e retornando sinais por valores. Desta forma, o núcleo de controle ainda permanecerá dentro do safe. Portanto, a tabela de rastreabilidade é apresentada na tabela \ref{tab:tracking}.
+
+\begin{table}[ht]
+  \centering
+  \caption{Associação de implementações safe com padrões de data races}
+  \label{tab:tracking}
+  \begin{tabularx}{\textwidth}{>{\hsize=0.5\hsize}X >{\hsize=1.0\hsize}X >{\hsize=1.5\hsize}X >{\hsize=1.0\hsize}X >{\hsize=1.0\hsize}X}
+    \toprule
+    Dimensão & Bloco Planejado & Feature & Estado & Caso \\
+    \midrule
+    Cópia & Composição forward por valor & core no\_std & existe & - (é a base) \\
+    Compartilhamento Bloqueante & Bloco com Arc<Mutex> ou Critical section & alloc & planejado &  P3\\
+    Compartilhamento Lock-Free & Bloco com atomic ou snapshot & core / alloc & planejado & P1 / P3 \\
+    Estático x Heap & SPSC heapless & core no\_std & planejado & P2 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Perceba que mesmo o núcleo estando dentro do safe, ainda existe código unsafe inevitável, pois existe interação com periféricos de hardware, e unsafe confinado, pois existem interações de concorrencia. Deste modo, deve existir políticas para confinar o unsafe dentro de limites aceitáveis. Este limites são: na interação com o hardware e na comunicação entre contextos de concorrencia. Os pontos identificados hoje são: a interação com o hardware, a qual fica fora da biblioteca Aule; a ponte SWD de comunicação do Desktop com o embarcado, a qual funciona como comunicação de uma validação HiL do algoritmo de controle embarcado e os blocos de sincronização os quais devem expor API safes. Com isso, as politicas para utilizar unsafe dentro da biblioteca são: nunca no encadeamento forward, apenas nos adaptadores de borda (sincronizaçõa e SWD); encapsulado dentro de APIs safe; e ter invariante documentada. A invariante é a promessa feita que o código é seguro, e documentada indica que essa promessa deve estar descrita junto ao código unsafe. Para garantir a política de nunca estar no encadeamento forward, o atributo \texttt{\#![forbid(unsafe\_code)]} será usado nos módulos do encadeamento forward, para não permitir a compilação de unsafe dentro destes módulos, apenas nos módulos dos blocos de interface de borda (sync e SWD). Para garantir que os blocos unsafe possuem uma superficie pequena e confinada, é necessário definir uma métrica para saber o quão pequena ela é. Para isso, é utilizada Linhas de Código (LoC) do bloco unsafe e a avaliação da invariante documentada. Como é medido as LoC unsafe e a avaliação da invariante documenta está presente na seção \ref{sec:experiment-proc}.
 
 % 4.6
 \section{Protocolo do experimento de Custo}
