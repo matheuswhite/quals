@@ -10,6 +10,7 @@ co-authors:
   - Claude (claude-opus-4-8), 2026-06-15
   - Claude (claude-opus-4-8), 2026-06-21
   - Claude (claude-opus-4-8), 2026-06-26
+  - Claude (claude-opus-4-8), 2026-07-04
 ---
 
 <!-- LTeX: enabled=false -->
@@ -422,6 +423,23 @@ Nomes fixos — citar consistentemente em 4.3 / 4.4 / cap. 5. O **eixo que organ
 - Forward é **enabler, não prova** — viabiliza, não demonstra a eliminação (a prova são os casos + experimento).
 - O encadeamento via operador `*` usa `&mut dyn Block` (**dispatch dinâmico**) → **não** alegar "zero-custo" sem ressalva (o caminho monomorfizado é a chamada direta `.output()`).
 - Custo do *backward* é argumento técnico + literatura (não foi implementado/medido) — ver `outline_geral.md` §ponto-de-virada.
+
+### 4.5.3 Instanciação do catálogo e política de `unsafe` — roteiro em blocos (REDIGIDA 2026-07-04)
+
+Estrutura da subseção: metade 1 = instanciação (blocos 1–2); metade 2 = política de `unsafe` (blocos 3–4, **fundidos** no `.tex` porque o 4 sozinho era fino). `\label{subsec:catalogy-n-unsafe-policy}`.
+
+**Decisões fechadas nesta sessão (2026-07-04):**
+- **Plan-only:** os blocos de sincronização (Atomic, `Arc<Mutex>`/critical-section, SPSC `heapless`, snapshot/`AtomicPtr`) **não são implementados na qualificação** — a qualificação entrega o *design* + a *rastreabilidade*; a implementação é dissertação (generaliza o bloco out-of-box `ISR↔DMA` já reservado ao cap. 6). Motivo: proteger a parede de 31/ago (implementar competiria com escrever).
+- **A separação "Aule × camada de integração" foi DESCARTADA do texto.** Ela descrevia o estado de *hoje* (a Aule não tem sync; `heapless` só nos exemplos); como o plano é levar o sync *para dentro* da Aule, forçá-la contradiria o próprio plano. Sobrou dela **só uma frase de posicionamento** (coerência com a 4.5.2), não uma tabela de camadas.
+- **`#![forbid(unsafe_code)]` ADOTADO no core** (decisão de código, no `../aule`) — aplicado **por-módulo nos módulos do encadeamento *forward***, NÃO no crate inteiro (senão proibiria também a borda; `forbid` não admite `allow` local). Converte a alegação de segurança de disciplina → verificada pelo compilador.
+
+**Blocos (como ficaram redigidos):**
+1. **Ponte 4.4 + critério** — "um representante por dimensão", representativo não exaustivo; tempo verbal em *futuro* (será implementado) para casar com plan-only.
+2. **Mapeamento + tabela de rastreabilidade** (`tab:tracking`): dimensão (4.4) → bloco planejado → feature → estado (existe/planejado) → caso. + frase de reconciliação com a 4.5.2 (blocos sync = adaptadores de **borda** do pipeline; núcleo *forward* segue por valor, safe).
+3. **Política de `unsafe`** — 3 loci: (a) HW/P2 *inevitável*, fora da Aule; (b) ponte SWD *confinada*, dentro (debug, feature `swd`, MMIO volátil — único `unsafe` de hoje); (c) blocos sync *deliberados*, dentro, atrás de API safe. Regra: nunca no forward · encapsulado em API safe · invariante documentada. `forbid` por-módulo garante (a).
+4. **Métrica da fronteira** (fundido no 3) — LoC em blocos `unsafe` (tamanho) + avaliação da invariante documentada (correção); *medição* é 4.6 (`sec:experiment-proc`), aqui só define.
+
+**Pendências (acabamento, não conteúdo):** lote de ortografia/concordância no `.tex` (l. 310) — resolver na revisão geral (W11). Fatos do `../aule` já confirmados: core `no_std` sem `forbid` hoje; `unsafe` só em `tier1/bridge/swd.rs`; `Observer` sob `alloc`.
 
 ---
 
