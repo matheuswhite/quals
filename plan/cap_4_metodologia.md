@@ -11,6 +11,7 @@ co-authors:
   - Claude (claude-opus-4-8), 2026-06-21
   - Claude (claude-opus-4-8), 2026-06-26
   - Claude (claude-opus-4-8), 2026-07-04
+  - Claude (claude-opus-4-8), 2026-07-08
 ---
 
 <!-- LTeX: enabled=false -->
@@ -460,6 +461,26 @@ Estrutura da subseção: metade 1 = instanciação (blocos 1–2); metade 2 = po
 - **Fecha agora:** critério qualitativo central completo (data race no lado safe → o código que o produziria **não compila** / é forçado à forma segura = sucesso); eixos quantitativos com **operacionalização** (overhead via registrador de ciclos — `CCOUNT` no ESP32; "deadline perdido" = estourar o período de controle; fronteira `unsafe` = LoC em blocos `unsafe`; boilerplate de segurança eliminado).
 - **Adia p/ dissertação:** thresholds numéricos (ex.: "empate" = Δ < X%), placa ESP32 específica, escala (nº de cenários e repetições).
 - Regra: fechar *o que* medir e *como*; adiar *quanto*.
+
+### 4.6.1 (Planta e plataforma) — REDIGIDA e revisada (2026-07-08)
+
+Decisões fechadas nesta sessão (só existiam no chat até aqui):
+
+- **Planta = pêndulo invertido ROTATIVO (Furuta) FÍSICO.** Não é simulação nem planta de brinquedo. Vetor de estado (4): $\langle\theta, \dot\theta, \alpha, \dot\alpha\rangle$ = ângulo/vel. do **braço** + ângulo/vel. do **pêndulo**. *(O roteiro inicial assumia carro-pêndulo, estados lineares; corrigido p/ rotativo.)*
+- **Plataforma HERDADA da planta:** a planta física embarca um **ESP32 (Xtensa)** → é isso que motivou a migração Cortex-M0 → ESP32 (fecha a F12). **Ênfase de defesa:** a plataforma é *imposta pela planta* (defende a migração); "popular e barato" entra só como **representatividade**, nunca como razão de escolha. **obj 5 (cap. 1) re-redigido** de "Cortex-M0" → "ESP32 (Xtensa)".
+- **Decisão B — âncora ÚNICA na fronteira ISR/DMA↔tarefa.** O Kalman (estima os estados não medidos = velocidades) roda **na mesma tarefa do controle**, sequencial → **não há tarefa separada de observador** → **não se usa a fronteira observador↔controle**. Motivo: elimina a objeção de circularidade ("fabricou o data race"); a corrida usada é **imposta pelo hardware** (aquisição por interrupção), não pela arquitetura de concorrência.
+- **2 encoders** (braço + pêndulo) → bloco coerente $\langle\theta,\alpha\rangle$ lido pela tarefa; leitura rasgada = $\theta$ novo + $\alpha$ velho → estado falso → sinal de controle errado. Padrão **P3** (Struct / bloco indivisível), célula $\langle\text{ISR-Tarefa}, \text{Struct}, \text{Leitor-Escritor}\rangle$ — **NÃO** é P2 (buffer/produtor-consumidor). **Fixado em P3.**
+- **Single-core declarado** (chip é dual-core; usa 1 núcleo). Recorte de escopo já refletido no corte das células Núcleo-Núcleo da taxonomia (4.2, `subsec:taxonomy`). P3 sobrevive em single-core por **preempção assimétrica** → medição válida.
+- **Execução em 2 ESTÁGIOS: simulação (host) → planta física.** **HIL / `probe-rs` DROPADO de propósito** (2026-07-08, confirmado pelo Matheus) → encerra a pendência `probe-rs`/Xtensa. Medição de custo **só na planta física**; simulação = desenvolvimento/depuração/ensaio.
+
+Estrutura redigida da 4.6.1 (5 blocos de roteiro, com 3+4 fundidos): planta + estados · fronteira P3 (ISR↔tarefa) · ESP32 + single-core · execução em 2 estágios.
+
+**Pendências `.tex` abertas (acabamento, não conteúdo):**
+- `\label{cap:experiment}` no cap. 5 (`Resultados_Parciais.tex`) — senão o `\ref` da 4.6.1 vira `??`.
+- `git add res/metodologia/inv_pendulum.png` — imagem existe local mas **não versionada** → quebra o build ao clonar (Rule 6).
+- Figura: legenda "Pendulo" → "Pêndulo"; bloco 5: concordância "a implementação e testes **são** mais fáceis".
+
+**➡️ Ponto de retomada:** 4.6.1 fechada. **Próxima = 4.6.2** (Implementações comparadas: C+FreeRTOS+MISRA vs. Rust+`heapless`+RTIC).
 
 ---
 
