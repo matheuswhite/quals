@@ -257,9 +257,9 @@ Como dito antes, é fundamental que a bibiloteca utilizada para implementar os a
 
 A bibiloteca Aule possui 3 abstrações importantes que permitem a simulação de plantas de controle, utilizando a forma de encadeamento de blocos: a trait Block, os tipos Signal e Simulation. Além dessas três abstrações, a biblioteca também disponibiliza integradores como Euler e Runge-Kutta de quarta ordem, para a integração de blocos contínuos.
 
-Para as ferramentas de controle não triviais, a biblioteca conta com blocos focados em controle, como PID com anti-windup, bem como com blocos focados em simulações, como Funções Transferencia e Espaço de Estados, ambos contínuos e discretos. Além disso, conta com o bloco observador de Luenberger, o qual pode ser utilizado para demonstrar o caso P3, com um estado composto do estimador.
+Para as ferramentas de controle não triviais, a biblioteca conta com blocos focados em controle, como PID com anti-windup, bem como com blocos focados em simulações, como Funções Transferencia e Espaço de Estados, ambos contínuos e discretos. Além disso, conta com o bloco observador de Luenberger, o qual pode ser utilizado para demonstrar o caso P3, com um estado composto do estimador. Apesar de possuir um bloco observador de Luenberger, será utilizado um bloco de filtro de Kalman, o qual será implementado pós qualificação.
 
-Por último, a biblioteca Aule possui compatibilidade com sistemas embarcados, na medida em que é possível compilar a biblioteca para no_std, apenas desabilitando as features do crate. A biblioteca separa suas funcionalidades por meio de features. Para cada necessidade um feature pode ser habilitada. Em caso da simulação em Desktop, é possível habilitar a feature std. Caso seja necessário alocação dinamica, tanto no Desktop como no embarcado, é possível habilitar a feature alloc. Para a comunicação com o Desktop, é possível habilitar a feature swd. Perceba, que a habilitação da feature std, a única que impede o uso no embarcado, só é necessária quando for utilizar funcionalidades do sistema operacional do Desktop, como a escrita de arquivos CSV e o plote de um gráfico na interface gráfica. Nenhuma dessas funcionalidades são necessárias para o uso no embarcado. A habilitação da feature alloc, é necessário para a utilização de blocos com matrizes, como os blocos de espaço de estados e o observador de Luenberger, enquanto para blocos do núcleo no_std puro, como PID, blocos de entrada, trait Block, e tipos Simulation e Signal, não são necessários. O uso de alloc (ou heap) adiciona um custo a mais na dimensão determinismo, porém esse custo advém do veículo (Aule) e não de uma garantia.
+Por último, a biblioteca Aule possui compatibilidade com sistemas embarcados, na medida em que é possível compilar a biblioteca para no\_std, apenas desabilitando as features do crate. A biblioteca separa suas funcionalidades por meio de features. Para cada necessidade um feature pode ser habilitada. Em caso da simulação em Desktop, é possível habilitar a feature std. Caso seja necessário alocação dinamica, tanto no Desktop como no embarcado, é possível habilitar a feature alloc. Para a comunicação com o Desktop, é possível habilitar a feature swd. Perceba, que a habilitação da feature std, a única que impede o uso no embarcado, só é necessária quando for utilizar funcionalidades do sistema operacional do Desktop, como a escrita de arquivos CSV e o plote de um gráfico na interface gráfica. Nenhuma dessas funcionalidades são necessárias para o uso no embarcado. A habilitação da feature alloc, é necessário para a utilização de blocos com matrizes, como os blocos de espaço de estados e o observador de Luenberger, enquanto para blocos do núcleo no\_std puro, como PID, blocos de entrada, trait Block, e tipos Simulation e Signal, não são necessários. O uso de alloc (ou heap) adiciona um custo a mais na dimensão determinismo, porém esse custo advém do veículo (Aule) e não de uma garantia.
 
 Portanto, a biblioteca Aule é suficiente para a implementação dos algoritmos de controle dado que cumpre os 3 requisitos. Entretanto, o encadeamento de blocos, apresentado como funcionalidade que satisfaz a restrição da simulação ocorrer no mesmo ecosistema, não é apenas uma questão de ergonomia de API, mas sim uma decisão de design que possui consequencias de memory safety. Essa decisão de design, bem como o porquê dela direcionar o programa para o memory safety, é apresentado na subseção \ref{subsec:design-choice}.
 
@@ -315,6 +315,7 @@ Perceba que mesmo o núcleo estando dentro do safe, ainda existe código unsafe 
 
 % 4.6.1
 \subsection{Planta e plataforma}
+\label{subsec:plant-platform}
 
 Para que os experimentos sejam fidedignos é necessário uma planta que reflita restrições reais e não somente restrições fabricadas para que as medições dos custos sejam feitas. Com isso, é utilizada uma planta física de um pêndulo invertido rotativo. Esta planta é mostrada na Figura \ref{fig:inv-pendulum}. O pêndulo invertido rotativo foi escolhido por ser uma planta com malha rápida. Isso significa que a planta é instável e o deadline de atuação do controle deve ser rápido. Aqui, perder deadlines implica na instabilização do sistema, ou seja, o pêndulo cai. Esta planta possui o seguinte vetor de estados: \[x = \begin{bmatrix} \theta \\ \dot{\theta} \\ \alpha \\ \dot{\alpha} \end{bmatrix}\], sendo $\theta$ e $\dot{\theta}$ o ângulo do braço e a velocidade angular do braço, respectivamente; enquanto $\alpha$ e $\dot{\alpha}$ são o ângulo do pêndulo e a velocidade angular do pêndulo. Nesta planta, será utilizado um filtro de Kalman, na mesma tarefa em que o controle ocorre, para estimar os estados não medidos e o controle será feito pela realimentação de estados.
 
@@ -333,6 +334,42 @@ Por fim, a execução é realizada em 2 estágios: simulação e planta física.
 
 % 4.6.2
 \subsection{Implementações comparadas}
+
+Nesta subseção, são especificadas as duas implementações que são usadas nos experimentos. A primeira é o estado da arte do que é utilizado para a implementação de controladores em sistemas embarcados e é usada como referencia na medição dos experimentos, enquanto a segunda é a implementação que possui verificação de tipos e as garantias do lado safe e é o alvo das medições dos experimentos. Além disso, essa subseção busca mostrar que essas duas abordagens são identicas no que é controlável (com diferenças no substrato sendo tratadas na decomposição das medições), enquanto é variado o mecanismo que protege o bloco coerente do padrão P3 na fronteira ISR e Tarefa. As escolhas da planta, do ESP32 single-core e do padrão P3, são feitas na subseção \ref{subsec:plant-platform}, enquanto a escolha de FreeRTOS e bare-metal é feita nesta subseção.
+
+A primeira implementação é feita em cima da linguagem C, usando o FreeRTOS, provido no SDK ESP-IDF e segue as linhas da especificação MISRA. O FreeRTOS não foi uma escolha deliberada, mais o mais representativo quando se fala em desenvolver com ESP32, pois o SDK deste microcontrolador, ao contrário de outros microcontroladores, não expoe um modo de execução em bare-metal, mas sempre está em execução uma implementação do FreeRTOS. A especificação MISRA, trás 2 fundamentos: o primeiro é forçar um C disciplinado ao invés de ingenuo. Isso faz com que a comparação com o Rust seja com o melhor código possível de C. Além disso, essa especificação também força o uso de memória estática (ou proibe o uso de alocação dinamica). Isso garante a simetria na alocação de memória com a segunda implementação em Rust, ao usar somente alocação estática. Como a ISR escreve em um bloco coerente e a tarefa le este bloco a proteção contra leitura inconsistente deste bloco é feita através de seção crítica.
+
+Na segunda implementação, onde o custo do Rust será medido, é usado a forma mais ideomática do Rust, para o ESP32 (Xtensa): Rust bare-metal em no\_std, com alocação estática usando o crate heapless e utilizando o crate esp-hal, como HAL. Além disso, o compartilhamento entre ISR e Tarefa será feita através de um bloco especifico da biblioteca Aule, bem como todo o núcleo de controle \ref{subsec:catalog-n-unsafe-policy}. Perceba que o mais idiomático, neste caso, no Rust, não é utilizar um RTOS, mas sim no\_std bare-metal com esp-hal. Isso ocorre, pois o RTIC não suporta ESP32 Xtensa e o Embassy não é um RTOS no mesmo sentido que o FreeRTOS, pois enquanto o FreeRTOS utiliza preempção no escalonamento, o Embassy utiliza cooperação no escalonamento. Com isso o bare-metal no\_std com o esp-hal é a abordagem mais adequada e mais próxima que existe no Rust, para esse caso, com relação a implementação de referência. Para o regime de memória, é utilizado o crate heapless, pois com ele é possivel obter alocação estática e manter a simetria (no ambito da garantia de P3) com a implementação de referencia. Note que ainda é utilizada alocação dinamica mas não na garantia, apenas como escolha do veículo de instanciação Aule. O ponto diferente entre as duas implementações é que em safe Rust, é impossível o compartilhamento de um bloco mutável sem um container de sincronização. O bloco coerente escrito na ISR e lido pela Tarefa, possui sua sincronização como opcional na implementação de referencia, necessitando da disciplina do programador. Enquanto na implementação em Rust, por conta do sistema de tipos a sincronização é forçada.
+
+Na tabela \ref{tab:impl-compare} são mostradas as diferenças entre cada uma das implementações. A tabela é construída com 4 colunas: a primeira é a dimensão onde é apresentado o item de cada implementação; a segunda coluna, a forma em que a primeira implementação (C+FreeRTOS+MISRA) realiza o item; a terceira coluna, a forma em que a segunda implementação (Rust+Aule) realiza o item; e a última coluna, onde é classificada a diferença entre a coluna 2 e 3 em um dos 3 grupos: Controlado, onde não há diferença; Variável de estudo, onde é feita a comparação das medições; e Variável de Confusão Neutralizada, onde existe uma diferença, mas é isolada por medição. Note que ambas implementações protegem o bloco com a mesma primitiva: mascarar IRQ com uma seção crítica. Isso indica, que o que está sendo medido não é a primitiva em si, mas sim o custo que o container safe do Rust adiciona sobre a primitiva compartilhada. O overhead desse container ser despressível indica a segurança sem custos adicionais.
+
+\begin{table}[ht]
+  \centering
+  \caption{Comparação entre a implementação de referencia e a implementação medida}
+  \label{tab:impl-compare}
+  \begin{tabularx}{\textwidth}{>{\hsize=0.5\hsize}X >{\hsize=1.0\hsize}X >{\hsize=1.5\hsize}X >{\hsize=1.0\hsize}X}
+    \toprule
+    Dimensão & C+FreeRTOS+MISRA & Rust+Aule & Papel no Experimento \\
+    \midrule
+    Algoritmo de controle & Realimentação de estados & Realimentação de estados & Controlado \\
+    Estimador & Kalman (mesma tarefa) & Kalman (planejado, mesma tarefa) & Controlado \\
+    Planta & Furuta física & Furuta física & Controlado \\
+    MCU & ESP32 Xtensa & ESP32 Xtensa & Controlado \\
+    Uso do núcleo & Single-core & Single-core & Controlado \\
+    Período e deadline & Escolhido pelo usuário & Escolhido pelo usuário & Controlado \\
+    Carga & Escolhida pelo usuário & Escolhida pelo usuário & Controlado \\
+    Caso & P3 (fronteira ISR-Tarefa) & P3 (fronteira ISR-Tarefa) & Controlado \\
+    Aquisição de dados & Interrupção & Interrupção & Controlado \\
+    Memória da garantia & heap-free & heap-free & Controlado \\
+    Mecanismo de proteção do bloco & Mascarar IRQ (seção crítica) & Mascarar IRQ (seção crítica) & Controlado \\
+    Acesso do mecanismo de proteção & Direto (sob seção crítica) & Mutex<RefCell> & Variável de estudo \\
+    Substrato & Free-RTOS & bare-metal & Variável de Confusão Neutralizada \\
+    Alocação de veículo & 100 \% estática por MISRA & Heap no observador & Variável de Confusão Neutralizada \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Por fim, a tabela mostra que as dimensões estão controladas ou a variável de confusão foi neutralizada, só restando a diferença na variável de estudo, a qual queremos medir. Esta variável indica o quanto a adição de segurança do Rust custa. Se esse custo for despresível, ou seja, um empate entre as duas implementações, então o Rust possui uma segurança sem custos. Entretanto, caso não exista o empate, o custo do lado safe do Rust fica quantificado.
 
 % 4.6.3
 \subsection{Métricas e instrumentação}
