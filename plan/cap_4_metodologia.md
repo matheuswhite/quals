@@ -12,6 +12,7 @@ co-authors:
   - Claude (claude-opus-4-8), 2026-06-26
   - Claude (claude-opus-4-8), 2026-07-04
   - Claude (claude-opus-4-8), 2026-07-08
+  - Claude (claude-opus-4-8), 2026-07-13
 ---
 
 <!-- LTeX: enabled=false -->
@@ -480,7 +481,29 @@ Estrutura redigida da 4.6.1 (5 blocos de roteiro, com 3+4 fundidos): planta + es
 - `git add res/metodologia/inv_pendulum.png` — imagem existe local mas **não versionada** → quebra o build ao clonar (Rule 6).
 - Figura: legenda "Pendulo" → "Pêndulo"; bloco 5: concordância "a implementação e testes **são** mais fáceis".
 
-**➡️ Ponto de retomada:** 4.6.1 fechada. **Próxima = 4.6.2** (Implementações comparadas: C+FreeRTOS+MISRA vs. Rust+`heapless`+RTIC).
+### 4.6.2 (Implementações comparadas) — REDIGIDA (2026-07-13)
+
+Blocos 1–5 + tabela `tab:impl-compare` redigidos pelo Matheus; conteúdo revisado e fechado. Decisões desta sessão (só existiam no chat):
+
+- **Config B (assimétrica) fixada.** Braço A (referência) = **C + FreeRTOS (via ESP-IDF) + MISRA**; Braço B (alvo) = **Rust `no_std` + `heapless` + `esp-hal` bare-metal + `critical-section`**, instanciando a Aule. **RTIC ABANDONADO** (não suporta ESP32 Xtensa — corrige a linha antiga do plano). **Embassy descartado** (async/cooperativo ≠ preemptivo do FreeRTOS → confound novo).
+- **Bare-metal C é impossível** no ESP32: o ESP-IDF sempre sobe o FreeRTOS (não há modo bare-metal suportado). Logo C = FreeRTOS obrigatório.
+- **Trilema da plataforma:** dá para ter no máximo 2 de {substrato simétrico, Rust `no_std`/`heapless`, ESP32 Xtensa}. Escolhido: `no_std`/heapless + Xtensa → **substrato assimétrico assumido** (FreeRTOS vs bare-metal), tratado por **decomposição** na 4.6.3, não escondido.
+- **Tabela = ledger de validade interna.** 4 colunas (Dimensão | Braço A | Braço B | Papel), 3 categorias: **Controlado** / **Variável de estudo** / **Variável de Confusão Neutralizada**.
+- **Ponto fino (afia o obj 5):** em single-core a primitiva é **idêntica** dos dois lados (mascarar IRQ / seção crítica = *Controlado*); a **Variável de estudo** é o **overhead do invólucro safe** (`Mutex<RefCell>`) sobre a primitiva compartilhada, vs. acesso direto no C. Empate = hipótese de *zero-cost abstraction* (segurança sem custo).
+- **Veículo-vs-garantia (reconcilia a simetria de memória):** o heap do observador é **custo de veículo** (4.5.1), isolado como confound neutralizado; a memória **DA garantia** (bloco de encoders sob seção crítica) é **heap-free** nos dois lados. A frase "só alocação estática" foi escopada à *garantia*, não à implementação inteira.
+- **Kalman pós-qual (fecha Luenberger×Kalman):** a Aule ganhará um bloco de **Kalman** na pós-qualificação; a 4.5.1 (linha ~260) foi reconciliada (tem Luenberger, usará Kalman); a tabela marca "(Planejado)" na coluna Aule. Reforço: o exemplo de P3 da 4.4 (l.219) já é $\hat{x}+P$ = Kalman.
+
+**Pendências `.tex` abertas (acabamento, não conteúdo):**
+- **Passe de forma** acumulado dos blocos 2–5: concordância ("usado/usada", "feita/feito"), crase ("com relação à"), acentos ("idênticas", "referência", "específico", "possível", "dinâmica", "âmbito", "idiomática", "desprezível"), vírgulas sujeito-verbo recorrentes, "Free-RTOS"→"FreeRTOS", "pós qualificação"→"pós-qualificação".
+- Bloco 5 (opcional): acrescentar o desfecho **não-empate** (custo quantificado no P3 = contribuição, não fracasso); trocar "queremos medir" por voz impessoal.
+
+**Pendências técnicas a confirmar (execução/pós-qual):**
+- Bloco sync P3 no Rust deve ser a variante **`critical-section`/atomic (heap-free)**, não `Arc<Mutex>` da `tab:tracking` — senão "Memória da garantia = heap-free" cai.
+- Aule compila `no_std` no alvo **Xtensa**/esp-hal (exemplo atual é Cortex-M).
+- **Pinning tarefa+ISR no mesmo núcleo** no FreeRTOS do ESP-IDF (senão vira Núcleo-Núcleo, fora de escopo).
+- Origem dos encoders: **PCNT hardware** (P3 puro) vs. decode por software na ISR (P4 coexiste).
+
+**➡️ Ponto de retomada:** 4.6.2 fechada (conteúdo; falta só passe de forma). **Próxima = 4.6.3** (Métricas e instrumentação) — operacionalizar a coluna "Variável de Confusão Neutralizada": **decompor o tick/overhead do FreeRTOS** e **isolar o overhead do invólucro `Mutex<RefCell>` via `CCOUNT`**; definir "deadline perdido" e ciclos/iteração.
 
 ---
 
