@@ -13,6 +13,7 @@ co-authors:
   - Claude (claude-opus-4-8), 2026-07-04
   - Claude (claude-opus-4-8), 2026-07-08
   - Claude (claude-opus-4-8), 2026-07-13
+  - Claude (claude-opus-4-8), 2026-07-16
 ---
 
 <!-- LTeX: enabled=false -->
@@ -503,7 +504,25 @@ Blocos 1–5 + tabela `tab:impl-compare` redigidos pelo Matheus; conteúdo revis
 - **Pinning tarefa+ISR no mesmo núcleo** no FreeRTOS do ESP-IDF (senão vira Núcleo-Núcleo, fora de escopo).
 - Origem dos encoders: **PCNT hardware** (P3 puro) vs. decode por software na ISR (P4 coexiste).
 
-**➡️ Ponto de retomada:** 4.6.2 fechada (conteúdo; falta só passe de forma). **Próxima = 4.6.3** (Métricas e instrumentação) — operacionalizar a coluna "Variável de Confusão Neutralizada": **decompor o tick/overhead do FreeRTOS** e **isolar o overhead do invólucro `Mutex<RefCell>` via `CCOUNT`**; definir "deadline perdido" e ciclos/iteração.
+### 4.6.3 (Métricas e instrumentação) — REDIGIDA e revisada (2026-07-16)
+
+Blocos 1–5 redigidos pelo Matheus; convergência em várias rodadas de revisão banca. Decisões desta sessão (só existiam no chat):
+
+- **Protocolo = 4 propriedades por dimensão:** grandeza · como medir · unidade · quando (estático no build / runtime na planta). Enquadramento explícito "só protocolo, nada medido".
+- **4 dimensões operacionalizadas:** Runtime → ciclos na região guardada (delta `CCOUNT`); **W** (com bloqueio + código) − **B** (com bloqueio, vazio) isola o estudo. Determinismo → 3 sub-métricas: jitter = **máx−mín** (deadline *hard* → pior caso; p99 e desvio-padrão descartados por subestimar cauda), deadline perdido (tempo de **resposta** > período = **2 ms**, do firmware da planta), inversão (atraso imposto à ISR pela seção crítica). Footprint → RAM (`.data`/`.bss`) + Flash (`.text`) estático; garantia vs veículo por diff com **barreira de otimização** (otimização **LIGADA** — desligar mataria a hipótese *zero-cost*). Ergonomia → LoC de boilerplate (mutex/atômico), estático.
+- **Sonda `CCOUNT` — auto-cancelamento (decisão-chave):** custo da leitura = viés aditivo constante ao *delta* (um delta isolado mede `T+L`) → cancela na subtração **externa** W−B, **não** dentro de um delta. Jitter: depende da variância da leitura ser desprezível (a verificar). Absolutos (deadline/inversão): desprezível **por escala**. Distinção **sonda (constante, cancela) × tick (assíncrono, NÃO cancela)**.
+- **Tick do FreeRTOS — confound de substrato por escopo + reporte:** a seção crítica **mascara** o tick → ele **não entra na janela** → variável de estudo e jitter **tick-free** nos 2 braços. O tick age **fora** da janela (deadline + inversão). Caracterizado por `ciclos/tick × frequência` e **reportado à parte** — só p/ **deadline** (agregado); a **inversão** leva **1 handler**, não a taxa. Não subtraído do Rust; reportado como substrato.
+- **Heap do veículo — confound por escopo:** observador Kalman usa heap no Rust (custo de **veículo**, 4.5.1); alocação prévia, fora da janela; garantia **heap-free** nos 2 braços.
+- **Dois níveis de medição (o que dá coerência):** região guardada (mascarada, tick-free) = runtime + jitter do estudo; laço/tarefa (tick-exposto) = deadline + inversão (onde o tick é caracterizado/reportado).
+- **Desfechos:** empate (Δ desprezível = *zero-cost abstraction*) vs não-empate (custo do safe quantificado). Ponte p/ 4.6.4 via `\label{subsec:quantity-measurement}`.
+
+**Pendências `.tex` abertas (acabamento, não conteúdo):**
+- **Passe de forma:** acentos/concordância (independência, referência, variância, frequência, distribuição, latências, assimétrico, dinâmica; "são apresentadas", "são medidas", "são obtidos", "às variáveis").
+- **`\cite{}` vazio** do firmware da planta (fonte do período de 2 ms) — Matheus traz (Regra 7).
+- Opcional: linha sobre **rollover de 32 bits** do `CCOUNT` (aritmética modular trata o wraparound se região ≪ 2³²).
+- Confirmar pouso da métrica **LoC `unsafe` + invariante documentada** na 4.7 (saíram da ergonomia da 4.6.3; a 4.5.3 prometeu "medição é 4.6").
+
+**➡️ Ponto de retomada:** 4.6.3 fechada (conteúdo; falta passe de forma + `\cite`). **Próxima = 4.6.4** (Limites entre qualificação e dissertação, `subsec:quantity-measurement`) — o **quanto**: thresholds ("empate" = Δ < X %), escala (nº de cenários, repetições, valor de N), placa específica; o que fecha na qualificação vs adia p/ dissertação.
 
 ---
 
