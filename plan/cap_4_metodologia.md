@@ -14,6 +14,7 @@ co-authors:
   - Claude (claude-opus-4-8), 2026-07-08
   - Claude (claude-opus-4-8), 2026-07-13
   - Claude (claude-opus-4-8), 2026-07-16
+  - Claude (claude-opus-4-8), 2026-07-18
 ---
 
 <!-- LTeX: enabled=false -->
@@ -522,7 +523,22 @@ Blocos 1–5 redigidos pelo Matheus; convergência em várias rodadas de revisã
 - Opcional: linha sobre **rollover de 32 bits** do `CCOUNT` (aritmética modular trata o wraparound se região ≪ 2³²).
 - Confirmar pouso da métrica **LoC `unsafe` + invariante documentada** na 4.7 (saíram da ergonomia da 4.6.3; a 4.5.3 prometeu "medição é 4.6").
 
-**➡️ Ponto de retomada:** 4.6.3 fechada (conteúdo; falta passe de forma + `\cite`). **Próxima = 4.6.4** (Limites entre qualificação e dissertação, `subsec:quantity-measurement`) — o **quanto**: thresholds ("empate" = Δ < X %), escala (nº de cenários, repetições, valor de N), placa específica; o que fecha na qualificação vs adia p/ dissertação.
+### 4.6.4 (Limites entre qualificação e dissertação) — REDIGIDA e revisada (2026-07-18)
+
+Roteiro em 2 blocos + redação do Matheus + verificação banca (6 furos, todos fechados). Estrutura: **bloco 1** = enquadramento + o que FECHA na qualificação; **bloco 2** = o que ADIA (só o *valor*) + por que a linha cai aqui + fecho da §4.6. Decisões desta sessão:
+
+- **Regra-mãe (furo C):** adiar o *quanto* não pode virar adiar o *como* — cada número adiado leva a **regra** fixada agora; só o valor adia.
+  - **Limiar de "empate" = máx−min da distribuição do ruído da região vazia B** (dispersão, **não** "menor valor" — este quase não filtra; coerente com jitter = máx−min da 4.6.3). Valor só existe após medir B na placa.
+  - **N (repetições) = ponto em que a distribuição estabiliza** (para de mudar). Valor via piloto na planta.
+- **Escopo (furo B):** subseção escopada explicitamente ao **experimento de custo** ("...do que será medido no experimento de custo"); a 4.7 (obj 8) tem o próprio limite (4.7.3). Título capitular fica defensável por causa dessa cláusula.
+- **Critério fecha, valor adia (furo D):** o critério de decisão empate/não-empate está no parágrafo do que FECHA; o valor de X no do que ADIA — pré-comprometimento que neutraliza a objeção de p-hacking.
+- **Consistência com a 4.6.1 (furos E, F):** "número de cenários" **REMOVIDO** da escala (âncora ÚNICA P3 — Decisão B); "placa específica" → "**variante específica da ESP32 utilizada na planta física**" (a **família** ESP32 Xtensa é imposta pela planta na 4.6.1; só a **variante exata** se confirma na execução).
+- **Furo A descartado** — era rótulo errado no roteiro ("fecho do cap. 4"); a 4.6.4 fecha só a **§4.6** (a 4.7 vem depois; quem fecha o cap. 4 é a 4.7.3).
+
+**Pendências `.tex` abertas (acabamento, não conteúdo):**
+- Passe de forma: "impate" → "empate"; "forçado a forma segura" → "à forma segura"; frase final truncada ("Portanto o como esse trabalho segue... a parte empiracamente fica adiada") → revisar regência + "empiricamente"; maiúsculas no meio da lista com ";" ("Os 4 eixos", "A validade", "A variante").
+
+**➡️ Ponto de retomada:** **§4.6 inteira fechada** (4.6.1–4.6.4; conteúdo — restam passes de forma nas 4 subseções + `\cite` do firmware da 4.6.3). **Próxima = 4.7** (Verificação por Tipos vs. C+MISRA+Sanitizers, obj 8): 4.7.1 dimensão de comparação · 4.7.2 o artefato comparativo (trio {snippet C que produz o bug; erro de compilação Rust que o impede; diagnóstico do sanitizer}) · 4.7.3 limites do sanitizer e honestidade (**fecha o cap. 4**). Cal. **W6** (13–19 jul); marco cap. 4 ~19/jul.
 
 ---
 
