@@ -11,6 +11,7 @@ modified:
   - 2026-05-28: Claude (claude-opus-4-7) — refined §1.2 (research question + objectives) with criteria, the A-vs-B verb test, and a coverage checklist (no drafted prose)
   - 2026-06-04: Claude (claude-opus-4-8) — propaga decisões do cap. 4: escopo só data race (casos = setpoint/ISR-DMA/estado composto; delay line e MPC fora) e experimento = pêndulo invertido + realimentação de estados; atualiza referências ao título novo (itens 42 e 372)
   - 2026-06-11: Claude (claude-opus-4-8) — registra a decisão da fronteira cap. 4 × cap. 5 (Arquitetura B: fase exploratória entrega resultados no cap. 4) nas decisões em aberto do cap. 5
+  - 2026-07-20: Claude (claude-opus-4-8) — recorta o cap. 2 sob o prazo (defesa 26/ago): 5 subseções → tabela + prosa mínima. Rebaixa verificação formal (Kani/Creusot/Prusti → cap. 6) e bibliotecas de controle (→ contexto); MISRA/sanitizers deixam de ser reexplicados (só posicionados; vivem em 3.5/4.7); Ada/SPARK vira subseção própria (blindagem — furo provável da banca). Motivo: a survey comparativa não está no referencias.bib nem no leitura_futura.md (leitura montada só serve ao cap. 4) e é do Matheus (Regra 7). Ver roadmap_escrita.md.
 ---
 
 <!-- LTeX: enabled=false -->
@@ -168,20 +169,25 @@ Armadilhas: ampla demais ("Rust é bom pra embedded?"); de engenharia ("como con
 
 **Ato narrativo:** Ato 1 — aprofunda a tensão introduzida em 1.1. Cada trabalho citado precisa empurrar a tensão: "X resolve Y mas não Z", "W ataca a borda errada do problema". Não é catálogo — é mapeamento da lacuna que a Aule preenche. Tabela comparativa final é o cliffhanger que prepara a entrada do Ato 2.
 
-### Estrutura sugerida (reordenada sob B)
+### Estrutura sugerida (recortada sob prazo — 20/jul)
 
-Sob enquadramento B, os comparáveis **primários** são abordagens de *garantia de segurança*; toolboxes de controle entram como *contexto* (de onde a Aule herda requisitos), não como o eixo de comparação central.
+Sob enquadramento B, os comparáveis **primários** são abordagens de *garantia de segurança*; toolboxes de controle entram como *contexto*. **Recorte de 20/jul (defesa 26/ago):** a survey comparativa ainda não foi feita (nada de Ada/SPARK · Kani/Creusot/Prusti · ferramentas MISRA · libs de controle no `referencias.bib`; leitura montada só serve ao cap. 4) → o capítulo encolhe para **tabela + prosa mínima**. Regra: **comprimir, não omitir** (item rebaixado ainda aparece na tabela + 1 posicionamento). Ver log do frontmatter e [`roadmap_escrita.md`](roadmap_escrita.md).
 
-- **2.x (primário) Abordagens de memory/type safety em software crítico** — Rust (safe + `unsafe` confinado), Ada/SPARK, MISRA-C + ferramentas (Polyspace, Coverity, Frama-C), C com sanitizers (ASan/TSan/UBSan). Eixo: *que classes de bug cada uma elimina, e em que momento (compilação / análise estática / runtime / teste)?*
-- **2.x (primário) Verificação formal aplicável a Rust** — Kani, Creusot, Prusti. O que provam e a que custo. Liga ao cap. 4 (invariantes provados).
-- **2.x (contexto) Bibliotecas de controle como origem de requisitos** — MATLAB Control Toolbox, `python-control`, Slycot; libs de controle em Rust (`control-rs` etc.). Servem pra dizer "isto é o que uma toolbox precisa ter" e situar a Aule, **não** pra reivindicar superioridade funcional.
-- **2.x Trabalhos acadêmicos no cruzamento controle × segurança de software** — onde a literatura já tocou no problema; qual a lacuna.
-- **2.x Síntese comparativa** — tabela cujo eixo central é *classe de bug eliminada × abordagem*, com colunas secundárias (embedded-ready, ergonomia, custo de adoção). **Aule entra como linha**, posicionada pela combinação "elimina por construção + ergonômica + `no_std`".
+**Manter (a banca fura aqui):**
+- **2.1 Abordagens de garantia** — eixo: *que classe de bug cada uma elimina, e em que momento (compilação / análise estática / runtime / teste)?* Ancorar no que já existe no `.bib`: Rust (safe + `unsafe` confinado), MISRA-C, sanitizers (ASan/TSan/UBSan). **MISRA/sanitizers não são reexplicados aqui** — a explicação vive em 3.5 / 4.7; em 2.1 só entram posicionados na tabela.
+- **2.2 Ada/SPARK** — subseção **própria** (curta, mas sólida). É o comparável conceitual mais forte (segurança por construção) e o furo mais provável da banca ("por que não Ada/SPARK?"). Dimensões do posicionamento a cobrir: ecossistema/momentum do Rust embarcado, `no_std`, ergonomia, custo de adoção. **Exige leitura sua (Regra 7) — não há entrada no `.bib`.**
+- **2.3 Lacuna: controle × segurança de software** — onde a literatura já tocou no problema; qual a lacuna que a Aule ocupa. Naturalmente curta, mas é a **justificativa** — não pode ser rasa em substância.
+- **2.4 Síntese comparativa (tabela)** — eixo *classe de bug × abordagem*, colunas secundárias (embedded-ready, ergonomia, custo de adoção). **Aule entra como linha.** É o payload do capítulo — intocável.
+
+**Rebaixados (20/jul — pouco peso sob B + zero leitura montada):**
+- **Verificação formal p/ Rust** (Kani/Creusot/Prusti) → menção breve + 1 linha na tabela; a profundidade é **trabalho pós-qual (cap. 6)**. Não é o eixo desta tese — 4.7 compara *tipos*, não prova formal.
+- **Bibliotecas de controle** (MATLAB Control Toolbox, `python-control`, Slycot, `control-rs`) → 1 parágrafo de contexto (situar a Aule), ou migrar para cap. 1 / 4.1. Não é eixo de comparação sob B.
 
 ### Decisões em aberto
 - ~~A taxonomia é por linguagem ou por abordagem de garantia?~~ **Resolvido sob B:** por **abordagem de garantia** (é o que conversa com a tese). Linguagem vira atributo dentro de cada abordagem.
-- Quão fundo entrar em Ada/SPARK? Sob B, é o comparável conceitual mais forte (também mira segurança por construção) — provavelmente merece mais espaço que as toolboxes. Definir profundidade.
-- Incluir ferramentas adjacentes (RTOS type-safe, ex. RTIC/Embassy)? Sob B, RTIC é relevante porque aparece nos casos (cap. cap. de memory safety) — incluir como parte da abordagem Rust, não como item isolado.
+- ~~Quão fundo entrar em Ada/SPARK?~~ **Resolvido (20/jul):** subseção **própria**, curta mas sólida (é o furo provável da banca). Depende de leitura sua (Regra 7).
+- Incluir ferramentas adjacentes (RTOS type-safe, ex. RTIC/Embassy)? Sob B, RTIC é relevante porque aparece nos casos (cap. de memory safety) — incluir como parte da abordagem Rust, não como item isolado.
+- **Risco aberto (20/jul):** a leitura comparativa do cap. 2 é sua (Regra 7) e **não está montada**. Rodar de fundo em W7–W8 ou a W9 não fecha. É o risco nº 1 do capítulo.
 
 ---
 
