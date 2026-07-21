@@ -5,13 +5,14 @@ description: >-
   dissertação/tese defendida perante banca. Use quando o autor vai escrever uma
   seção e quer saber O QUE cobrir — missão, perguntas a responder, blocos em
   ordem de escrita, pontos de defesa de banca, fronteiras com seções vizinhas e
-  apoios — SEM que a prosa seja escrita por ele. Só orienta; nunca entrega texto
+  apoios — SEM que a prosa seja escrita por ele. Ensina COMO a seção funciona (abre com uma imagem/modelo mental e apresenta os blocos como um arco, com o papel de cada um), não só o que ela tem. Só orienta; nunca entrega texto
   pronto para colar.
 argument-hint: "[seção/subseção, ex.: 4.5 ou 'Método de coleta']"
 author: Claude (claude-opus-4-8)
 created: 2026-06-11
 modified:
   - 2026-07-20: Claude (claude-opus-4-8) — added the "Seja didatico" section (teach how the section works — mental image + block roles + why the order + schematic micro-example — not just a flat checklist), per Matheus's feedback
+  - 2026-07-20: Claude (claude-opus-4-8) — made the didactic format the DEFAULT (not an add-on): rewrote field 3 (Blocos) to be an arc with roles + why-the-order + where-confusion-lives, made the mental image a required opening, and updated template.md/exemplo.md to demonstrate it. Fixes the gap where the first-pass roteiro still came out as a flat list.
 ---
 
 # Roteiro acadêmico — blocos de redação por seção/subseção
@@ -32,17 +33,28 @@ A tese é do autor; a escrita tem de ser dele. Esta skill **orienta**, não redi
 - Roteiro ≠ prosa: bullets, perguntas, tópicos a cobrir, ordem de escrita — sim;
   sentenças prontas — não.
 
-## O que produzir — seis campos, nesta ordem
+## O que produzir — abra com a imagem, depois os seis campos
 
-Para a seção/subseção alvo, entregue:
+**Abra SEMPRE com uma imagem/modelo mental (obrigatório, não é enfeite).** Uma frase
+que resume o que a seção *faz* ("constrói a régua antes de medir") + o **insight central**
+que a carrega — a ideia de maior peso (ex.: "cada dimensão = 1 pergunta + 2 respostas";
+"por que três pernas, não duas"). Quando aterrar o abstrato, junte um **micro-exemplo
+esquemático** (setas/tabela — nunca prosa). É o gancho: quem lê tem de *pegar* a seção
+antes de ver a lista.
+
+Depois, os seis campos, nesta ordem:
 
 1. **Missão** — em 1 frase: o que a seção precisa *provar ou entregar* (o trabalho
    de convencimento), não o assunto. Ex.: "provar que X é necessário e suficiente".
 2. **Perguntas que responde** — as perguntas que um leitor crítico / a banca faria
    e que a seção deve responder. São o esqueleto do conteúdo.
-3. **Blocos (ordem de escrita)** — o roteiro propriamente dito: cada bloco é um
-   movimento do texto, **numerado, na ordem em que escrever**. Cada bloco diz O QUE
-   cobrir (tópicos), nunca COMO redigir (frases).
+3. **Blocos (o arco de escrita)** — o roteiro propriamente dito, apresentado **como um
+   arco, não como lista seca**. Rotule o **papel de cada bloco** (abre → regra do jogo →
+   corpo → destaque → fecha, ou o que a seção pedir). Para cada bloco dê: **o papel**, **o
+   que ele faz** (o movimento do texto) e **o que entra** (tópicos — jamais frases). Com
+   3+ blocos, use uma **tabela** (`# | Papel | O que faz | O que entra`). E **sempre** feche
+   com dois itens: *o porquê da ordem* e *onde mora a confusão* — o par de blocos vizinhos
+   (ou de subseções irmãs) que tende a embolar, distinguido explicitamente.
 4. **Pontos de defesa** — objeções prováveis da banca + a resposta pronta, em
    tópico. Antecipa o ataque antes que ele venha.
 5. **Fronteiras (não invadir)** — o que pertence a seções/subseções vizinhas e
@@ -51,31 +63,23 @@ Para a seção/subseção alvo, entregue:
 6. **Apoios** — figuras, tabelas, snippets mínimos, ferramentas, e **pendências a
    confirmar** (fontes, números, fatos técnicos) antes de afirmar.
 
-> Para subseções os campos podem ser mais enxutos, mas mantenha os seis. O tamanho
-> vem da substância — não encha linguiça.
+> Para subseções os campos podem ser mais enxutos, mas mantenha a **imagem + os seis**. O
+> tamanho vem da substância — não encha linguiça.
 
-## Seja didático — ensine como a seção funciona, não só o que ela tem
+## Por que arco, e não checklist (é o padrão, não opção)
 
-Os seis campos são o *conteúdo* do roteiro; isto é o *modo de entregar*. Não despeje o
-roteiro como checklist seco — **ensine a lógica da seção**, para o autor entender *por que*
-ela é assim (e conseguir escrevê-la). O que funciona:
+O formato acima **é o default** — não um bônus para quando o autor pedir "explique melhor".
+Uma lista de tópicos diz *o que tem*, mas não ensina *como a seção funciona*; o autor precisa
+enxergar a lógica e o movimento para conseguir escrever. Regras que sustentam isso:
 
-- **Dê uma imagem/modelo mental** que resuma a seção em uma frase (ex.: "constrói a régua
-  antes de medir"). É o gancho que faz o resto encaixar.
-- **Nomeie o papel de cada bloco no arco** (abre → regra do jogo → corpo → destaque →
-  fecha), não só "o que entra". O autor precisa ver o *movimento*, não uma lista.
-- **Explique o PORQUÊ da ordem** e **como blocos vizinhos diferem** — sobretudo o par que
-  tende a confundir (ex.: "quem são os jogadores" vs. "sob que regra jogam").
-- **Aterre o abstrato com micro-exemplo esquemático** (ex.: uma dimensão como
-  `pergunta → resposta de cada lado`). Esquema, tabela ou setas — **nunca** prosa colável.
 - **Ancore no que o autor já entende ou escreveu** (uma seção anterior, uma decisão
   fechada). O familiar destrava o novo.
 - **Antecipe onde mora a confusão** e desarme-a; se um termo confunde o autor, sinalize
   que confundirá a banca.
-
-Isto **não** afrouxa o Princípio inegociável: didático = ensinar a lógica e o arco, jamais
-redigir o texto. Se o autor disser "ficou confuso", **reexplique ensinando** (imagem +
-papéis + porquê + micro-exemplo), não repetindo a lista.
+- **Nunca** troque isto por prosa colável — imagem, arco e esquema *ensinam a lógica*; não
+  redigem o texto (ver Princípio inegociável).
+- Se o autor disser "ficou confuso", **reexplique ensinando** (imagem + papéis + porquê +
+  micro-exemplo), nunca repetindo a mesma lista.
 
 ## Como conduzir
 
