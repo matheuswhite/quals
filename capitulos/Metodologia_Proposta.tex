@@ -408,8 +408,18 @@ Desta forma, o que é adiado para a dissertação é o quanto de cada medida. Es
 % 4.7.1
 \subsection{Dimensão de comparação}
 
+Nesta seção é tratada a comparação entre o regime de verificação de erro em data races de cada implementação. Por um lado, tem-se o Rust safe, com o sistema de tipos e o C+MISRA+Sanitizers, com disciplina mais ferramentas de verificação em runtime. Note que a abordagem do C+MISRA+Sanitizers não é uma abordagem ingenua mas o estado da arte da implementação segura em C. Para que a comparação dessas duas abordagens sejam justas é necessário que as regras valham para ambos os lados. Desta forma, para ambos os lados serão usados os mesmos padrões de data race (desde o P1 até o P4 da taxonomia), pois com isso tanto o C quanto o Rust enfrentam o mesmo padrão. Também é utilizado o mesmo alvo, pois é onde mora o problema, por exemplo no caso onde uma ISR e uma Tarefa disputam o mesmo recurso. E por último o mesmo algoritmo de controle, pois em ambos os casos é comparado a realimentação de estados do pêndulo. Portanto, o que varia é o regime de verificação de erros.
+
+Sendo assim, será descrito aqui uma lista de dimensões. Cada dimensão é uma pergunta feita para cada um dos lados e é obtida 2 respostas, uma para cada lado. Primeiramente, temos o momento da verificação, onde se quer saber quando o problema é pego. Em C, é em tempo de execução, já em Rust é em tempo de compilação. Também tem-se a natureza da garantia, onde se pergunta o que ocorre com o bug. Em C, o problema é detectado em um caso em execução, já em Rust o problema é previnido por construção. Após isso, é perguntado qual o esforço para localizar os bugs. Em C, deve-se utilizar ferramentas externas e revisão humana, enquanto em Rust o sistema de tipos previne esses bugs. E a última pergunta é: onde é delimitado o código inseguro. Em C, pode ser qualquer parte do código, enquanto em Rust, é delimitado pelas linhas de código marcadas pelo bloco unsafe.
+
+Note que a pergunta central é o momento onde o problema é tratado, pois em C é procurado problema que ocorrem em tempo de execução. Isso torna problematico, pois é necessário esperar o problema ocorrer e esse problema pode estar escodido e nem ocorrer no momento do desenvolvimento, apenas sendo mostrado em produção. O que é diferente do Rust, onde os problemas são prevenidos em compilação. Isso significa que esse problema nunca será apresentado em produção, pois ele nem sequer é executado, pois não compila.
+
+Nas seções seguintes serão tratadas a instanciação de cada dimensão \ref{subsec:dim-inst}, bem como quais são os limites onde essas dimensões atingem \ref{subsec:dim-bounds}.
+
 % 4.7.2
 \subsection{O artefato comparativo}
+\label{subsec:dim-inst}
 
 % 4.7.3
 \subsection{Limites do sanitizer e honestidade}
+\label{subsec:dim-bounds}
