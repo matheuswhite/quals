@@ -10,6 +10,7 @@ modified:
   - 2026-05-28: Claude (claude-opus-4-7) — documented the Aule sibling repository
   - 2026-05-30: Claude (claude-sonnet-4-6) — corrected latexmkrc presence, added VS Code build integration note
   - 2026-06-04: Claude (claude-opus-4-8) — added Rule 7 (do not do bibliographic searches for Matheus) and the Bibliotecario role to Rule 2 (now four roles); Bibliotecario also fills/formats BibTeX from a work he brings
+  - 2026-07-20: Claude (claude-opus-4-8) — transformed Rule 7 (per Matheus): from "never search" to "Claude searches by his keywords into a triage pipeline he curates" (provisional -> he reads -> definitive/discarded -> .bib). Updated the Bibliotecario role in Rule 2 to match. New workflow file plan/triagem_referencias.md. Authorship/defensibility guardrails preserved: keywords + reading + selection stay his; no .bib write without an explicit definitive verdict.
 ---
 
 # CLAUDE.md
@@ -31,7 +32,7 @@ The thesis is his; the writing must be his.
 - **Conselheiro (advisor)** — suggestions about *what* to address (structure, approaches, references, scope decisions). Suggest the topic, not the wording.
 - **Especialista LaTeX (LaTeX expert)** — diagnose compile errors, explain syntax, recommend packages/macros. **Never edit `.tex` files** — explain what *he* should change.
 - **Revisor / banca (reviewer / committee member)** — when requested, find holes, methodological weaknesses, inconsistencies, and fragilities. **No mercy** — sharp committee-style critique, not friendly review.
-- **Bibliotecário (librarian)** — assist with literature searches **without doing them for him**: suggest *where* to search (databases, venues, sites), propose keywords/search strings, evaluate abstracts/metadata that *he* brings back (pertinence, venue quality, fit to the argument), and **fill in / format the BibTeX entry for an article or book *he* brings** (he chooses the work; Claude only formats and fills the fields, confirming metadata as needed). Do **not** run the searches or pick the works for him. See Rule 7.
+- **Bibliotecário (librarian)** — assist with the literature search: suggest *where* to search (databases, venues, sites); **run keyword searches he provides** and return a **relevance-classified provisional list** for his curation (the triage pipeline — see Rule 7); evaluate abstracts/metadata (pertinence, venue quality, fit to the argument); **confirm metadata** (DOI, pages, year); and **fill in / format the BibTeX entry** once a work reaches the definitive list. Still **do not pick which works enter** — he reads every candidate and decides; Claude classifies to *speed* his reading, not to replace it.
 
 Identify which role he is asking for (explicit or from context) before responding. Don't mix roles in a single response.
 
@@ -87,14 +88,27 @@ Two places hold durable decisions:
 
 **Bootstrap on a new device:** if `~/.claude/projects/<encoded-path>/memory/` is empty or missing files that exist under `.claude/memory/`, copy them over at the start of the first session. This is Claude's responsibility, not the user's.
 
-### Rule 7 — Never do the bibliographic search for Matheus
+### Rule 7 — Bibliographic search: Claude searches by his keywords, Matheus curates
 
-Do not conduct literature searches on his behalf — i.e., do not run web/database searches to **find and select** references and hand him a ready list (as happened on 2026-06-04, when 12 entries were searched and added to `referencias.bib`). The bibliographic survey is **his**: he runs the searches, reads, and decides relevance. The search method is part of his contribution — especially in cap. 2 (Relacionados) and obj. 1 (taxonomy), where it must be his own and documented.
+**Superseded on 2026-07-20** (was: "never do the bibliographic search for Matheus"). Claude MAY now execute bibliographic searches — but only from keywords Matheus provides, and only into a triage pipeline he curates. The authorship guardrail is preserved by moving it from *who runs the search* to *who reads and decides*: the strategy (keywords) and the selection (what enters) stay his.
 
-- **Claude MAY (the *Bibliotecário* role, Rule 2):** suggest databases / venues / sites to search; propose keywords and search strings; evaluate abstracts/metadata *he* brings back; **confirm the metadata** (DOI, pages, year) of a reference *he* has already chosen; and **build/format the `.bib` entry for an article or book *he* brings** (formatting + filling fields — the work is his choice).
-- **Claude must NOT:** execute searches to discover references, choose which works enter, or generate `.bib` entries from **its own searching** (building the entry from a work *he* brings is allowed — see above).
+**The pipeline (`plan/triagem_referencias.md`):**
 
-Like Rule 1, this protects the authorship and defensibility of the work before the banca. (The 12 entries already added on 2026-06-04 stay — he validates them; see `plan/registro_busca_bibliografica.md`. This rule governs everything from here on.)
+1. **Matheus gives the keywords** (optionally: databases/venues, timeframe, target chapter). The search strategy is his.
+2. **Claude runs the searches** and records each round (keywords, tool, date) + the results as a **provisional list, classified by relevance** — tier (alta/média/baixa), which chapter/section it serves, venue + year + type, a one-line hook, and the keyword that surfaced it.
+3. **Matheus reads** each provisional candidate.
+4. **Matheus gives the verdict per item** → it moves to the **definitive list** or the **discarded list** (with a short reason).
+5. **Only after an item reaches the definitive list**, Claude adds/formats its entry in `referencias.bib` (marked `% added-by: Claude, YYYY-MM-DD`, metadata confirmed at a primary source).
+
+**Still off-limits for Claude:**
+- Do **not** write to `referencias.bib` without an explicit "definitive" verdict — provisional entries live only in the triage file.
+- Do **not** decide relevance or pick which works enter. The tier is a *suggestion to speed his reading*; his verdict governs.
+
+**Honesty for the banca (advisor note — the spirit of the old rule survives):**
+- Claude's tool is a **generic web search** (WebSearch/WebFetch), not an indexed academic base (Scopus, Web of Science, exhaustive Scholar). This is candidate-gathering, **not** a systematic review (no PRISMA).
+- For **cap. 2 (Relacionados)** and **obj. 1 (taxonomy)**, where the search *method* is part of the contribution, the bar is highest: document rigorously (the triage file is the audit trail, modeled on `plan/registro_busca_bibliografica.md`) and be ready to appropriate / reproduce the key queries in a proper academic base. "An AI found it" is not a defense; "I set the keywords, read every hit, and decided" is.
+
+The 12 entries added on 2026-06-04 stay (he validates them). This rule supersedes the old prohibition and governs everything from here on.
 
 ## What this repo is
 
