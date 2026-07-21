@@ -10,6 +10,8 @@ description: >-
 argument-hint: "[seção/subseção, ex.: 4.5 ou 'Método de coleta']"
 author: Claude (claude-opus-4-8)
 created: 2026-06-11
+modified:
+  - 2026-07-20: Claude (claude-opus-4-8) — added the "Seja didatico" section (teach how the section works — mental image + block roles + why the order + schematic micro-example — not just a flat checklist), per Matheus's feedback
 ---
 
 # Roteiro acadêmico — blocos de redação por seção/subseção
@@ -51,6 +53,29 @@ Para a seção/subseção alvo, entregue:
 
 > Para subseções os campos podem ser mais enxutos, mas mantenha os seis. O tamanho
 > vem da substância — não encha linguiça.
+
+## Seja didático — ensine como a seção funciona, não só o que ela tem
+
+Os seis campos são o *conteúdo* do roteiro; isto é o *modo de entregar*. Não despeje o
+roteiro como checklist seco — **ensine a lógica da seção**, para o autor entender *por que*
+ela é assim (e conseguir escrevê-la). O que funciona:
+
+- **Dê uma imagem/modelo mental** que resuma a seção em uma frase (ex.: "constrói a régua
+  antes de medir"). É o gancho que faz o resto encaixar.
+- **Nomeie o papel de cada bloco no arco** (abre → regra do jogo → corpo → destaque →
+  fecha), não só "o que entra". O autor precisa ver o *movimento*, não uma lista.
+- **Explique o PORQUÊ da ordem** e **como blocos vizinhos diferem** — sobretudo o par que
+  tende a confundir (ex.: "quem são os jogadores" vs. "sob que regra jogam").
+- **Aterre o abstrato com micro-exemplo esquemático** (ex.: uma dimensão como
+  `pergunta → resposta de cada lado`). Esquema, tabela ou setas — **nunca** prosa colável.
+- **Ancore no que o autor já entende ou escreveu** (uma seção anterior, uma decisão
+  fechada). O familiar destrava o novo.
+- **Antecipe onde mora a confusão** e desarme-a; se um termo confunde o autor, sinalize
+  que confundirá a banca.
+
+Isto **não** afrouxa o Princípio inegociável: didático = ensinar a lógica e o arco, jamais
+redigir o texto. Se o autor disser "ficou confuso", **reexplique ensinando** (imagem +
+papéis + porquê + micro-exemplo), não repetindo a lista.
 
 ## Como conduzir
 
