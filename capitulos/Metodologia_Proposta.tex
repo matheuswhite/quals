@@ -407,6 +407,7 @@ Desta forma, o que é adiado para a dissertação é o quanto de cada medida. Es
 
 % 4.7.1
 \subsection{Dimensão de comparação}
+\label{subsec:dim-comp}
 
 Nesta seção é tratada a comparação entre o regime de verificação de erro em data races de cada implementação. Por um lado, tem-se o Rust safe, com o sistema de tipos e o C+MISRA+Sanitizers, com disciplina mais ferramentas de verificação em runtime. Note que a abordagem do C+MISRA+Sanitizers não é uma abordagem ingenua mas o estado da arte da implementação segura em C. Para que a comparação dessas duas abordagens sejam justas é necessário que as regras valham para ambos os lados. Desta forma, para ambos os lados serão usados os mesmos padrões de data race (desde o P1 até o P4 da taxonomia), pois com isso tanto o C quanto o Rust enfrentam o mesmo padrão. Também é utilizado o mesmo alvo, pois é onde mora o problema, por exemplo no caso onde uma ISR e uma Tarefa disputam o mesmo recurso. E por último o mesmo algoritmo de controle, pois em ambos os casos é comparado a realimentação de estados do pêndulo. Portanto, o que varia é o regime de verificação de erros.
 
@@ -419,6 +420,14 @@ Nas seções seguintes serão tratadas a instanciação de cada dimensão \ref{s
 % 4.7.2
 \subsection{O artefato comparativo}
 \label{subsec:dim-inst}
+
+Note que na subseção \ref{subsec:dim-comp} foi declarada dimensões para a comparação qualitativa entre as abordagens, aqui é mostrado como será construído os 3 elementos para a comparação e onde mora cada dimensão. Nesta subseção é construído o protocolo de construção do trio, o trio preenchido fica para a seção de resultados. Os três elementos são: um snippet em C (com MISRA), onde compila e roda com o bug latente (elemento 1). Neste caso o bug está latente é pode ou não se manifestar em tempo de execução; o mesmo padrão em Rust safe que não compila, por conta do sistema de tipos (elemento 2); e o diagnostico do sanitizer sobre o C implementado (com MISRA), caso o caminho que contém o bug for executado (elemento 3). Note que é realizado um trio por padrão do P1 até o P4, da taxonomia.
+
+Perceba que é necessário ter um trio (com o terceiro elemento) pois a comparação do Rust safe com o C ingenuo é injusta. Desta forma, é comparado com o C com sanitizer e com MISRA, para ter o C na sua melhor forma. A adição do MISRA torna o C disciplinado, mas não automatiza a eliminação de data race, pois é uma convenção em conjunto com um analise estática incompleta. Deste modo, ainda é necessário que o sanitizer para pegar o bugs em runtime. O elemento 1 e o elemento 3 são o mesmo código, o que muda é que no elemento 3 existe a instrumentação por meio do sanitizer. Outro ponto a se destacar é que o sanitizer roda no estágio de simulação no host. Isso não tira o mérito da comparação, visto que o intuito é detectar o bug de data race que ocorre mesmo no host, não sendo dependente da esp32 xtensa. Outra diferença é os contextos onde serão executados, na esp32 xtensa é a interação entre ISR e Tarefa, enquanto no host é Tarefa com Tarefa. Isso não os tornam incompatíveis, uma vez que tanto ISR e Tarefa, quanto Tarefa e Tarefa, (neste caso) caem no mesmo padrão da taxonomia.
+
+Além disso, o trio satisfaz cada uma das dimensões descritas em \ref{subsec:dim-comp} da seguinte forma: a dimensão momento no elemento 2 é em tempo de compilação, enquanto no elemento 3 é em tempo de execução. Já no elemento 1, esse bug não é detectado só aparecendo em produção. Sobre a natureza, tem-se que o elemento privine pois não compila, enquanto o elemento 3 detecta num caso especifico observado. O esforço do elemento 1 e 3 exige ferramenta extra, execução, além da revisão humana, enquanto no elemento 2 o proprio compilador acusa o problema. E a fronteira insegura, no elemento 2 é demarcado por blocos unsafe, enquanto nos elementos 1 e 3 é todo o código C.
+
+Para que se possa obter os mesmos resultados basta compilar o código, em Rust, e rodar o sanitizer em C. Note que a compilação em Rust é deterministica e sempre vai produzir o mesmo resultado, enquanto a detecção via sanitizer depende do caminho do bug ser exercitado durante a execução. Além disso, perceba que existem data races onde o sanitizer não consegue detectar e isso favorece o implementação em safe Rust, pois C na sua melhor forma, ainda tem limites onde não é possível detectar data races. Esses limites serão tratados na subseção \ref{subsec:dim-bounds}.
 
 % 4.7.3
 \subsection{Limites do sanitizer e honestidade}
