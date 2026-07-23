@@ -3,6 +3,7 @@ author: Claude (claude-opus-4-8)
 created: 2026-07-22
 modified:
   - 2026-07-22: Claude (claude-opus-4-8) — registrou o achado sobre custo de AtomicU32 no Xtensa (S32C1I) e o caminho de verificacao por disassembly
+  - 2026-07-23: Claude (claude-opus-4-8) — micro-exemplos do caso P1 adicionados e testados no host (a pedido do Matheus): src/p1/setpoint.c (compila/roda; TSan aponta o DR em g_setpoint), setpoint_safe.rs (recusa com E0277 -- `Cell<f32>` nao e Sync), setpoint_atomic.rs (compila/roda). Sao andaimes: o Matheus testa/adapta na toolchain dele e salva a mensagem real do rustc. Pendencia de snippet abaixo atualizada.
 ---
 
 <!-- LTeX: enabled=false -->
@@ -75,8 +76,8 @@ Andaime de planejamento (Regra 4): estrutura e roteiro do que cada seção **cob
 
 ## Pendências antes do sábado (W7)
 
-- **Snippets prontos e TESTADOS** (tarefa técnica do Matheus, código dele): C do setpoint (compila/roda/DR latente); Rust safe (NÃO compila — **salvar a mensagem real do `rustc`**); Rust `AtomicU32` (compila); opcional TSan no host. Salvar as saídas num arquivo p/ colar no sábado.
-- Snippet é **novo (P1/setpoint)** — `src/p2_snippet.rs` é do **P2**, não serve. `src/**/target/` já está no `.gitignore` (l. 82) → versionar `src/` não arrasta o build.
+- **Snippets: andaimes prontos e testados no host** (`src/p1/`, adicionados por Claude 23/jul; par compila×não-compila conferido) — `setpoint.c` (compila/roda/DR latente; `make run-plain`), `setpoint_safe.rs` (recusa com `E0277`, `Cell<f32>` não é `Sync`), `setpoint_atomic.rs` (compila). **Restam do Matheus:** rodar na própria toolchain e **salvar a mensagem real do `rustc`** num arquivo p/ colar no sábado; rodar `make run` (TSan) e salvar a saída; adaptar o cenário se quiser (ex.: nomes, `Ordering`).
+- Snippet é **novo (P1/setpoint)** — `src/p2_snippet.rs` é do **P2**, não serve. `src/**/target/` já está no `.gitignore` (l. 82) → versionar `src/` não arrasta o build. **Cuidado:** `make clean` **não** remove os bundles `*.dSYM` do macOS (gerados por `-g`) — apagar à mão antes de commitar (ou não commitar binários).
 - **Confirmar** (não afirmar sem fonte): como o setpoint seria exposto na Aule (`../aule`, se disponível). *(O item "`AtomicU32` barato no Xtensa" foi pesquisado em 22/jul — ver a seção "Achado" abaixo; a conclusão **nuança** o "sem custo" e ainda pede verificação no disassembly.)*
 - **Decidir** a inconsistência `cap:experiment` P1×P3 (acima) — afeta se entra a seção de protocolo do experimento.
 
