@@ -23,7 +23,7 @@ Andaime de planejamento (Regra 4): estrutura e roteiro do que cada seção **cob
 
 ```
 \mychapter{Resultados Parciais}{cap:Resultados Parciais}
-\label{cap:experiment}      % satisfaz \ref{cap:experiment} da 4.3.2 (l.333) — ver nota de inconsistencia
+\label{cap:experiment}      % satisfaz \ref{cap:experiment} da 4.6.1 (l.333) — ver nota abaixo
 
 \section{Estado atual da biblioteca Aule}
 \label{sec:aule-state}
@@ -40,13 +40,16 @@ Andaime de planejamento (Regra 4): estrutura e roteiro do que cada seção **cob
 \label{sec:partial-limitations}
 ```
 
-### ⚠️ Inconsistência a resolver (achado de revisão 22/jul) — `cap:experiment` P1 × P3
+### ⚠️ Ponto a ajustar na §4.6.1 (revisão 22/jul — CORRIGIDA; a versão anterior errava a localização e a natureza)
 
-A 4.3.2 (`Metodologia_Proposta.tex` l. 333) diz que a interação **ISR↔tarefa (P3, encoders do pêndulo)** "é utilizada no **caso central** do capítulo `\ref{cap:experiment}`". Mas o corte 20/jul fez o **caso demonstrativo único** do cap. 5 ser o **P1 (setpoint)** — o experimento P3 é protocolo pós-qual (mora em §4.6, `sec:experiment-proc`). "Caso central = P3" (na 4.3.2) ≠ "caso demonstrativo = P1" (no corte). Opções (decisão do Matheus):
-- **(a)** o cap. 5 ganha uma seção curta "Experimento de custo (protocolo)" para o P3 (remete a §4.6) e o `\label{cap:experiment}` mora nela — reconcilia a frase da 4.3.2;
-- **(b)** reapontar a referência da 4.3.2 para `\ref{sec:experiment-proc}` (§4.6, onde o experimento P3 é descrito) e trocar "capítulo" por "seção";
-- **(c)** ajustar a redação da 4.3.2 ("caso central" → outro termo).
-- Enquanto não decidir, o `\label{cap:experiment}` no nível do capítulo evita o `??` no build.
+**Onde:** `Metodologia_Proposta.tex` **l. 333, §4.6.1 (Planta e plataforma)** — NÃO na 4.3.2 (erro da nota anterior).
+
+**O P3 ali está CORRETO — não trocar por P1.** O contexto é a planta do experimento de custo (pêndulo Furuta, 2 encoders → bloco coerente ⟨θ,α⟩ atualizado junto = célula ⟨ISR-Tarefa, Struct, Leitor-Escritor⟩, fixada em P3 na 4.6.1). Trocar P3→P1 quebraria a descrição (o setpoint P1 é escalar, sem ISR↔encoders).
+
+**A tensão real é na expressão**, não no padrão. A frase "esta interação é utilizada no **caso central do capítulo** `\ref{cap:experiment}`" conflaciona o **experimento de custo** (P3, protocolo pós-qual) com o **caso demonstrativo central** da qualificação (P1/setpoint, único caso material — corte 20/jul). O cap. 5 (`cap:experiment`) tem os dois, com papéis distintos. Ajuste (redação/referência, mantendo P3):
+- **(recomendado)** trocar "utilizada no caso central do capítulo `\ref{cap:experiment}`" por algo que nomeie o **experimento de custo** (ex.: "...é o padrão avaliado no experimento de custo, cujo protocolo está na seção `\ref{sec:experiment-proc}`") — mantém P3, tira o "central" (que pertence ao P1);
+- reservar "caso central/demonstrativo" para o P1 (setpoint) dentro do cap. 5;
+- o `\label{cap:experiment}` no capítulo evita o `??` no build enquanto isso.
 
 ## Roteiro do caso setpoint escalar (P1) — imagem + 6 campos
 
