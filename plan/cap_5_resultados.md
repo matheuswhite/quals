@@ -4,6 +4,7 @@ created: 2026-07-22
 modified:
   - 2026-07-22: Claude (claude-opus-4-8) — registrou o achado sobre custo de AtomicU32 no Xtensa (S32C1I) e o caminho de verificacao por disassembly
   - 2026-07-23: Claude (claude-opus-4-8) — micro-exemplos do caso P1 adicionados e testados no host (a pedido do Matheus): src/p1/setpoint.c (compila/roda; TSan aponta o DR em g_setpoint), setpoint_safe.rs (recusa com E0277 -- `Cell<f32>` nao e Sync), setpoint_atomic.rs (compila/roda). Sao andaimes: o Matheus testa/adapta na toolchain dele e salva a mensagem real do rustc. Pendencia de snippet abaixo atualizada.
+  - 2026-07-23: Claude (claude-opus-4-8) — confirmada a pendencia "como o setpoint aparece na Aule" (l. 81): achado em tier1/sync/mirror.rs (`Mirror<T>`) e tier1/sync/channel.rs (`Channel`). setpoint_atomic.rs migrado de `static AtomicU32` p/ `Arc<AtomicU32>` (a pedido do Matheus) p/ prefigurar `Mirror::Primitive32`; recompilado/rodado no host.
 ---
 
 <!-- LTeX: enabled=false -->
@@ -76,9 +77,12 @@ Andaime de planejamento (Regra 4): estrutura e roteiro do que cada seção **cob
 
 ## Pendências antes do sábado (W7)
 
-- **Snippets: andaimes prontos e testados no host** (`src/p1/`, adicionados por Claude 23/jul; par compila×não-compila conferido) — `setpoint.c` (compila/roda/DR latente; `make run-plain`), `setpoint_safe.rs` (recusa com `E0277`, `Cell<f32>` não é `Sync`), `setpoint_atomic.rs` (compila). **Restam do Matheus:** rodar na própria toolchain e **salvar a mensagem real do `rustc`** num arquivo p/ colar no sábado; rodar `make run` (TSan) e salvar a saída; adaptar o cenário se quiser (ex.: nomes, `Ordering`).
+- **Snippets: andaimes prontos e testados no host** (`src/p1/`, adicionados por Claude 23/jul; par compila×não-compila conferido) — `setpoint.c` (compila/roda/DR latente; `make run-plain`), `setpoint_safe.rs` (recusa com `E0277`, `Cell<f32>` não é `Sync`), `setpoint_atomic.rs` (agora `Arc<AtomicU32>`; compila/roda). **Restam do Matheus:** rodar na própria toolchain e **salvar a mensagem real do `rustc`** num arquivo p/ colar no sábado; rodar `make run` (TSan) e salvar a saída; adaptar o cenário se quiser (ex.: nomes, `Ordering`).
 - Snippet é **novo (P1/setpoint)** — `src/p2_snippet.rs` é do **P2**, não serve. `src/**/target/` já está no `.gitignore` (l. 82) → versionar `src/` não arrasta o build. **Cuidado:** `make clean` **não** remove os bundles `*.dSYM` do macOS (gerados por `-g`) — apagar à mão antes de commitar (ou não commitar binários).
-- **Confirmar** (não afirmar sem fonte): como o setpoint seria exposto na Aule (`../aule`, se disponível). *(O item "`AtomicU32` barato no Xtensa" foi pesquisado em 22/jul — ver a seção "Achado" abaixo; a conclusão **nuança** o "sem custo" e ainda pede verificação no disassembly.)*
+- **Confirmado (23/jul, lendo `../aule`):** o setpoint tem casa nativa na Aule via `src/tier1/sync/mirror.rs` — `Mirror<T>`, variante `Primitive32 { data: Arc<AtomicU32> }` (escalares ≤ 4 bytes; `Compose { Arc<Mutex<T>> }` p/ tipos maiores). `Mirror` implementa `Block` e faz o mesmo `f32`↔`u32` do exemplo, via `T: Into<AtomicU32>`. Ou seja: `Mirror::Primitive32` **é** o `setpoint_atomic.rs` elevado a `Block` — é onde a Aule instancia a forma que a linguagem forçou. `src/tier1/sync/channel.rs` (`Channel<T, N>`, SPSC `heapless` + `atomic_wait`) é a alternativa por troca de mensagens (não é P1 — é outro ponto da taxonomia).
+  - **Onde entra na narrativa:** metade 1 (`sec:aule-state`) e bloco 1 (cenário/veículo). **NÃO** na evidência: o par compila×não-compila (blocos 2–4) fica sem a lib de propósito — senão a banca pergunta "é o Rust garantindo, ou o design da sua lib forçando?". A Aule entra *ao lado* da prova, como veículo que a materializa.
+  - **Nota do `Arc`:** `Mirror::Primitive32` usa `Arc<AtomicU32>` (exige `alloc`). Por isso o `setpoint_atomic.rs` foi migrado de `static` (core puro, igualmente válido) p/ `Arc` — para prefigurar o `Mirror`. Detalhe a ter pronto p/ a banca: por que aqui é `Arc` e não `static`.
+  - *(O item "`AtomicU32` barato no Xtensa" foi pesquisado em 22/jul — ver a seção "Achado" abaixo; a conclusão **nuança** o "sem custo" e ainda pede verificação no disassembly.)*
 - **Decidir** a inconsistência `cap:experiment` P1×P3 (acima) — afeta se entra a seção de protocolo do experimento.
 
 ## Achado — custo de `AtomicU32` no Xtensa (`S32C1I`) [pesquisado 22/jul]
