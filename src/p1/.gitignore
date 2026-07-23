@@ -1,17 +1,5 @@
-# author: Claude (claude-opus-4-8)
-# created: 2026-07-23
-#
-# Artefatos gerados dos micro-exemplos do P1 (build + saidas do `make outputs`).
-# Os fontes (setpoint.c, setpoint_safe.rs, setpoint_atomic.rs) e o Makefile sao
-# versionados; o que o Makefile gera, nao.
-
-# saidas .txt geradas -- volateis (valor do run varia; pid/enderecos do TSan mudam)
 out/
-
-# binarios compilados
 setpoint-plain
 setpoint-tsan
 setpoint_atomic
-
-# bundles de debug do macOS (gerados por -g)
 *.dSYM/
