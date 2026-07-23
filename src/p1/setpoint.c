@@ -1,32 +1,56 @@
 #include <stdio.h>
 #include <pthread.h>
+#include <time.h>
 
 static float g_setpoint = 0.0f;
 
 static void *comm_task(void *arg) {
     (void)arg;
-    for (int i = 1; i <= 1000000; ++i) {
-        g_setpoint = (float)i;
+
+    char line[64];
+    float v;
+
+    while (fgets(line, sizeof line, stdin)) {
+        if (sscanf(line, "%f", &v) != 1) {
+            continue;
+        }
+
+        g_setpoint = v;
     }
+
     return NULL;
 }
 
 static void *control_loop(void *arg) {
     (void)arg;
-    float last = 0.0f;
-    for (int i = 0; i < 1000000; ++i) {
-        float sp = g_setpoint;
-        last = sp;
+
+    struct timespec period = {0, 1000000L,};
+    float last_printed = 0.0f;
+    float sp;
+
+    while (1) {
+        sp = g_setpoint;
+        if (sp != last_printed) {
+            printf("controle: setpoint = %.1f\n", (double)sp);
+            last_printed = sp;
+        }
+
+        nanosleep(&period, NULL);
     }
-    printf("ultimo setpoint lido pelo laco de controle: %.1f\n", (double)last);
+
     return NULL;
 }
 
 int main(void) {
     pthread_t comm, ctrl;
+
+    setvbuf(stdout, NULL, _IOLBF, 0);
+
     pthread_create(&comm, NULL, comm_task, NULL);
     pthread_create(&ctrl, NULL, control_loop, NULL);
+
     pthread_join(comm, NULL);
     pthread_join(ctrl, NULL);
+
     return 0;
 }

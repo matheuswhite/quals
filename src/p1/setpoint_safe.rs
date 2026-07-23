@@ -1,24 +1,39 @@
 use std::cell::Cell;
+use std::io::BufRead;
 use std::thread;
+use std::time::Duration;
 
 static SETPOINT: Cell<f32> = Cell::new(0.0);
 
 fn main() {
     let comm = thread::spawn(|| {
-        for i in 1..=1_000_000 {
-            SETPOINT.set(i as f32);
+        let stdin = std::io::stdin();
+
+        for line in stdin.lock().lines() {
+            let line = line.unwrap();
+
+            let Ok(v) = line.trim().parse::<f32>() else {
+                continue;
+            };
+
+            SETPOINT.set(v);
         }
     });
 
     let ctrl = thread::spawn(|| {
-        let mut last = 0.0f32;
-        for _ in 0..1_000_000 {
-            last = SETPOINT.get();
+        let mut last_printed = 0.0f32;
+
+        loop {
+            let sp = SETPOINT.get();
+            if sp != last_printed {
+                println!("controle: setpoint = {:.1}", sp);
+                last_printed = sp;
+            }
+
+            thread::sleep(Duration::from_millis(1));
         }
-        last
     });
 
     comm.join().unwrap();
-    let last = ctrl.join().unwrap();
-    println!("ultimo setpoint: {}", last);
+    ctrl.join().unwrap();
 }

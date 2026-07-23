@@ -1,27 +1,42 @@
+use std::io::BufRead;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::thread;
+use std::time::Duration;
 
 fn main() {
     let setpoint = Arc::new(AtomicU32::new(0));
 
-    let comm_sp = Arc::clone(&setpoint);
+    let comm_sp = setpoint.clone();
     let comm = thread::spawn(move || {
-        for i in 1..=1_000_000u32 {
-            comm_sp.store((i as f32).to_bits(), Ordering::Relaxed);
+        let stdin = std::io::stdin();
+
+        for line in stdin.lock().lines() {
+            let line = line.unwrap();
+
+            let Ok(v) = line.trim().parse::<f32>() else {
+                continue;
+            };
+
+            comm_sp.store(v.to_bits(), Ordering::Relaxed);
         }
     });
 
-    let ctrl_sp = Arc::clone(&setpoint);
+    let ctrl_sp = setpoint.clone();
     let ctrl = thread::spawn(move || {
-        let mut last = 0.0f32;
-        for _ in 0..1_000_000 {
-            last = f32::from_bits(ctrl_sp.load(Ordering::Relaxed));
+        let mut last_printed = 0.0f32;
+
+        loop {
+            let sp = f32::from_bits(ctrl_sp.load(Ordering::Relaxed));
+            if sp != last_printed {
+                println!("controle: setpoint = {:.1}", sp);
+                last_printed = sp;
+            }
+
+            thread::sleep(Duration::from_millis(1));
         }
-        last
     });
 
     comm.join().unwrap();
-    let last = ctrl.join().unwrap();
-    println!("ultimo setpoint: {}", last);
+    ctrl.join().unwrap();
 }
