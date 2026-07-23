@@ -5,6 +5,7 @@
 
 % 4.1
 \section{Caracterização da Pesquisa}
+\label{sec:research-kind}
 
 Utilizando a separação de tipos de pesquisa, em ciência da computação, descrita na seção 2.6 de \cite{wazlawick2009metodologia}, essa pesquisa possui carater exploratório-empírico. Exploratório, pois os objetivos iniciais buscam uma taxonomia, a caracterização de uma fronteira e a catalogação de um espaço de design. Onde o método desta fase exploratória é aprofundada em 4.2, 4.3 e 4.4; e Empírico pois os objetivos seguintes são essencialmente experimentais (descrito em mais detalhes em 4.6 e 4.7), pois buscam a implementação, avaliação e comparação das garantias mapeadas nos objetivos anteriores. Note que não são duas pesquisas disjuntas, mas um sequenciamento, pois para a fase empírica ser realizada é necessário que a fase exploratória seja concluída. Para a qualificação, a entrega é a fase exploratória em conjunto com o protocolo da fase empírica, enquanto na dissertação final, a entrega é a junção de todas as fases, incluíndo a fase empírica.
 
@@ -14,6 +15,7 @@ Os objetivo específico, descrito no capítulo 1, são mapeados a seções no ca
 
 % 4.2
 \section{Taxonomia de Padrões de Data Race}
+\label{sec:taxonomy}
 
 % 4.2.1
 \subsection{Método de Levantamento}
@@ -110,6 +112,7 @@ Nesta seção, foi desenvolvida e entregue uma taxonomia. Esta taxonomia não é
 
 % 4.3
 \section{Caracterização da Fronteira safe/unsafe}
+\label{sec:border}
 
 Na seção anterior, são entregues 4 padrões: P1, onde a garantia exigida é acesso indivisível e ordenado do valor; P2 que exige a garantia de transferencia de posse exclusiva; P3 o qual a garantia exigida é valor agregado observado como bloco indivisível; e P4 cuja a exigencia de garantia é a indivisibilidade da sequencia ler-modificar-escrever. Com esses padrões, esta seção busca encontrar até onde o Rust força a implementação que satisfaz estas garantia com o sistema de tipos e onde esta garantia escapa para o unsafe. Note que o custo de cada garantia será tratado na seção seguinte.
 
@@ -246,6 +249,7 @@ Portanto, cada padrão safe foi mapeado a uma (ou mais) implementação e cada i
 
 % 4.5
 \section{A Aule como Veículo de Instanciação}
+\label{sec:aule}
 
 % 4.5.1
 \subsection{Adequação e maturidade do veículo}
@@ -404,6 +408,7 @@ Desta forma, o que é adiado para a dissertação é o quanto de cada medida. Es
 
 % 4.7
 \section{Verificação por Tipos vs. C+MISRA+Sanitizers}
+\label{sec:type-system-vs-sanitizer}
 
 % 4.7.1
 \subsection{Dimensão de comparação}
@@ -427,8 +432,18 @@ Perceba que é necessário ter um trio (com o terceiro elemento) pois a compara�
 
 Além disso, o trio satisfaz cada uma das dimensões descritas em \ref{subsec:dim-comp} da seguinte forma: a dimensão momento no elemento 2 é em tempo de compilação, enquanto no elemento 3 é em tempo de execução. Já no elemento 1, esse bug não é detectado só aparecendo em produção. Sobre a natureza, tem-se que o elemento privine pois não compila, enquanto o elemento 3 detecta num caso especifico observado. O esforço do elemento 1 e 3 exige ferramenta extra, execução, além da revisão humana, enquanto no elemento 2 o proprio compilador acusa o problema. E a fronteira insegura, no elemento 2 é demarcado por blocos unsafe, enquanto nos elementos 1 e 3 é todo o código C.
 
-Para que se possa obter os mesmos resultados basta compilar o código, em Rust, e rodar o sanitizer em C. Note que a compilação em Rust é deterministica e sempre vai produzir o mesmo resultado, enquanto a detecção via sanitizer depende do caminho do bug ser exercitado durante a execução. Além disso, perceba que existem data races onde o sanitizer não consegue detectar e isso favorece o implementação em safe Rust, pois C na sua melhor forma, ainda tem limites onde não é possível detectar data races. Esses limites serão tratados na subseção \ref{subsec:dim-bounds}.
+Para que se possa obter os mesmos resultados basta compilar o código, em Rust, e rodar o sanitizer em C. Note que a compilação em Rust é deterministica e sempre vai produzir o mesmo resultado, enquanto a detecção via sanitizer depende do caminho do bug ser exercitado durante a execução. Além disso, perceba que existem bugs onde o sanitizer não consegue detectar e isso favorece o implementação em safe Rust, pois C na sua melhor forma, ainda tem limites onde não é possível detectar bugs. Esses limites serão tratados na subseção \ref{subsec:dim-bounds}.
 
 % 4.7.3
 \subsection{Limites do sanitizer e honestidade}
 \label{subsec:dim-bounds}
+
+Visto que a subseção \ref{subsec:dim-inst} indica limites no sanitizer em C, é necessário, não só descrever estes limites nesta subseção, bem como os limites do próprio Rust safe. Começando pelo sanitizer, o primeiro limite a se destacar é a cobertura dinamica realizada pelo sanitizer. O sanitizer só consegue observar o programa em execução. Com isso, ele só consegue detectar o bug que é exercitado pelo programa que está executando. Se o bug não for executado, ele vai passar desarpercebido pelo sanitizer. Isso gera um não determinismo na saída do sanitizer. Há ausencia de bugs capturados pelo sanitizer não significa que o código não possui bugs, apenas que eles não foram exercitados. Além disso, o sanitizer TSAN é específico para data races, não sendo capaz de detectar problemas de memória como user-after-free e lifetime. O sanitizer ASan é capaz de detectar esses bugs, enquanto o sanitizer UBSan detecta Undefined-Behaviors. Note que para pegar todos esses bugs foram necessários 3 sanitizers e três execuções separadas, pois cada sanitizer exige uma compilação e execução separada, enquanto somente o compilador de Rust é capaz de lidar com todos eles. Esses bugs não são o foco deste trabalho, mas são importantes para mostrar o limite de cada sanitizer utilizado em C e que cada um deles não resolvem todos os problemas.
+
+Agora, note que o Rust safe também possui seus limites. Apesar de previnir data races, ele não previne race conditions lógicas, como: deadlocks, ordem de operações e inversão de prioridade. Também não elimina o unsafe na borda de hardware. Isso significa que compilar é não ter data race expremível, o que não quer dizer que o programa está lógicamente correto.
+
+Note que este trabalho afirma que no Rust existe um ganho na prenvensão de data races, por deslocar a verificação para a compilação deterministica, ao invés de verificações não-deterministicas em runtime. Essa afirmação não cobre todos os bugs de memória, pois o intuito aqui é ser representativo e não exaustivo. Além disso, o unsafe, apesar de continuar existindo no Rust, ele é pequeno, isolado e auditável.
+
+Por fim, nesta seção foi apresentada a diferença entre as verificação por tipos e o estado da arte do C (com MISRA e sanitizers). Na subseção \ref{subsec:dim-comp} são apresentadas as dimensões para a comparação, na subseção \ref{subsec:dim-inst} é apresentado o trio que instancia as dimensões e na subseção \ref{subsec:dim-bounds} os limites do  elemento 2 e 3 do trio de comparação. Nesta seção o foco foi mostrar a construção do protocolo de comparação, enquanto os resultados desta comparação será mostrado no capítulo de resultados.
+
+Neste capítulo, é descrito na seção \ref{sec:research-kind} é descrito a caracterização deste trabalho. Já na seção \ref{sec:taxonomy} é apresentada uma taxonomia com padrões de data races. Na seção \ref{sec:border} é apresentada a fonteira entre o safe e unsafe nos padrões de data race. Enquanto na seção \ref{sec:cost} e \ref{sec:experiment-proc} são descrito os custos dos padrões encontrados. Além disso, na seção \ref{sec:aule} é descrito o meio que instancia cada um dos padrões. E por último na seção \ref{sec:type-system-vs-sanitizer} é descrito o regime de verificação de cada implementação.
