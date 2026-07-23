@@ -22,6 +22,16 @@ metadata:
 
 **Ponto de retomada — sessão de 22/jul/2026.**
 
+## ⏭️ AMANHÃ (noite) — preparar os snippets do caso setpoint (P1) ANTES do sábado
+Tarefa técnica que destrava o sábado W7 (sábado = só ESCREVER a análise do caso). Deixar os snippets prontos, TESTADOS e com as saídas salvas num arquivo (para colar no sábado sem re-rodar):
+- **C do setpoint:** compila, roda, com o data race latente (leitura de valor obsoleto do setpoint compartilhado).
+- **Rust safe:** confirmar que **NÃO compila** e **salvar a mensagem real do `rustc`** (`E0277` / `Sync`) — a prosa cita a mensagem; não inventar.
+- **Rust com `AtomicU32`:** compila (`store`/`load` + `Ordering`).
+- (opcional, se for fechar o trio da 4.7.2) **TSan** sobre o C no host: salvar a saída.
+- Snippet é **novo (P1/setpoint)** — o `src/p2_snippet.rs` é do **P2**, não serve. `src/**/target/` já está no `.gitignore` (l. 82) → versionar `src/` não arrasta o build do Cargo.
+
+Feito nesta sessão (22/jul): esqueleto do cap. 5 dado para transcrever no `.tex`; roteiro do caso registrado em `plan/cap_5_resultados.md` (inclui a inconsistência `cap:experiment` P1×P3 a decidir).
+
 ## Estado do Cap. 4 — COMPLETO ponta a ponta (4.1–4.7)
 - 4.1–4.6 fechadas (ver histórico no co-authors / `plan/roadmap_escrita.md`). **§4.7 (obj 8) REDIGIDA e revisada em banca — conteúdo fechado (22/jul).**
   - **4.7.1** Dimensão de comparação (`subsec:dim-comp`): 4 dimensões (momento · natureza · esforço · fronteira do inseguro), cada uma = 1 pergunta + 2 respostas (C × Rust). Controlado: mesmos P1–P4, mesmo alvo, mesmo algoritmo; varia só o regime de verificação.
