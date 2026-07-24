@@ -13,9 +13,54 @@
 \subsection{Cenário e o padrão P1}
 \label{subsec:setpoint-scenario}
 
+Nesta seção será apresentado um caso de compartilhamento de um escalar entre duas tarefas. Esse dado compartilhado é uma referência, cujo controlador deve perseguir, através do envio de um sinal de controle. Com isso, uma tarefa escreve neste valor compartilhado, enquanto a outra, lê este valor. A tarefa responsável por ler o valor é a tarefa de controle, onde o controlador está atuando e precisa desse valor de referência em intervalos fixos de tempo, para conseguir seguir a referência. A tarefa que escreve o valor é uma tarefa de interação com o meio externo (ou com o usuário). Desta forma, esta tarefa recebe um valor de forma assíncrona e precisa escrever esse valor na variável de referência (ou setpoint). Essa forma de interação é comum, pois o usuário pode, por exemplo, alterar o valor de referência em uma IHM, e esse valor é recebido pela tarefa sem aviso ou intervalo definido. É recebido no momento em que o usuário decide alterar. Essa interação pode gerar uma leitura de valor obsoleto na tarefa de controle, pois o acesso ao valor não é indivisível e ordenado.
+
+Note que neste caso, existem: 2 tarefas; um valor compartilhado escalar, por exemplo, a altura de um tanque, ou a velocidade de um motor, ou a temperatura de uma câmara, etc.; e uma tarefa que se comporta como leitora e outra que se comporta como escritora. Esse caso é mapeado exatamente para o caso P1 da taxonomia (\ref{subsec:taxonomy}), onde o trio é composto por $\langle \text{Tarefa-Tarefa},\text{Escalar},\text{Leitor-Escritor}\rangle$. Note que a referência é um valor escalar, logo ela cabe em uma operação atômica. Isso corta o caso P3. Além disso, o valor atual não depende do valor anterior, o que corta o caso P4.
+
+Visto que a biblioteca Aule é o veículo onde o loop de controle vive, é esperado que ela seja utilizada neste exemplo. Entretanto, ela não será utilizada por 2 motivos que se complementam: o primeiro é que o P1 mora na borda entre a tarefa de comunicação e a tarefa de controle e não no núcleo de controle. Com isso, utilizar Aule, neste caso, não traria ganhos para analisar o caso P1 proposto. Consequentemente, o segundo motivo vem deste, pois usar Aule poderia passar a ideia que a garantia mostrada vem da biblioteca e não da linguagem Rust. Para casos onde realmente existe um algoritmo de controle em execução, como, por exemplo, na planta de controle física, o uso da biblioteca Aule é essencial. Na próxima subseção (\ref{subsec:setpoint-c}) é mostrado o código em C que instancia o caso descrito na subseção atual.
+
 % 5.2.2
 \subsection{O data race em C}
 \label{subsec:setpoint-c}
+
+Na listagem \ref{code:data-race-c}, é apresentado o trecho de código em C, que possui o data race apresentado em \ref{subsec:setpoint-scenario}. Neste código a variável \texttt{g\_setpoint} é compartilhada entre a tarefa \texttt{comm\_task} (escritora) e a tarefa \texttt{control\_loop} (leitora). Note que a variável \texttt{g\_setpoint} não possui nenhuma sincronização.
+
+\codec{Data race (P1) de setpoint compartilhado entre leitor-escritor}{code:data-race-c}{src/p1/setpoint.c}
+
+Para que o trecho apresentado seja um data race, ele deve atender a definição de data race, descrita em \ref{sec:dr-def}. Nela, um data race deve possuir: 2 contextos, cumprido com a tarefa leitora e a tarefa escritora; pelo menos 1 escrita, cumprido com a tarefa escritora; acesso não-atômico, cumprido, pois o acesso é direto; e sem happens before, cumprido, pois com o acesso direto não existem restrições para o compilador (ou processador) reordenar as instruções de acesso. Com as quatro condições atendidas, o trecho de código em C configura-se como um data race e note que é o lado indivisível e ordenado do acesso que falha.
+
+Mesmo com o data race presente, o compilador compila sem erro ou aviso e permite que o programa seja executado sem falha aparente. Ou seja, o programa é executado com um bug latente, onde a leitura do valor do controlador pode ser inconsistente e gerando um sinal de controle errado e uma saída não-determinística. Note que esta é a versão ingênua do C, justamente porque esse é o jeito natural de escrever em C e o compilador não impede o desenvolvedor de escrever assim. Para encontrar este data race, é possível executar o sanitizer TSan e confirmar. Na listagem \ref{code:tsan-out}, é possível ver a saída do TSan informando a presença de data race na variável \texttt{g\_setpoint}.
+
+% listing TSan
+\begin{lstlisting}[
+    caption={Saída do TSan no caso P1 (na linguagem C)},
+    label={code:tsan-out},
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    frame=shadowbox, rulesepcolor=\color{gray}]
+==================
+WARNING: ThreadSanitizer: data race (pid=5128)
+  Write of size 4 at 0x000100fb8000 by thread T1:
+    #0 comm_task setpoint.c:18 (setpoint-tsan:arm64+0x100000824)
+
+  Previous read of size 4 at 0x000100fb8000 by thread T2:
+    #0 control_loop setpoint.c:32 (setpoint-tsan:arm64+0x1000008c4)
+
+  Location is global 'g_setpoint' at 0x000100fb8000 (setpoint-tsan+0x100008000)
+
+  Thread T1 (tid=5084491, running) created by main thread at:
+    #0 pthread_create <null> (libclang_rt.tsan_osx_dynamic.dylib:arm64e+0x33834)
+    #1 main setpoint.c:49 (setpoint-tsan:arm64+0x100000718)
+
+  Thread T2 (tid=5084492, running) created by main thread at:
+    #0 pthread_create <null> (libclang_rt.tsan_osx_dynamic.dylib:arm64e+0x33834)
+    #1 main setpoint.c:50 (setpoint-tsan:arm64+0x100000730)
+
+SUMMARY: ThreadSanitizer: data race setpoint.c:18 in comm_task
+==================
+\end{lstlisting}
+
+Perceba que apesar do TSan encontrar este caso, foi necessário executar o programa e exercitar o bug. Em fluxos mais complexos o TSan pode não capturar o data race, por este ainda não ter sido exercitado. Uma recusa determinística e em tempo de compilação, facilitaria a prevenção deste data race com mais segurança.
 
 % 5.2.3
 \subsection{A recusa do compilador em Rust safe}
@@ -26,7 +71,7 @@
 \label{subsec:setpoint-atomic}
 
 % 5.2.5
-\subsection{Leitura do caso como evidencia}
+\subsection{Leitura do caso como evidência}
 \label{subsec:setpoint-evidence}
 
 % 5.3
