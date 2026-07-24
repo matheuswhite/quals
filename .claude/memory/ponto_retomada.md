@@ -1,6 +1,6 @@
 ---
 name: ponto-retomada
-description: "Cap. 4 COMPLETO ponta a ponta (4.1-4.7). 4.7 (dimensoes/trio/limites+honestidade) redigida e revisada em banca, conteudo fechado; fecho de secao + de capitulo escritos; todos os labels de secao criados; ref quebrada da 4.7 corrigida. Pendente: passe de forma geral do cap. 4. PROXIMO = cap. 5, caso setpoint escalar (P1) — caso UNICO (corte 3->1, 20/jul), intocavel. Defesa 26/ago."
+description: "Cap. 4 COMPLETO (4.1-4.7). Cap. 5 em andamento: 5.2.1 (cenario P1) e 5.2.2 (data race em C, com listagem do TSan) ESCRITAS + revisadas em banca + defensaveis, mas UNCOMMITTED (msgs docs: dadas). PROXIMO (sabado W7) = 5.2.3 (recusa do rustc, E0277) -> 5.2.4 (atomic) -> 5.2.5 (trio). Snippets src/p1 prontos e outputs (rustc+TSan) salvos. PAREDE REAL = ENTREGA 11/ago (nao 26/ago). ROADMAP DESATUALIZADO: diz 4.7 esqueleto, mas esta completa - corrigir."
 metadata:
   node_type: memory
   author: Claude (claude-opus-4-8)
@@ -16,45 +16,42 @@ metadata:
     - "Claude (claude-opus-4-8), 2026-07-01"
     - "Claude (claude-opus-4-8), 2026-07-04"
     - "Claude (claude-opus-4-8), 2026-07-22"
+    - "Claude (claude-opus-4-8), 2026-07-23"
   type: project
   originSessionId: bfd04e9d-3381-42a2-bac3-e70b75a64a40
 ---
 
-**Ponto de retomada — sessão de 22/jul/2026.**
+**Ponto de retomada — sessão de 23/jul/2026 (noite). Salvo para o sábado (W7, 25/jul).**
 
-## ⏭️ AMANHÃ (noite) — preparar os snippets do caso setpoint (P1) ANTES do sábado
-Tarefa técnica que destrava o sábado W7 (sábado = só ESCREVER a análise do caso). Deixar os snippets prontos, TESTADOS e com as saídas salvas num arquivo (para colar no sábado sem re-rodar):
-- **C do setpoint:** compila, roda, com o data race latente (leitura de valor obsoleto do setpoint compartilhado).
-- **Rust safe:** confirmar que **NÃO compila** e **salvar a mensagem real do `rustc`** (`E0277` / `Sync`) — a prosa cita a mensagem; não inventar.
-- **Rust com `AtomicU32`:** compila (`store`/`load` + `Ordering`).
-- (opcional, se for fechar o trio da 4.7.2) **TSan** sobre o C no host: salvar a saída.
-- Snippet é **novo (P1/setpoint)** — o `src/p2_snippet.rs` é do **P2**, não serve. `src/**/target/` já está no `.gitignore` (l. 82) → versionar `src/` não arrasta o build do Cargo.
+## ⏭️ PRÓXIMO PASSO (sábado W7) = §5.2.3 — A recusa do compilador em Rust safe
+`Resultados_Parciais.tex`, `\label{subsec:setpoint-reject}`. É o **CLÍMAX** do caso: o mesmo padrão P1, em Rust safe, que **NÃO compila**.
+- Onde entra a **mensagem real do `rustc` (`E0277`, `Cell<f32>` não é `Sync`)** que o Matheus já salvou → colar como listagem (`lstlisting` inline igual ao TSan da §5.2.2, ou `\lstinputlisting` de arquivo em `src/p1/`).
+- **Reusar** o critério da §4.3.2 via `\ref{subsec:unsafe-criteria}` — NÃO re-derivar.
+- Verbo desta subseção: o compilador **recusa** (contraste com "compila e cala" da §5.2.2). É a evidência primária.
+- Depois: **§5.2.4** (forma segura com `AtomicU32` — store/load + `Ordering`; DR inexprimível) → **§5.2.5** (leitura como evidência = **trio da §4.7.2** preenchido p/ P1; P1 100% safe, sem `unsafe` residual, contraste com o P2). **§5.1** (estado da Aule; `Mirror::Primitive32`) e **§5.3** (limitações) em NOITES.
 
-Feito nesta sessão (22/jul): esqueleto do cap. 5 dado para transcrever no `.tex`; roteiro do caso registrado em `plan/cap_5_resultados.md` (inclui a inconsistência `cap:experiment` P1×P3 a decidir).
+## Estado do Cap. 5 (23/jul) — §5.2.1 e §5.2.2 ESCRITAS, revisadas em banca, DEFENSÁVEIS
+- **§5.2.1 (Cenário e o padrão P1, `subsec:setpoint-scenario`):** setpoint escalar; tarefa comm (escreve) × loop de controle (lê); mapeia p/ P1 ⟨Tarefa-Tarefa, Escalar, Leitor-Escritor⟩ pelo **teste de distinção** (cabe em atômico → corta P3; não depende do valor anterior → corta P4); **exclusão justificada da Aule** (P1 mora na borda; usar a lib passaria a ideia de que a garantia é da lib, não do Rust). Furos fechados na revisão: hazard reamarrado à definição de DR ("indivisível e ordenado"); exemplo do pêndulo trocado (colidia com o P3 do §4.6); `\text{}` na tupla.
+- **§5.2.2 (O data race em C, `subsec:setpoint-c`):** mapeia as 4 cláusulas da definição (`\ref{sec:dr-def}`); C **compila e cala**; hazard latente/não-determinístico; **TSan confirma** via `lstlisting` inline (`label=code:tsan-out`, saída real: T1 `comm_task` write / T2 `control_loop` read / global `g_setpoint`, 4 bytes); **versão ingênua = não é strawman**. Furos fechados: "mais de 1 escrita"→"pelo menos 1"; `$\text{g_setpoint}$` (erro do `_`)→escapado.
+- **Ambas UNCOMMITTED.** Working tree: só `capitulos/Resultados_Parciais.tex` (+46/−1). Msgs dadas (`docs:`, **SEM** trailer Claude — é prosa do Matheus): `docs: redige 5.2.1 (cenario e o padrao P1) do cap. 5` e `docs: redige 5.2.2 (o data race em C) com listagem do TSan`. Split de hunk no lazygit (as duas no mesmo arquivo). Untracked à parte: `.vscode/ltex.*` (fora destes commits).
+- Miudezas restantes (NÃO furo): usar `\texttt{}` p/ identificadores (`$\text{...}$` renderiza romano, não monospace); "por que"→"porque" causal (§5.2.2); legenda da listagem com "no...no".
 
-## Estado do Cap. 4 — COMPLETO ponta a ponta (4.1–4.7)
-- 4.1–4.6 fechadas (ver histórico no co-authors / `plan/roadmap_escrita.md`). **§4.7 (obj 8) REDIGIDA e revisada em banca — conteúdo fechado (22/jul).**
-  - **4.7.1** Dimensão de comparação (`subsec:dim-comp`): 4 dimensões (momento · natureza · esforço · fronteira do inseguro), cada uma = 1 pergunta + 2 respostas (C × Rust). Controlado: mesmos P1–P4, mesmo alvo, mesmo algoritmo; varia só o regime de verificação.
-  - **4.7.2** O artefato comparativo (`subsec:dim-inst`): o **trio** {snippet C (com MISRA) · Rust safe que não compila · diagnóstico do sanitizer} por padrão; mapeamento trio→dimensões; MISRA disciplina mas não mecaniza DR → resta o sanitizer (runtime); sanitizer roda no host; ISR↔tarefa (alvo) e tarefa↔tarefa (host) caem no mesmo padrão (Opção A da taxonomia).
-  - **4.7.3** Limites do sanitizer e honestidade (`subsec:dim-bounds`): limites do sanitizer (cobertura dinâmica; TSan≠ASan≠UBSan → 3 execuções × 1 compilador Rust) + limites do Rust safe (não previne race condition lógica/deadlock; não elimina unsafe de borda; "compila ≠ logicamente correto"); recorte (ganho em DR, representativo, unsafe pequeno/isolado/auditável).
-- **Fecho da §4.7 + fecho do capítulo** escritos (`Metodologia_Proposta.tex` ll. 447/449). Labels de todas as seções criados: `sec:research-kind` (4.1) · `sec:taxonomy` (4.2) · `sec:border` (4.3) · `sec:cost` (4.4) · `sec:aule` (4.5) · `sec:experiment-proc` (4.6) · `sec:type-system-vs-sanitizer` (4.7). A `\ref{4.7}` quebrada foi corrigida.
+## Snippets + outputs (src/p1) — PRONTOS e EXECUTADOS
+`setpoint.c` (compila/roda/DR latente), `setpoint_safe.rs` (recusa `E0277`, `Cell<f32>` não é `Sync`), `setpoint_atomic.rs` (`Arc<AtomicU32>` — prefigura `Mirror::Primitive32`). Mensagem do `rustc` e saída do TSan **já salvas/coladas**. `src/**/target/` no `.gitignore`.
 
-## Pendência do Cap. 4 (acabamento, NÃO conteúdo — passe de forma final)
-- **§4.7 inteira:** acentos/concordância — "dinamica", "desarpercebido", "Há ausencia", "previnir", "expremível", "prenvensão", "deterministica", "fonteira", "são descrito os custos", "será mostrado"; **"é descrito … é descrito" DUPLICADO (l. 449)**; caixa dos sanitizers ("TSAN"→TSan); "Undefined-Behaviors".
-- Heranças: 7 `\cite` vazios na 4.4.1; `\cite` do firmware na 4.6.3; ortografia das §4.5.1–3; nomes entre as 3 tabelas da 4.4.
+## Cap. 4 — COMPLETO ponta a ponta (4.1–4.7 + fecho). Só passe de forma pendente.
+(4.7 redigida 20–22/jul, commits `12cf47f`/`f97e8e3`/`aa76250`; detalhe da 4.7 no histórico anterior deste arquivo.) Acabamento: **6 `\cite{}` vazios** (5 na 4.4.1 l.214 + 1 na 4.6.3 l.389 firmware); **tabela do resultado da sonda é TODO na §4.3.3 (l.154 — lacuna de conteúdo, não só forma)**; ortografia §4.5/§4.7; nomes entre as 3 tabelas da 4.4. `sec:dr-def`/`sec:dr-vs-race` seguem `??` (cap. 3 é esqueleto; nascem na W8).
 
-## PRÓXIMO PASSO (sábado W7) — Cap. 5: caso setpoint escalar (P1)
-- **Caso ÚNICO e profundo (corte 3→1, decisão 20/jul) — intocável.** Núcleo material do cap. 5 (`Resultados_Parciais.tex` hoje só tem `\section{Análise de Eficiência}`).
-- Setpoint escalar compartilhado (tarefa de comunicação escreve × loop de controle lê): em C compila/roda com DR latente; em Rust safe o compilador recusa → força `AtomicU32` (store/load + `Ordering`). Evidência **por construção** (compila/não-compila), qualitativa, independe do experimento.
-- Amarra ao cap. 4: é **P1** da taxonomia (`sec:taxonomy`); P1 fica **inteiramente safe** na fronteira (`sec:border` / 4.3.3 — sem unsafe residual, contraste com o P2); é o **trio da 4.7.2** (`subsec:dim-inst`) preenchido para P1.
-- ⚠️ O snippet untracked `src/p2_snippet.rs` é do **P2** (ISR↔DMA), NÃO do caso do corte (P1/setpoint) → precisa de snippet próprio do setpoint (`AtomicU32`); o P2 vira material pós-qual (cap. 6). Confirmar.
-- Roteiro completo entregue na sessão de 22/jul (registrar em `plan/` se quiser andaime versionado).
+## ⚠️ ROADMAP DESATUALIZADO — corrigir
+`plan/roadmap_escrita.md` (commitado 23/jul, `5a16681`) ainda diz "**4.7 é só esqueleto**" e "cap. 4 não fechou" — FALSO: a 4.7 foi redigida em 20–22/jul, ANTES desse replan. A "Situação atual" + a tarefa de domingo W7 ("fechar 4.7") + a "Ação urgente" (enviar só 4.1–4.6) precisam de conserto: **o cap. 4 está inteiro → enviar o cap. 4 COMPLETO ao Icaro.** (O ponto de retomada LOCAL estava travado em 04/jul; re-sincronizado com o espelho do repo nesta sessão.)
+
+## PAREDE REAL = ENTREGA à banca em ter 11/ago (15 dias corridos antes da defesa qua 26/ago)
+NÃO é 26/ago. O período 12–26/ago é pós-entrega (só apresentação). Da janela (a partir de 23/jul) sobram: **3 sábados (25/jul, 01/ago, 08/ago) + ~8 noites**. Sábado 08/ago = **REVISÃO** (não escrita). Cortes já acionados: casos 3→1, 4.7/cap.1/cap.2 em noites. Núcleo intocável: caso setpoint (cap.5), protocolo (4.6), 3.3/3.4, passe de revisão final. **Ação urgente: cap. 4 completo ao Icaro AGORA** (cabe ~1 rodada de feedback do núcleo antes de 11/ago).
+
+## Roteiros já dados (registrar em `plan/cap_5_resultados.md` se quiser andaime versionado — AINDA NÃO feito)
+§5.2 inteiro (arco de 5 blocos = 5 subseções) + §5.2.1 + §5.2.2, no formato da skill `roteiro-academico` (imagem + missão + perguntas + blocos + defesa + fronteiras + apoios). **Workflow desta sessão:** roteiro por subseção → Matheus escreve → "verifique" (papel banca, sem mercê) → aponta furos → aplica → "verifique novamente". Repetir para §5.2.3.
 
 ## Pendências gerais (não bloqueiam)
-- **Untracked:** `refs/` (PDF de artigo — decidir versionar × `.git/info/exclude`); `src/` (`p2_snippet.rs` a versionar **+ `src/p2/target/` = build do Cargo → precisa `.gitignore` ANTES do `git add`**).
-- **ESP32/Xtensa:** atômicos (`S32C1I`) — escalar (P1) tem atomic barato (bom p/ o caso setpoint: safe **e** sem custo); confirmar no `../aule` (HAL / `no_std` no alvo Xtensa).
-- **Citações:** `rust-error-index`, `rust-safe-soundness` (linha RustBelt — serve à 4.3.2 **e** à 4.7.3 "safe Rust é sound"). Ver [[citacoes-pendentes]].
-- `referencias.bib`: herdadas a limpar.
-
-## Prazo (defesa qua 26/ago — parede)
-- W7 (20–26/jul): **cap. 4 fecha** (4.7 ✓, resta passe de forma) + caso setpoint do cap. 5. Cap. 5 completo ~02/ago (enviar cap. 4 + cap. 5 ao Icaro juntos). Ver `plan/roadmap_escrita.md`.
+- Citações: `rust-error-index`, `rust-safe-soundness` (linha RustBelt; serve à 4.3.2 e à 4.7.3) — ver [[citacoes-pendentes]].
+- `../aule`: confirmar `Mirror::Primitive32`/`Channel` e fatos do §4.5 (`last_output` por valor?, `Block` com tipos associados?, `EndlessSimulation` existe?) antes da defesa.
+- `refs/` a decidir versionar × gitignore; `referencias.bib` herdadas a limpar.
