@@ -31,7 +31,6 @@ Para que o trecho apresentado seja um data race, ele deve atender a definição 
 
 Mesmo com o data race presente, o compilador compila sem erro ou aviso e permite que o programa seja executado sem falha aparente. Ou seja, o programa é executado com um bug latente, onde a leitura do valor do controlador pode ser inconsistente e gerando um sinal de controle errado e uma saída não-determinística. Note que esta é a versão ingênua do C, justamente porque esse é o jeito natural de escrever em C e o compilador não impede o desenvolvedor de escrever assim. Para encontrar este data race, é possível executar o sanitizer TSan e confirmar. Na listagem \ref{code:tsan-out}, é possível ver a saída do TSan informando a presença de data race na variável \texttt{g\_setpoint}.
 
-% listing TSan
 \begin{lstlisting}[
     caption={Saída do TSan no caso P1 (na linguagem C)},
     label={code:tsan-out},
@@ -65,6 +64,24 @@ Perceba que apesar do TSan encontrar este caso, foi necessário executar o progr
 % 5.2.3
 \subsection{A recusa do compilador em Rust safe}
 \label{subsec:setpoint-reject}
+
+Recusar determinísticamente e em tempo de compilação é justamente o que a linguagem Rust faz. Aqui é usado o mesmo cenário da subseção anterior (\ref{subsec:setpoint-c}), instanciando o caso P1: duas tarefas compartilhando um valor, sem sincronização, onde uma é leitora e a outra escritora. É importante salientar que para um valor static ser compartilhado entre duas tarefas, em Rust, é necessário que esse valor seja \texttt{Sync}.
+
+Na listagem \ref{code:setpoint-safe} é apresentado o trecho de código em Rust para este cenário. Esse trecho de código é uma implementação ingenua, onde é implementado uma transposição direta do código implementado em C. Neste código, temos o valor compartilhado na linha 6: um static com o tipo \texttt{Cell<f32>}, esse valor permite uma mutabilidade interior natual, já que em Rust safe não é permitido acessar uma variável mutável e static (que dure todo o lifetime do programa). Para acessar isso é necessário usar blocos unsafe. Da mesma forma que o cenário em C, existem duas tarefas: uma para ler setpoints do usuário, por meio do stdin. Esta é a tarefa escritora, pois recebe o valor do usuário e escreve na variável compartilhada; e a outra tarefa é o loop de controle, a qual lê o valor da variável compartilhada (setpoint) a cada ciclo do controle (tarefa leitora).
+
+\coderust{Data race (P1) de setpoint compartilhado entre leitor-escritor, em Rust safe}{code:setpoint-safe}{src/p1/setpoint_safe.rs}
+
+\begin{lstlisting}[
+    caption={Saída do compilador rustc, sobre a implementação ingenua de Rust no caso P1},
+    label={code:rustc-error},
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    frame=shadowbox, rulesepcolor=\color{gray}]
+\end{lstlisting}
+
+Ao compilar o trecho de código \ref{code:setpoint-safe}, é apresentado um erro de compilação, descrito na listagem \ref{code:rustc-error}. Neste erro de compilação é apresentado o motivo da falha da compilação: o tipo \texttt{Cell<T>} não implementa a trait \texttt{Sync}, logo a variável de setpoint (na linha 6) não pode ser compartilhada entre as tarefas. Isso mostra a recusa do compilador sobre o data race presente no código \ref{code:setpoint-safe}. Note que, o valor possuir 2 acessos concorrentes e sem sincronização fica inexpremível na linguagem Rust, pois o código nem compila. O que é diferente de C, que permite a compilação e execução do código com data race. Perceba também que o problema foi pego em tempo de compilação e não foi necessário exercitar o código, como acontece na detecção em C, com o sanitizer TSan. Isso fornece justamente o que a subseção \ref{subsec:setpoint-c} buscava: uma forma de detectar o problema em tempo de compilação e de forma deterministica, uma vez que não depende de exercitar o código e o resultado do compilador é sempre o mesmo para a mesma entrada (o mesmo código).
+
+Apesar de mostrar de forma deterministica e em tempo de compilação o problema, ainda não é apresentado a forma de remover o data race. Na próxima subseção \ref{subsec:setpoint-atomic}, é apresentado como resolver isso em Rust.
 
 % 5.2.4
 \subsection{A forma segura com atomic}
