@@ -99,6 +99,12 @@ Além do programa agora compilar em Rust, podemos usar a definição de data rac
 \subsection{Leitura do caso como evidência}
 \label{subsec:setpoint-evidence}
 
+As seções \ref{subsec:setpoint-c}, \ref{subsec:setpoint-reject} e \ref{subsec:setpoint-atomic} apresentam um experimento onde são apresentada versões do mesmo padrão (P1 da taxonomia) em três cenários diferentes: C ingênuo, Rust safe ingênuo (transpondo o código em C) e Rust safe com atomics. Como resultado, tem-se que a linguagem C não informa nada nem na compilação e nem na execução do programa, sendo necessário um sanitizer (TSan) para detectar o data race exercitado em tempo de execução. Já a linguagem Rust aponta o data race e o previne, impedindo a compilação. Quando o ajuste é feito, o data race é eliminado por meio da mudança para um tipo atomico. De acordo a subseção \ref{subsec:dim-inst} o trio foi instanciado neste experimento, e de acordo com a subseção \ref{subsec:dim-comp}, a dimensão momento, foi passada de tempo de execução para tempo de compilação. Além disso a dimensão natureza passou de disciplina e sanitizer para verificação por tipos.
+
+Note que o experimento executado pode ser reproduzido com o código presente no repositório \cite{quals-repo}, através da execução do Makefile presente na pasta \texttt{src/p1/}. O resultado do experimento será sempre o mesmo tanto para o Rust e como para o C. Note que saída do experimento se refere a como o data race é detectado e como isso é resolvido. Note que o valor de saída impressso no stdout, pode variar de acordo com o escalonador atual. O que não modifica a saída do experimento. Esse experimento não é arbitrário, pois demonstra o padrão P1 da taxonomia \ref{sec:taxonomy} e foi escolhido por ser o mais simples entre os padrões e ser 100\% safe, sem bordas unsafe, como demonstrado em \ref{sec:border}.
+
+Por último, vale salientar que esse não é um experimento de custo, pois estes serão desenvolvidos na dissertação e não na qualificação. Além disso, esse experimento mostra a eliminação de data races e não race conditions de lógica.
+
 % 5.3
 \section{Limitações conhecidas}
 \label{sec:partial-limitations}
