@@ -5,6 +5,7 @@ modified:
   - 2026-05-20: Claude (claude-opus-4-7) — added LTeX disable magic comment
   - 2026-05-28: Claude (claude-opus-4-7) — added references on the cost of graph/self-referential structures in safe Rust
   - 2026-06-01: Claude (claude-opus-4-8) — added a "Espaco de design" section (analysis method + synchronization design space + embedded Rust concurrency) to inform obj. 3
+  - 2026-07-26: Claude (claude-opus-4-8) — added "Biblioteca vs. framework (Inversion of Control)" section (Fowler bliki + Johnson & Foote 1988); both already in referencias.bib and cited in 5.1
 ---
 
 <!-- LTeX: enabled=false -->
@@ -87,6 +88,24 @@ Informa o obj. 3 (catalogar o **espaço de design** dos meios de implementar a s
 - **Referência:** *RTIC — Real-Time Interrupt-driven Concurrency* (livro/documentação do framework; rtic.rs — confirmar versão e data de acesso).
 - **Por que importa:** documenta o espaço de design concreto de concorrência **safe** em Cortex-M — recursos compartilhados, prioridades, seções críticas e a troca ISR↔tarefa. É o lado embarcado dos "meios" do obj. 3 e do caso de reconfiguração de parâmetros, e conecta com a plataforma do experimento (Cortex-M0, obj. 5). Relacionados a confirmar/considerar: crates `critical-section`, `heapless` (fila SPSC) e os atômicos de `core::sync::atomic`.
 - **Estado:** por ler.
+
+## Biblioteca vs. framework (Inversion of Control)
+
+Sustenta o argumento da §5.1 (`sec:aule-state`): por que a Aule é biblioteca e não framework, ancorado no conceito de *Inversion of Control* (quem chama quem / Hollywood Principle). **Exceção ao propósito do arquivo:** as duas já estão em `referencias.bib` e citadas na 5.1 — entram aqui como *leitura a validar antes da banca* (Regra 7: ler o que se cita), não como leitura-só-para-informar.
+
+### Fowler — *Inversion of Control* (bliki)
+
+- **Referência:** Fowler, M. (2005). *Inversion of Control.* Bliki. `\cite{martin-fowler:inversion-of-control}` — https://martinfowler.com/bliki/InversionOfControl.html
+- **Por que importa:** formulação acessível de "quem chama quem" + Hollywood Principle + a distinção biblioteca/framework usada na l. 20 da 5.1. Fonte web (não peer-reviewed) — pareá-la com Johnson & Foote para peso acadêmico.
+- **Estado:** por ler.
+
+### Johnson & Foote — *Designing Reusable Classes*
+
+- **Referência:** Johnson, R. E.; Foote, B. (1988). "Designing Reusable Classes." *Journal of Object-Oriented Programming*, 1(2), 22–35. `\cite{johnson1988reusable}`.
+- **Por que importa:** origem peer-reviewed do conceito — cunhou o termo e a observação de que os métodos definidos pelo usuário são chamados de dentro do framework. É a citação que blinda o flanco "IoC não é do Fowler" na banca.
+- **Estado:** por ler.
+
+---
 
 ## Outros tópicos
 
