@@ -1,6 +1,6 @@
 ---
 name: ponto-retomada
-description: "Cap. 4 COMPLETO (4.1-4.7). Cap. 5 em andamento: 5.2.1 (cenario P1) e 5.2.2 (data race em C, com listagem do TSan) ESCRITAS + revisadas em banca + defensaveis, mas UNCOMMITTED (msgs docs: dadas). PROXIMO (sabado W7) = 5.2.3 (recusa do rustc, E0277) -> 5.2.4 (atomic) -> 5.2.5 (trio). Snippets src/p1 prontos e outputs (rustc+TSan) salvos. PAREDE REAL = ENTREGA 11/ago (nao 26/ago). ROADMAP DESATUALIZADO: diz 4.7 esqueleto, mas esta completa - corrigir."
+description: "Cap. 4 COMPLETO (4.1-4.7; falta passe de forma). Cap. 5: 5.1 (estado da Aule) e 5.2 (caso P1) escritas/revisadas/COMMITADAS; 5.3 (limitacoes) escrita+revisada, conteudo FECHADO, falta COMMIT (docs: pronto) + passe ortografico. Refs IoC (Fowler+Johnson&Foote) no .bib (commit 261c832). PROXIMO = secao 'Bibliotecas e repositorios de controle' (sec:control-repos, VAZIA — transcrever planilha do Matheus p/ tabela). Entrega banca 7/ago; defesa 26/ago."
 metadata:
   node_type: memory
   author: Claude (claude-opus-4-8)
@@ -17,41 +17,37 @@ metadata:
     - "Claude (claude-opus-4-8), 2026-07-04"
     - "Claude (claude-opus-4-8), 2026-07-22"
     - "Claude (claude-opus-4-8), 2026-07-23"
+    - "Claude (claude-opus-4-8), 2026-07-26"
   type: project
   originSessionId: bfd04e9d-3381-42a2-bac3-e70b75a64a40
 ---
 
-**Ponto de retomada — sessão de 23/jul/2026 (noite). Salvo para o sábado (W7, 25/jul).**
+**Ponto de retomada — sessão de 26/jul/2026. Fechamento do dia.**
 
-## ⏭️ PRÓXIMO PASSO (sábado W7) = §5.2.3 — A recusa do compilador em Rust safe
-`Resultados_Parciais.tex`, `\label{subsec:setpoint-reject}`. É o **CLÍMAX** do caso: o mesmo padrão P1, em Rust safe, que **NÃO compila**.
-- Onde entra a **mensagem real do `rustc` (`E0277`, `Cell<f32>` não é `Sync`)** que o Matheus já salvou → colar como listagem (`lstlisting` inline igual ao TSan da §5.2.2, ou `\lstinputlisting` de arquivo em `src/p1/`).
-- **Reusar** o critério da §4.3.2 via `\ref{subsec:unsafe-criteria}` — NÃO re-derivar.
-- Verbo desta subseção: o compilador **recusa** (contraste com "compila e cala" da §5.2.2). É a evidência primária.
-- Depois: **§5.2.4** (forma segura com `AtomicU32` — store/load + `Ordering`; DR inexprimível) → **§5.2.5** (leitura como evidência = **trio da §4.7.2** preenchido p/ P1; P1 100% safe, sem `unsafe` residual, contraste com o P2). **§5.1** (estado da Aule; `Mirror::Primitive32`) e **§5.3** (limitações) em NOITES.
+## Estado do Cap. 5 (Resultados Parciais)
+- **§5.2 (caso setpoint P1, `sec:case-setpoint`)** — 5.2.1–5.2.5 escritas e revisadas em banca. *Pendência:* a listagem `code:rustc-error` da §5.2.3 ainda está **vazia** — colar a saída real do `rustc` (`E0277`, `Cell<f32>` não é `Sync`).
+- **§5.1 (Estado atual da Aule, `sec:aule-state`)** — escrita, revisada e **COMMITADA** (`6d170f2`, `docs:`). Cobre: veículo p/ instanciar os padrões; biblioteca × framework via IoC (`\cite{martin-fowler:inversion-of-control}`); `no_std`-first + feature-gating + generics (Float/Complex/Matriz); inventário por tier (lista `description`); blocos de sincronização "em desenvolvimento" (`\ref{cap:cron}`). Furo nº 1 fechado ("herda e preserva" + "estático e sem heap" — a garantia é do Rust; o forward a mantém sem heap).
+- **§5.3 (Limitações conhecidas, `sec:partial-limitations`)** — escrita e revisada, **conteúdo FECHADO/defensável**. Duas naturezas: (a) fronteira da linguagem — race condition lógica/staleness (ex.: setpoint atômico lido obsoleto), panic/stack overflow/overflow aritmético, `unsafe` de HAL/PAC (soundness externa); (b) limite do estudo — só P1, custo = só protocolo, P2 tem `unsafe` residual / P3 mede custo, ressalva Xtensa (load/store baratos, RMW=laço-CAS) a confirmar via disassembly. Fecho: 1 caso não derruba a garantia por construção (generalização vem de `Send`/`Sync`, não da contagem). *Pendências:* **commit `docs:` (comando pronto)** + passe ortográfico.
 
-## Estado do Cap. 5 (23/jul) — §5.2.1 e §5.2.2 ESCRITAS, revisadas em banca, DEFENSÁVEIS
-- **§5.2.1 (Cenário e o padrão P1, `subsec:setpoint-scenario`):** setpoint escalar; tarefa comm (escreve) × loop de controle (lê); mapeia p/ P1 ⟨Tarefa-Tarefa, Escalar, Leitor-Escritor⟩ pelo **teste de distinção** (cabe em atômico → corta P3; não depende do valor anterior → corta P4); **exclusão justificada da Aule** (P1 mora na borda; usar a lib passaria a ideia de que a garantia é da lib, não do Rust). Furos fechados na revisão: hazard reamarrado à definição de DR ("indivisível e ordenado"); exemplo do pêndulo trocado (colidia com o P3 do §4.6); `\text{}` na tupla.
-- **§5.2.2 (O data race em C, `subsec:setpoint-c`):** mapeia as 4 cláusulas da definição (`\ref{sec:dr-def}`); C **compila e cala**; hazard latente/não-determinístico; **TSan confirma** via `lstlisting` inline (`label=code:tsan-out`, saída real: T1 `comm_task` write / T2 `control_loop` read / global `g_setpoint`, 4 bytes); **versão ingênua = não é strawman**. Furos fechados: "mais de 1 escrita"→"pelo menos 1"; `$\text{g_setpoint}$` (erro do `_`)→escapado.
-- **Ambas UNCOMMITTED.** Working tree: só `capitulos/Resultados_Parciais.tex` (+46/−1). Msgs dadas (`docs:`, **SEM** trailer Claude — é prosa do Matheus): `docs: redige 5.2.1 (cenario e o padrao P1) do cap. 5` e `docs: redige 5.2.2 (o data race em C) com listagem do TSan`. Split de hunk no lazygit (as duas no mesmo arquivo). Untracked à parte: `.vscode/ltex.*` (fora destes commits).
-- Miudezas restantes (NÃO furo): usar `\texttt{}` p/ identificadores (`$\text{...}$` renderiza romano, não monospace); "por que"→"porque" causal (§5.2.2); legenda da listagem com "no...no".
+## ⏭️ PRÓXIMO PASSO — §"Bibliotecas e repositórios de controle" (`sec:control-repos`, topo do cap. 5)
+- **VAZIA** (só headings `subsec:control-repos-method` + `subsec:control-repos-table`). É a última peça de conteúdo do cap. 5. Pesquisa JÁ FEITA (planilha do Matheus — Regra 7 satisfeita); falta **transcrever planilha → tabela LaTeX** + registrar o método da busca (bases/strings/critério de inclusão-exclusão; modelo em `plan/registro_busca_bibliografica.md`). Trabalho leve (W8, noite). Situa a Aule no panorama de libs de controle.
+- ⚠️ **Numeração defasada:** os comentários `% 5.1/5.2/5.3` no `.tex` são anteriores à entrada da seção de repos no topo → a renderização empurrou tudo em +1. Realinhar ou remover os comentários.
 
-## Snippets + outputs (src/p1) — PRONTOS e EXECUTADOS
-`setpoint.c` (compila/roda/DR latente), `setpoint_safe.rs` (recusa `E0277`, `Cell<f32>` não é `Sync`), `setpoint_atomic.rs` (`Arc<AtomicU32>` — prefigura `Mirror::Primitive32`). Mensagem do `rustc` e saída do TSan **já salvas/coladas**. `src/**/target/` no `.gitignore`.
+## Refs IoC adicionadas hoje (commit `261c832`, `ai:`)
+- No `referencias.bib` + `plan/leitura_futura.md`: `martin-fowler:inversion-of-control` (bliki, 2005 — https://martinfowler.com/bliki/InversionOfControl.html) e `johnson1988reusable` (Johnson & Foote, JOOP 1(2):22–35, 1988; origem peer-reviewed — http://www.laputan.org/drc/drc.html). Metadados confirmados no primário. `\label{cap:cron}` criado no cronograma (resolve os `\ref` da 5.1/5.3).
+- Fowler já citado (l. 20) → resolve o `[?]`. Johnson & Foote só entra na bibliografia se o Matheus adicionar `\cite{johnson1988reusable}` no texto (`\nocite{*}` comentado).
 
-## Cap. 4 — COMPLETO ponta a ponta (4.1–4.7 + fecho). Só passe de forma pendente.
-(4.7 redigida 20–22/jul, commits `12cf47f`/`f97e8e3`/`aa76250`; detalhe da 4.7 no histórico anterior deste arquivo.) Acabamento: **6 `\cite{}` vazios** (5 na 4.4.1 l.214 + 1 na 4.6.3 l.389 firmware); **tabela do resultado da sonda é TODO na §4.3.3 (l.154 — lacuna de conteúdo, não só forma)**; ortografia §4.5/§4.7; nomes entre as 3 tabelas da 4.4. `sec:dr-def`/`sec:dr-vs-race` seguem `??` (cap. 3 é esqueleto; nascem na W8).
-
-## ⚠️ ROADMAP DESATUALIZADO — corrigir
-`plan/roadmap_escrita.md` (commitado 23/jul, `5a16681`) ainda diz "**4.7 é só esqueleto**" e "cap. 4 não fechou" — FALSO: a 4.7 foi redigida em 20–22/jul, ANTES desse replan. A "Situação atual" + a tarefa de domingo W7 ("fechar 4.7") + a "Ação urgente" (enviar só 4.1–4.6) precisam de conserto: **o cap. 4 está inteiro → enviar o cap. 4 COMPLETO ao Icaro.** (O ponto de retomada LOCAL estava travado em 04/jul; re-sincronizado com o espelho do repo nesta sessão.)
-
-## PAREDE REAL = ENTREGA à banca em ter 11/ago (15 dias corridos antes da defesa qua 26/ago)
-NÃO é 26/ago. O período 12–26/ago é pós-entrega (só apresentação). Da janela (a partir de 23/jul) sobram: **3 sábados (25/jul, 01/ago, 08/ago) + ~8 noites**. Sábado 08/ago = **REVISÃO** (não escrita). Cortes já acionados: casos 3→1, 4.7/cap.1/cap.2 em noites. Núcleo intocável: caso setpoint (cap.5), protocolo (4.6), 3.3/3.4, passe de revisão final. **Ação urgente: cap. 4 completo ao Icaro AGORA** (cabe ~1 rodada de feedback do núcleo antes de 11/ago).
-
-## Roteiros já dados (registrar em `plan/cap_5_resultados.md` se quiser andaime versionado — AINDA NÃO feito)
-§5.2 inteiro (arco de 5 blocos = 5 subseções) + §5.2.1 + §5.2.2, no formato da skill `roteiro-academico` (imagem + missão + perguntas + blocos + defesa + fronteiras + apoios). **Workflow desta sessão:** roteiro por subseção → Matheus escreve → "verifique" (papel banca, sem mercê) → aponta furos → aplica → "verifique novamente". Repetir para §5.2.3.
+## Cap. 4 — COMPLETO (4.1–4.7 + fecho). Só passe de forma.
+6 `\cite{}` vazios (5 na 4.4.1 + 1 na 4.6.3 firmware); tabela TODO na §4.3.3 (lacuna de conteúdo, não só forma); ortografia §4.5/§4.7; `sec:dr-def`/`sec:dr-vs-race` seguem `??` (cap. 3 nasce na W8). Enviar cap. 4 + cap. 5 ao Icaro assim que a seção de repos fechar.
 
 ## Pendências gerais (não bloqueiam)
-- Citações: `rust-error-index`, `rust-safe-soundness` (linha RustBelt; serve à 4.3.2 e à 4.7.3) — ver [[citacoes-pendentes]].
-- `../aule`: confirmar `Mirror::Primitive32`/`Channel` e fatos do §4.5 (`last_output` por valor?, `Block` com tipos associados?, `EndlessSimulation` existe?) antes da defesa.
-- `refs/` a decidir versionar × gitignore; `referencias.bib` herdadas a limpar.
+- Passe ortográfico: §5.1 (`transferencia`, `composiçao`, `o o máximo`, `dinamica`, `writter`, `Hagglund`, `bilblioteca`, `entrentanto`) e §5.3 (`aritimético`, `atomico`, `hipotese`, `falsiável`, `instabilizar`, `proximo`, `capitulo`).
+- Gancho `Mirror::Primitive32`/P1 ficou FORA da 5.1 de propósito (rascunho → "em desenvolvimento" + cap. 6).
+- `refs/` untracked (decidir versionar × gitignore); `referencias.bib` herdadas a limpar.
+- Citações: `rust-error-index`, `rust-safe-soundness` (linha RustBelt) — ver [[citacoes-pendentes]].
+
+## Prazo (roadmap_escrita.md, replan 25/jul)
+- **Entrega do documento à banca: sex 7/ago/2026** (antecipação autoimposta; o regimento exige 11/ago). **Defesa: qua 26/ago.** Cap. 2 e cap. 7 CORTADOS. Núcleo intocável: caso P1 (cap. 5), protocolo (4.6), 3.3/3.4, passe de revisão final.
+
+## Workflow desta linha de trabalho (manter)
+Roteiro por seção (skill `roteiro-academico`: imagem + 6 campos) → Matheus escreve → "verifique" (papel banca, sem mercê) → aponta furos → aplica → "verifique novamente" → commit. Ver [[review-checklist-enforce]] e [[roteiro-explicacao-didatica]].
