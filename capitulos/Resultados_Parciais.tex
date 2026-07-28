@@ -1,13 +1,58 @@
 \mychapter{Resultados Parciais}{cap:Resultados Parciais}
 \label{cap:experiment}
 
+% 5.x
 \section{Bibliotecas e repositórios de controle}
 \label{sec:control-repos}
 
+% 5.x.1
 \subsection{Método da busca}
 \label{subsec:control-repos-method}
-% (bases, strings, criterio de inclusao/exclusao)
 
+Para situar a biblioteca Aule como veículo, dentre o que já existia na comunidade open-source, foi realizada uma pesquina no Github de repositórios relacionados com sistemas de controle e controladores PID, para verificar quais opções existiam e qual era a maturidade desses repositorios. Perceba que apesar de não ser uma revisão sistemática, o método dessa pesquisa é reprodutível através dos critérios apresentados nos paragrafos seguintes.
+
+No github foram realizadas duas buscas, ambas filtrandas por \texttt{language:rust}, com as seguintes palavras chave: \texttt{pid} e \texttt{"control system"}, onde a última é pesquisada pela frase exata. A ordenação da lista de repositórios encontrados com essas palavras chave, foi através do números de estrelas, pois isso traz primeiro os repositorios nos quais a comunidade open-source mais creditou relevancia. Note que isso não tem relação com a maturidade ou qualidade do repositório, apenas indica que diversas pessoas viram o trabalho presente no repositório e deu crédito ao que foi implementado ali. Para evitar de adicionar na lista novos repositórios toda semana, pois toda semana surge novos repositórios no Github, foi definida uma data de congelamento desta lista: 9 de Junho de 2025. Cada repositório encontrado, sendo ele uma biblioteca (lib) ou um binário (bin) foi adicionado a lista, sendo a ordem de grandeza dessa lista de centenas. Com isso, se fez necessário realizar uma curadoria manual para reduzir o número de repositórios, tanto pela relevância quanto por falso positivos.
+
+O primeiro critério para a eliminação de repositórios foi ter pelo menos 1 estrela. Isso elimina repositórios de teste e com pouca divulgação. Após esse corte feito em ambas as buscas os números caíram de 340 para 165, na palavra chave \texttt{pid}, e de 347 para 125, na frase exata \texttt{"control system"}. Após isso, foi realizada uma verificação de falsos positivos manualmente. Para a busca da palavra chave \texttt{pid} foi removido repositórios relacionados com Process Identifier do linux e outros não relacionados (ou irrelevantes), enquanto para a busca pela frase exata \texttt{"control system"}, foi removido o que não estava relacionado com sistemas de controle, por exemplo: version control ou source control. Depois desta etapa, a lista \texttt{pid} saiu de 165 para 59 e a lista de \texttt{"control system"} saiu de 125 para 6. Note que a diminuição da lista \texttt{"control system"} foi de aproximadamente 95\%. Isso se deve a colisão de "control" com o controle de versão, gerando muitos falso positivos.
+
+Para analisar a qualidade e maturidade de cada repositório, foi adotada um método de classificação diferente para cada uma das listas: na lista PID, foi feita uma grade de 18 atributos:
+
+\begin{enumerate}
+  \item embedded setpoint: A referência está embarcada no controlador (Sim é um ponto negativo);
+  \item mutable setpoint: A referencia pode ser modificada (Sim é um ponto positivo);
+  \item mutable kp,ki,kd: Os valores de Kp, Ki e Kd podem ser modificados (Sim é um ponto positivo);
+  \item generic typing: Possui tipos genericos (não/primitivo/completo);
+  \item anti-windup: Possui anti-windup no controlador PID (Sim é um ponto positivo);
+  \item output-limit: Pode limitar o sinal de controle do PID (Sim é um ponto positivo);
+  \item Deadband: Ignora o erro dentro da banda (Sim é um ponto positivo);
+  \item no\_std: Oferece suporte a no\_std (Sim é um ponto positivo);
+  \item library/binary: o crate é uma biblioteca ou um binário;
+  \item Documentation: tem documentação substantiva (Sim é um ponto positivo);
+  \item Statistics: Possui medição de estatísticas do controlador (Sim é um ponto positivo);
+  \item CI: Possui pipelines de Continuous Integration (Sim é um ponto positivo);
+  \item crates.io: Foi publicado no crates.io (Sim é um ponto positivo);
+  \item tests: Possui testes automatizados (Sim é um ponto positivo);
+  \item Plot: Possui geração de gráficos ou plots (Sim é um ponto positivo);
+  \item benches: Tem benchmarks (Sim é um ponto positivo);
+  \item examples: Tem exemplos de como utilizar a biblioteca (Sim é um ponto positivo);
+  \item RK4 integrator: Possui suporte ao integrador Runge-Kutta 4 (Sim é um ponto positivo).
+\end{enumerate}
+
+Enquanto isso, na lista "control system", foi feita uma inspeção no código para buscar características descritivas, ao invés de avaliação binária de sim/não. Estas características são:
+
+\begin{enumerate}
+  \item no\_std: Compila sem std e pode ser utilizado em sistemas embarcados;
+  \item genéricos: Genérico em tipo numérico e em que grau (nenhum, f32-f64, pleno);
+  \item backend: Qual crate de algebra linear foi utilizado (nalgebra, faer, ndarray, caseiro, nenhum). Além disso é avaliado se a algebra linear pode ser utilizada em sistemas embarcados;
+  \item capacidades: Quais recursos de controle são implementados (TF, SS, discreto, solver ODE, laço de simulação, controlador, identificação, análise em frequência, filtros, c2d);
+  \item abstração: Como sistemas são modelados (ou compostos) (matrizes A-B-C-D, álgebra de TF, composição type-safe, diagrama de blocos ou grafo, composição direta (forward), nenhuma);
+  \item concorrência: Trata concorrencia ou data races (threads, Send/Sync, atômicos, tempo real);
+  \item maturidade: indicativos de estrelas, atividade recente, downloads no crates.io (e se está lá), possui documentação, possui CI, possui testes.
+\end{enumerate}
+
+Note que a busca no Github é diferente de uma base indexada, pois a quantidade de estrelas muda de acordo com as datas, além de palavras chaves excluírem repositórios que não citam o nome (por exemplo PID), mas implementam a funcionalidade. Na próxima subseção \ref{subsec:control-repos-table} é realizada a comparação e analise dos repositórios encontrados com estes métodos.
+
+% 5.x.2
 \subsection{Panorama comparativo}
 \label{subsec:control-repos-table}
 
