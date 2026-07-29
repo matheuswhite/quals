@@ -9,6 +9,9 @@
 %   - Claude (claude-opus-4-8), 2026-07-26 -- entradas martin-fowler:inversion-of-control
 %     (bliki; biblioteca vs framework, secao 5.1) e johnson1988reusable (origem do
 %     termo Inversion of Control), marcadas "added-by".
+%   - Claude (claude-opus-4-8), 2026-07-28 -- seis repositorios "control system"
+%     (control-sys-rs, torbox, pekpuglia, hixos, albertofoti, josue-herrera) para a
+%     coluna de referencia da tabela tab:lib-comp (secao 5.x.2), marcados "added-by".
 % NOTA: as entradas SEM marcacao "added-by" sao herdadas de um projeto anterior
 % (DEA / seguranca publica) e NAO pertencem a esta tese -- candidatas a remocao.
 % Metadados das entradas novas verificados via WebSearch (ACM DL, DBLP, USENIX,
@@ -580,4 +583,71 @@ doi = {10.3906/elk-1104-36}
   year         = {2005},
   howpublished = {\url{https://martinfowler.com/bliki/InversionOfControl.html}},
   note         = {Bliki. Acesso em: 26 jul. 2026}
+}
+
+% added-by: Claude, 2026-07-28
+% Seis repositorios "control system" (Rust) da secao 5.x.2 (tab:lib-comp).
+% Existencia, owner, nome exato do repo e descricao CONFIRMADOS na fonte primaria
+% (paginas GitHub) em 2026-07-28. Nenhum exibe nome real do autor -> author = handle
+% do GitHub em chaves duplas (nome literal). Data de ultimo commit NAO exibida na
+% verificacao -> year omitido; citados por URL + data de acesso (Regra 7).
+% Taglines confirmadas (para auditoria):
+%   control-sys-rs: "A Control System library implemented in Rust..."
+%   torbox        : "Control Systems Toolbox in Rust" (crates.io: control_systems_torbox)
+%   pekpuglia     : sem README/descricao
+%   hixos         : "Implement control systems in Rust"
+%   albertofoti   : "Control Systems Library to quickly simulate and visualize..."
+%   josue-herrera : "Learning Rust With Control Systems Programming" (repo control_systems, plural)
+@misc{control-sys-rs,
+  author       = {{rdesarz}},
+  title        = {control-sys-rs},
+  howpublished = {\url{https://github.com/rdesarz/control-sys-rs}},
+  note         = {Reposit\'orio de software (Rust). Acesso em: 28 jul. 2026}
+}
+
+@misc{torbox,
+  author       = {{TorBorve}},
+  title        = {Control-Systems-TorBox},
+  howpublished = {\url{https://github.com/TorBorve/Control-Systems-TorBox}},
+  note         = {Reposit\'orio de software (Rust). Acesso em: 28 jul. 2026}
+}
+
+@misc{pekpuglia,
+  author       = {{pekpuglia}},
+  title        = {control\_systems},
+  howpublished = {\url{https://github.com/pekpuglia/control_systems}},
+  note         = {Reposit\'orio de software (Rust). Acesso em: 28 jul. 2026}
+}
+
+@misc{hixos,
+  author       = {{Hixos}},
+  title        = {control-systems-rs},
+  howpublished = {\url{https://github.com/Hixos/control-systems-rs}},
+  note         = {Reposit\'orio de software (Rust). Acesso em: 28 jul. 2026}
+}
+
+@misc{albertofoti,
+  author       = {{AlbertoFoti}},
+  title        = {Control-Systems-Algorithms},
+  howpublished = {\url{https://github.com/AlbertoFoti/Control-Systems-Algorithms}},
+  note         = {Reposit\'orio de software (Rust). Acesso em: 28 jul. 2026}
+}
+
+@misc{josue-herrera,
+  author       = {{Josue-Herrera}},
+  title        = {control\_systems},
+  howpublished = {\url{https://github.com/Josue-Herrera/control_systems}},
+  note         = {Reposit\'orio de software (Rust). Acesso em: 28 jul. 2026}
+}
+
+% added-by: Claude, 2026-07-28
+% Aule: biblioteca-veiculo desta dissertacao. Repo PUBLICO confirmado na fonte
+% primaria (github.com/matheuswhite/aule-rs) em 2026-07-28: owner matheuswhite, MIT,
+% Rust, 128 commits, sem descricao formal -> title = nome do repositorio.
+@misc{aule,
+  author       = {dos Santos, Matheus T.},
+  title        = {aule-rs},
+  howpublished = {\url{https://github.com/matheuswhite/aule-rs}},
+  year         = {2026},
+  note         = {Reposit\'orio de software (Rust). Acesso em: 28 jul. 2026}
 }
