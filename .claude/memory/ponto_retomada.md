@@ -1,6 +1,6 @@
 ---
 name: ponto-retomada
-description: "Cap. 5, secao 'Bibliotecas e repositorios de controle' (sec:control-repos, TOPO do cap. 5): 5.x.1 (Metodo da busca) ESCRITA+REVISADA (falta commit docs: + acentos); 5.x.2 (Panorama) VAZIA com formato JA DECIDIDO (grade PID no apendice via csvsimple + grade control hibrida/prosa por familia). Analise das 6 libs de controle + verificacao de busca na API em plan/comparacao_libs_controle.md. 5.1/5.2/5.3 escritas (5.1=6d170f2, 5.3=b50ce52). Cap. 4 completo (falta passe de forma). Entrega banca 7/ago; defesa 26/ago."
+description: "Cap. Resultados (renderiza como cap. 4 no PDF; comentarios '% 5.x' sao legado), secao 'Bibliotecas e repositorios de controle': 5.x.1 (Metodo) COMMITADA (9043d0d); 5.x.2 (Panorama comparativo) ESCRITA (prosa Matheus + tabela tab:lib-comp com coluna Referencia/cite + Aule citada matheuswhite/aule-rs) A COMMITAR; tabela do apendice tab:pid-survey CRIADA (csvsimple lendo res/pids.csv com coluna URL, landscape, 59 repos) A COMMITAR; 7 entradas .bib novas (6 repos control-system + aule). Fonte URLs: star list github.com/stars/matheuswhite/lists/control-system-rust. Cap. 4 completo. Entrega banca 7/ago; defesa 26/ago."
 metadata:
   node_type: memory
   author: Claude (claude-opus-4-8)
@@ -19,47 +19,51 @@ metadata:
     - "Claude (claude-opus-4-8), 2026-07-23"
     - "Claude (claude-opus-4-8), 2026-07-26"
     - "Claude (claude-opus-4-8), 2026-07-27"
+    - "Claude (claude-opus-4-8), 2026-07-28"
   type: project
   originSessionId: bfd04e9d-3381-42a2-bac3-e70b75a64a40
 ---
 
-**Ponto de retomada — sessão de 27/jul/2026. Fechamento do dia.**
+**Ponto de retomada — sessão de 28/jul/2026.**
 
-## FOCO ATUAL — seção "Bibliotecas e repositórios de controle" (`sec:control-repos`, TOPO do cap. 5)
+## FOCO — seção "Bibliotecas e repositórios de controle" (topo do cap. Resultados)
 
-### 5.x.1 Método da busca (`subsec:control-repos-method`) — ESCRITA + REVISADA (banca)
-Cobre: motivação (situar a Aule no ecossistema open-source — cronologia corrigida, "para situar", não "antes de escolher"); 2 buscas no GitHub, `language:rust`, chaves `pid` e `"control system"` (frase exata); ordenação por estrelas COM ressalva (estrela ≠ maturidade/qualidade, só relevância percebida); data de congelamento 09/jun/2025; funil 340→165→59 (`pid`) e 347→125→6 (`"control system"`) — corte 1 = ≥1 estrela, corte 2 = falso positivo (Process Identifier + irrelevantes; version/source control ~95%); duas grades — **PID: 18 atributos** (enumerate, polaridade "sim=positivo/negativo"; `generic typing` em 3 níveis não/primitivo/completo); **control: 7 dimensões descritivas** (no_std, genéricos, backend, capacidades, abstração, concorrência, maturidade); ressalva final GitHub ≠ base indexada + recall (`idsp` sem "pid" no nome).
-*Furos já fechados por ele nesta sessão:* cronologia; `anti-windup` (era `anti-widnup`); genericidade (3 níveis).
-*Pendências:* **commit `docs:`** (o texto é do Matheus) + passe de acentos (pesquina, repositorios, paragrafos, genericos, algebra, concorrencia, relevancia).
+Nota de numeração: o capítulo Resultados renderiza como **cap. 4** no PDF atual (ordem: intro=1, fundamentacao=2, Metodologia=3, Resultados=4, Cronograma=5 — cap. 2/7 cortados). Os comentários `% 5.x` no `.tex` são **legado**; a seção aparece como §4.1 no PDF.
 
-### 5.x.2 Panorama comparativo (`subsec:control-repos-table`) — VAZIA (só heading). PRÓXIMO A ESCREVER.
-**Decisão de formato tomada (ver `plan/comparacao_libs_controle.md`):**
-- Grade PID 59×18 → **APÊNDICE** (via `csvsimple`, pacote a adicionar; `ic.cls` já tem booktabs/tabularx/rotating). Corpo = só síntese (contagens/funil de features).
-- Grade control 6×7 → **HÍBRIDO**: micro-tabela de sinal (✓/✗) p/ a lacuna (no_std, concorrência, genérico, crates.io, maturidade) + prosa por FAMÍLIA (análise offline × execução). Matheus prefere prosa; se zero-tabela, exigir 1 frase-síntese do "0/6" + itemize (nunca 6 parágrafos-catálogo).
-- Roteiro imagem+6 campos da 5.x.2 OFERECIDO, ainda não montado — retomar.
+### 5.x.1 Método da busca (`subsec:control-repos-method`) — COMMITADA (`9043d0d`, `docs:`)
+Escrita+revisada. *Pendência:* passe de acentos (pesquina→pesquisa, repositorios, paragrafos, genericos, algebra, concorrencia, relevancia).
 
-### Análise pronta (insumo da 5.x.2) — `plan/comparacao_libs_controle.md`
-6 libs de controle inspecionadas no código (subagentes de IA): **0/6 no_std, 0/6 concorrência/data race, 0/6 genéricas de fato, 5/6 abandonadas (1 star), 1/6 no crates.io.** Duas famílias: análise LTI offline (control-sys-rs, TorBox) × execução/composição (pekpuglia type-safe, Hixos diagrama+RK4+PID, AlbertoFoti EDOs). Aule = única no cruzamento no_std+composição+concorrência. Divergências README×código: control-sys-rs anuncia LQR ausente; TorBox diz "simulating" sem loop.
+### 5.x.2 Panorama comparativo (`subsec:control-repos-table`) — ESCRITA (a commitar como `docs:`)
+Prosa do Matheus. Estrutura: veredito (ecossistema raso/bifurcado/imaturo) → funil PID no corpo **59→32 (libs)→17 (no_std)→9 (genérico pleno)→5 (anti-windup)→3 (saturação)**, com a ordem declarada como escolha do autor → 2 famílias: **A = análise LTI offline** (`control-sys-rs`, `TorBox`) × **B = execução/composição** (`pekpuglia`, `Hixos`, `AlbertoFoti`); `Josue-Herrera` = 6º repo degenerado (binário de aprendizado) → fecho posicionando a Aule.
+Formato final (difere do "híbrido" antes cogitado): **prosa por família + micro-tabela `tab:lib-comp`** (7 linhas × colunas no_std/concorrência/genérico pleno/crates.io/maduro/Referência; marcadores Sim/Não/Parcial). A grade PID completa foi pro apêndice.
+**Coluna "Referência" (`\cite`)** adicionada por Claude à `tab:lib-comp` (marcada inline `% modified-by: Claude`); linha da **Aule** = `\cite{aule}`.
+**Bug já corrigido pelo Matheus:** `_` cru em `\texttt{...control_systems}` (linha 63) vazava `\texttt`/modo-math por toda a seção; agora é `control\_systems` (plural, confirmado na fonte).
+*Pendências de forma (banca):* ortografia (ecossistema, raqueamento→ranqueamento, familía→família, proposito→propósito, diverdir→divergir, reunie→reúne, cental→central, idéia→ideia, "o Aule"/"a Aule" inconsistente, caption "dos repositório"→repositórios); reconfirmar os "ND" e o par README×código dos repos.
 
-## aule-rs (sibling) — estado
-`origin/main` (commit `4fb7d35`) usa **nalgebra 0.34 em modo `no_std`** (`default-features=false`, `libm`, `alloc`) + num-complex — NÃO faer (faer era da branch `arduino_fix`, working tree local). `main` local atualizada por FF nesta sessão. Branches `sync` e `number_generic` existem em `origin` (não inspecionadas a fundo). CLAUDE.md "nalgebra" está correto p/ a main.
+### Tabela do apêndice `tab:pid-survey` — CRIADA (a commitar como `ai:`)
+`pos-textuais/apendiceA.tex`: `longtable` em `landscape` (pdflscape) via **csvsimple** lendo `res/pids.csv` (59 repos × 18 atributos + coluna **URL**), cabeçalhos rotatebox 90°, `respect underscore` (NÃO usar o pacote `underscore` — colide com `listings`), `\textwidth`←`\textheight` p/ largura landscape. Pacotes adicionados em `main.tex`: `longtable`, `pdflscape`, `csvsimple`. **Build `latexmk` exit 0, 71 páginas.**
 
-## Resto do Cap. 5 (fora da seção de repos)
+### `referencias.bib` — 7 entradas novas (a commitar como `ai:`)
+6 repos control-system (chaves `control-sys-rs`, `torbox`, `pekpuglia`, `hixos`, `albertofoti`, `josue-herrera`) + `aule` (matheuswhite/aule-rs). Metadados **CONFIRMADOS na fonte primária (GitHub) em 2026-07-28**. `author` = handle GitHub (sem nome real exibido); `aule` = "dos Santos, Matheus T.". `year` omitido nos 6 (data de commit não exposta na verificação); `aule` year=2026.
+
+### `res/pids.csv` — VERSIONAR (untracked; commit como dado do Matheus, sem trailer — carve-out)
+Coluna **URL** (20ª) adicionada da star-list, mapeada **1:1 por posição** (ordem da lista == ordem do CSV). Fonte: **https://github.com/stars/matheuswhite/lists/control-system-rust** (65 repos = 59 PID [itens 1–59] + 6 control-system [60–65]).
+**DECISÃO PENDENTE do Matheus:** 2 typos no campo `Name` do CSV — `pid-crtl` (repo real `pid-ctrl`, Iraeis) e `rig-...-tunner-example` (repo real `...tuner...`, 0xPlaygrounds). As URLs já apontam para o repo **correto**; o `Name` na tabela ainda mostra o typo.
+
+## Resto do Cap. Resultados (fora da seção de repos)
 - **§5.1 (Aule, `sec:aule-state`)** — COMMITADA (`6d170f2`).
-- **§5.2 (P1, `sec:case-setpoint`)** — escrita/revisada. *Pendência:* listagem `code:rustc-error` (§5.2.3) VAZIA — colar saída real do `rustc` (`E0277`, `Cell<f32>` não é `Sync`).
-- **§5.3 (Limitações, `sec:partial-limitations`)** — escrita/revisada, COMMITADA (`b50ce52`, `docs:`).
-- ⚠️ Numeração: comentários `% 5.1/5.2/5.3` no `.tex` são anteriores à entrada da seção de repos no topo → conferir se os `% 5.x` realinham.
+- **§5.2 (P1, `sec:case-setpoint`)** — escrita/revisada; listagem `code:rustc-error` (§5.2.3) **PREENCHIDA pelo Matheus (28/jul)** — sem pendência de conteúdo. A commitar (`docs:`).
+- **§5.3 (Limitações)** — COMMITADA (`b50ce52`, `docs:`).
 
-## Cap. 4 — COMPLETO (4.1–4.7 + fecho). Só passe de forma.
-6 `\cite{}` vazios (5 na 4.4.1 + 1 na 4.6.3 firmware); tabela TODO na §4.3.3; ortografia §4.5/§4.7; `sec:dr-def`/`sec:dr-vs-race` seguem `??` (cap. 3 nasce na W8). Enviar cap. 4 + cap. 5 ao Icaro assim que a seção de repos fechar.
+## Cap. 4 (Metodologia, renderiza cap. 3) — COMPLETO. Só passe de forma.
+6 `\cite{}` vazios (5 na 4.4.1 + 1 na 4.6.3); tabela TODO na §4.3.3; `sec:dr-def`/`sec:dr-vs-race` seguem `??`. Enviar cap. 4 + cap. 5 ao Icaro assim que a seção de repos fechar.
 
 ## Pendências gerais (não bloqueiam)
+- Ortografia da 5.x.2 (acima). `refs/` untracked (decidir versionar × gitignore). `referencias.bib` herdadas (DEA) a limpar.
 - Citações `rust-error-index`, `rust-safe-soundness` — ver [[citacoes-pendentes]].
-- `refs/` untracked (decidir versionar × gitignore); `referencias.bib` herdadas a limpar.
-- Gancho `Mirror::Primitive32`/P1 fora da 5.1 de propósito ("em desenvolvimento" + cap. 6).
 
 ## Prazo (roadmap_escrita.md, replan 25/jul)
-- **Entrega à banca: sex 7/ago/2026** (autoimposta; regimento 11/ago). **Defesa: qua 26/ago.** Cap. 2 e 7 CORTADOS. Núcleo intocável: caso P1, protocolo (4.6), 3.3/3.4, revisão final.
+- **Entrega à banca: sex 7/ago/2026** (autoimposta; regimento 11/ago). **Defesa: qua 26/ago.** Cap. 2 e 7 CORTADOS.
 
 ## Workflow desta linha (manter)
-Roteiro por seção (skill `roteiro-academico`: imagem + 6 campos) → Matheus escreve → "verifique" (banca, sem mercê) → aponta furos → aplica → "verifique novamente" → commit. Papel bibliotecário p/ buscas (Regra 7). Ver [[review-checklist-enforce]] e [[roteiro-explicacao-didatica]].
+Roteiro por seção (skill `roteiro-academico`: imagem + 6 campos) → Matheus escreve → "verifique" (banca, sem mercê) → aponta furos → aplica → commit. Papel bibliotecário p/ buscas (Regra 7). Ver [[review-checklist-enforce]] e [[roteiro-explicacao-didatica]].
