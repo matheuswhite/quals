@@ -56,6 +56,40 @@ Note que a busca no Github é diferente de uma base indexada, pois a quantidade 
 \subsection{Panorama comparativo}
 \label{subsec:control-repos-table}
 
+O ecosistema open-source de sistemas de controle em Rust é raso, bifurcado e imaturo. Isso se deve a, primeiramente, lista de PIDs possuir muitas entradas mas serem rasas, só cobrindo funcionalidades básicas do PID. Na tabela \ref{tab:pid-survey} do apêndice \ref{cap:apendix-a}, pode ser visto que dos 59 repositórios, apenas 32 são bibliotecas, com isso outros 27 são binários e não entram nesta análise. Destes apenas 17 podem ser utilizados em sistemas embarcados, ou seja, possuem suporte a no\_std. Dos 17 restantes apenas 9 possuem generico pleno e destes apenas 5 possuem anti-windup. E por último, apenas 3 dos 5 restantes possuem limitação (ou saturação) no valor de saída. Perceba que para um PID em produção embarcado, essas funcionalidades são esperadas em uma implementação madura. A ordem e as funcionalidades listadas não são naturais, mas foram escolhidas pelo autor deste trabalho. Entretanto para simular, validar e implantar em produção sistemas de controle, não basta a biblioteca ter somente PID, é necessário ter um conjunto de funcionalidades. É neste ponto, em que as opções disponíveis no ecosistema open-source do Rust são bifurcadas e imaturas.
+
+As opções são ditas bifurcadas pois podem ser divididas em 2 famílias: análise LTI offline, para o projeto e analise no PC, ao estilo do Matlab; e execução e composição de blocos, onde o propósito é executar no alvo. Note que não é um raqueamento, mas sim uma divisão de proposito. Na familía A (análise offline), estão contidas: \texttt{control-sys-rs} e \texttt{TorBox}. Nestas duas o objetivo é projetar no computador, no estilo Matlab. É feito a modelagem, com Transfer Function ou State Space; análise em frequência (somente na TorBox), com Bode e Nyquist; e discretização (c2d). Tudo isso no PC. O backend de algebra linear é nalgebra em modo std (mesma biblioteca da Aule). Note que essa família não possui loop de simulação temporal, nem no\_std e nem executa no alvo (embarcado), apenas no PC.
+
+Na família B (execução no alvo), estão contidas: \texttt{pekpuglia}, \texttt{Hixos} e \texttt{AlbertoFoti}. Note que os nomes descritos são os nomes dos autores no github, pois o nome dos repositórios são muito próximos. Antes de continuar, vale salientar que foram apresentadas 2 bibliotecas na família A e, agora na família B, 3. Isso totaliza apenas 5 repositórios. O último repositório é considerado degenerado para esta analise, pois é um binário de aprendizado e não biblioteca (\texttt{Josue-Herrera/control\_system}). A família B é a que está mais próxima da Aule, pois possui a mesma ideia de compor blocos e um loop de simulação. Entretanto cada biblioteca pega um idéia diferente e nenhuma reune tudo. Além disso, todas são \texttt{std} e todas estão abandonadas, sendo o commit mais recente delas respectivamente: Abril de 2024, Janeiro de 2024 e Setembro de 2022.
+
+O repositório de \texttt{pekpuglia} é o mais próximo na ideia do Aule, onde possui uma composição type-safe, com a trait \texttt{DynamicalSystem} e os tipos: \texttt{Series}, \texttt{Feedback} e \texttt{Parallel}. O ponto negativo deste repositório é não possuir a execução, ou solver, para resolver o espaço de estados. O segundo repositório, \texttt{Hixos}, é o mais próximo em arquitetura. Neste repositório, existe solvers (RK4 e Euler), loop de execução, PID, discreto. Entretanto, esse repositório tomou o caminho que Aule escolheu, por design, diverdir: tornar a composição dos blocos em um framework, ao invés de uma biblioteca. Com isso, o desenvolvedor adiciona os blocos e os nomes dos sinais ao framework e depois pede para o framework executar. Esse ponto, remove ergonomia do desenvolvedor, além de remover a verificação por tipos entre a conexão dos blocos (o tipo da saída de um bloco deve ser a entrada do outro bloco). Por último, o repositório de \texttt{AlbertoFoti}, possui uma coleção de plantas EDO não-lineares, como: Chua Circuit, Lorenz Attractor, Damped Pendulum e Van Der Pol Oscillator. Possui um loop de simulação (apenas no binário) e a parte matemática (Algebra linear e Euler) é construída com código próprio.
+
+\begin{table}[ht]
+  \centering
+  \caption{Comparação dos repositório "control system" com a biblioteca Aule}
+  \label{tab:lib-comp}
+  % modified-by: Claude (claude-opus-4-8), 2026-07-28 -- adicionada a coluna "Referencia" (\cite dos repos, verificados na fonte primaria em 2026-07-28)
+  \begin{tabularx}{\textwidth}{>{\hsize=1.3\hsize}X >{\hsize=0.85\hsize}X >{\hsize=1.1\hsize}X >{\hsize=1.1\hsize}X >{\hsize=0.9\hsize}X >{\hsize=0.9\hsize}X >{\hsize=0.85\hsize}X}
+    \toprule
+    Repositório & no\_std & concorrência & genérico pleno & crates.io & maduro & Referência \\
+    \midrule
+    control-sys-rs & Não & Não & Não & Não & Parcial & \cite{control-sys-rs} \\
+    TorBox & Não & Não & Não & Sim & Parcial & \cite{torbox} \\
+    pekpuglia & Não & Não & Não & Não & Não & \cite{pekpuglia} \\
+    Hixos & Não & Não & Parcial & Não & Não & \cite{hixos} \\
+    AlbertoFoti & Não & Não & Não & Não & Não & \cite{albertofoti} \\
+    Josue-Herrera & Não & Não & Não & Não & Não & \cite{josue-herrera} \\
+    Aule & Sim & Parcial & Sim & Não & Parcial & \cite{aule} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Na tabela \ref{tab:lib-comp} é possível ver um resumo das funcionalidades de cada biblioteca, incluíndo a Aule. Note que o placar das outras bibliotecas é 0/6 para os seguintes eixos: no\_std, concorrência e genérico de fato. Os 2 primeiros eixo são o territorio deste trabalho, enquanto o terceiro eixo é um diferencial que só existe na Aule. Duas notas importantes sobre a Aule: a primeira é sobre a concorrência, que apesar de ainda não estar na branch principal (main), já está em desenvolvimento; a segunda se relaciona sobre o crates.io, pois a Aule ainda não foi publicada lá, pois as APIs estão mudando bastante durante o desenvolvimento deste trabalho e uso em geral. Deste modo, próximo da apresentação da dissertação, deve haver uma versão mais estável e uma versão publicada no crates.io.
+
+Ao final desta analise, é possível verificar que o Aule cobre um espaço vazio no ecosistema open-source do Rust, para sistemas de controle. Uma vez que não existe uma biblioteca no\_std e com composição forward, que reune simulação e tratamento de concorrência. Além disso, a biblioteca Aule reunie, em um só artefato no\_std, o que estava disperso no ecossistema: a composição do pekpuglia e Hixos; as representações de sistemas de control-sys-rs/TorBox; e controladores PID, com anti-windup e saturação.
+
+Portanto, a biblioteca Aule é o veículo ideal para o trabalho, por somente ela possuir (em desenvolvimento) o suporte real sobre o tema cental do trabalho: tratamento de concorrência.
+
 % 5.1
 \section{Estado atual da biblioteca Aule}
 \label{sec:aule-state}
@@ -159,6 +193,19 @@ Ao compilar o trecho de código \ref{code:setpoint-safe}, é apresentado um erro
     basicstyle=\footnotesize\ttfamily,
     breaklines=true,
     frame=shadowbox, rulesepcolor=\color{gray}]
+error[E0277]: `Cell<f32>` cannot be shared between threads safely
+ --> setpoint_safe.rs:6:18
+  |
+6 | static SETPOINT: Cell<f32> = Cell::new(0.0);
+  |                  ^^^^^^^^^ `Cell<f32>` cannot be shared between threads safely
+  |
+  = help: the trait `Sync` is not implemented for `Cell<f32>`
+  = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock`
+  = note: shared static variables must have a type that implements `Sync`
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0277`.
 \end{lstlisting}
 
 Apesar de mostrar de forma deterministica e em tempo de compilação o problema, ainda não é apresentado a forma de remover o data race. Na próxima subseção \ref{subsec:setpoint-atomic}, é apresentado como resolver isso em Rust.
