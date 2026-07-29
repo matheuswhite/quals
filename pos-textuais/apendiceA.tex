@@ -1,13 +1,71 @@
-\chapter{Título do Apêndice A}
-Este apêndice apresenta informações complementares ao trabalho, como por exemplo códigos, questionários ou dados adicionais.
+\chapter{Apêndice A}
+\label{cap:apendix-a}
 
-% Exemplo de código
-\begin{algorithm}[H]
-\caption{Exemplo de algoritmo no apêndice}
-\begin{algorithmic}[1]
-\Procedure{Exemplo}{$entrada$}
-    \State $resultado \gets entrada + 1$
-    \State \Return $resultado$
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
+% added-by: Claude (claude-opus-4-8), 2026-07-28 -- transposicao de res/pids.csv (dado levantado por Matheus) via csvsimple; autorizada por ele nesta data
+\begin{landscape}
+  \scriptsize
+  \setlength{\tabcolsep}{2pt}
+  % pdflscape mantem a \textwidth do retrato; reatribui para a dimensao que vira horizontal apos girar
+  \setlength{\textwidth}{\textheight}%
+  \setlength{\linewidth}{\textwidth}%
+  \begin{longtable}{>{\raggedright\arraybackslash}p{3cm} *{18}{c} >{\raggedright\arraybackslash\scriptsize}p{4.2cm}}
+    \caption{Levantamento dos repositórios de PID em Rust (lista congelada em 09/06/2025)}
+    \label{tab:pid-survey} \\
+    \toprule
+    \textbf{Name}
+      & \rotatebox{90}{embedded setpoint~}
+      & \rotatebox{90}{mutable setpoint~}
+      & \rotatebox{90}{mutable kp,ki,kd~}
+      & \rotatebox{90}{generic typing~}
+      & \rotatebox{90}{anti-windup~}
+      & \rotatebox{90}{output-limit~}
+      & \rotatebox{90}{Deadband~}
+      & \rotatebox{90}{no\_std~}
+      & \rotatebox{90}{library/binary~}
+      & \rotatebox{90}{Documentation~}
+      & \rotatebox{90}{Statistics~}
+      & \rotatebox{90}{CI~}
+      & \rotatebox{90}{crates.io~}
+      & \rotatebox{90}{tests~}
+      & \rotatebox{90}{Plot~}
+      & \rotatebox{90}{benches~}
+      & \rotatebox{90}{Examples~}
+      & \rotatebox{90}{RK4 Integrator~} & \textbf{URL} \\
+    \midrule
+    \endfirsthead
+    \multicolumn{20}{c}{\tablename\ \thetable{} -- continuacao} \\
+    \toprule
+    \textbf{Name}
+      & \rotatebox{90}{embedded setpoint~}
+      & \rotatebox{90}{mutable setpoint~}
+      & \rotatebox{90}{mutable kp,ki,kd~}
+      & \rotatebox{90}{generic typing~}
+      & \rotatebox{90}{anti-windup~}
+      & \rotatebox{90}{output-limit~}
+      & \rotatebox{90}{Deadband~}
+      & \rotatebox{90}{no\_std~}
+      & \rotatebox{90}{library/binary~}
+      & \rotatebox{90}{Documentation~}
+      & \rotatebox{90}{Statistics~}
+      & \rotatebox{90}{CI~}
+      & \rotatebox{90}{crates.io~}
+      & \rotatebox{90}{tests~}
+      & \rotatebox{90}{Plot~}
+      & \rotatebox{90}{benches~}
+      & \rotatebox{90}{Examples~}
+      & \rotatebox{90}{RK4 Integrator~} & \textbf{URL} \\
+    \midrule
+    \endhead
+    \midrule
+    \multicolumn{20}{r}{continua na proxima pagina} \\
+    \endfoot
+    \bottomrule
+    \endlastfoot
+    \csvreader[respect underscore, no check column count, separator=comma, late after line=\\]%
+      {res/pids.csv}{}{%
+      \csvcoli & \csvcolii & \csvcoliii & \csvcoliv & \csvcolv & \csvcolvi
+      & \csvcolvii & \csvcolviii & \csvcolix & \csvcolx & \csvcolxi & \csvcolxii
+      & \csvcolxiii & \csvcolxiv & \csvcolxv & \csvcolxvi & \csvcolxvii
+      & \csvcolxviii & \csvcolxix & \url{\csvcolxx}}%
+  \end{longtable}
+\end{landscape}

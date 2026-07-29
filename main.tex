@@ -20,8 +20,12 @@
 \usepackage{fancyhdr}
 \usepackage{acronym}
 \usepackage{natbib}
-\usepackage{lipsum}  
+\usepackage{lipsum}
 \usepackage{amsmath}
+% added-by: Claude (claude-opus-4-8), 2026-07-28 -- suporte a tabela CSV do apendice (res/pids.csv), autorizado por Matheus
+\usepackage{longtable}   % tabela que quebra em varias paginas
+\usepackage{pdflscape}   % pagina em landscape para a tabela larga
+\usepackage{csvsimple}   % le res/pids.csv em tempo de compilacao
 
 \makeatletter
 \renewcommand{\ALG@name}{Algoritmo}
