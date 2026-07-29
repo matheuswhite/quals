@@ -1,0 +1,60 @@
+Name,embedded setpoint,mutable setpoint,"mutable kp,ki.kd",generic typing,anti-windup,output-limit,Deadband,no_std,library/binary,Documentation,Statistics,CI,crates.io,tests,Plot,benches,Examples,RK4 Integrator,URL
+pid-rs,yes,yes,yes,primitives,yes,yes,no,yes,library,yes,no,yes,yes,yes,no,no,yes,no,https://github.com/braincore/pid-rs
+pid_control-rs,yes,yes,yes,no,yes,yes,no,yes,library,yes,no,no,yes,no,no,no,no,no,https://github.com/mbr/pid_control-rs
+pid-balancer,yes,yes,yes,no,no,yes,no,no,binary,no,no,no,no,no,yes,no,no,no,https://github.com/sparshg/pid-balancer
+pid-lite,yes,yes,yes,no,no,no,no,yes,library,yes,no,yes,yes,yes,no,no,yes,no,https://github.com/yoshuawuyts/pid-lite
+idsp,yes,no,no,full,yes,yes,no,yes,library,yes,no,yes,yes,yes,no,no,yes,no,https://github.com/quartiq/idsp
+pidgeon,yes,yes,yes,no,yes,yes,yes,no,library,yes,yes,yes,yes,yes,yes,yes,yes,no,https://github.com/security-union/pidgeon
+pid-loop,no,yes,no,full,no,no,no,yes,library,yes,no,no,yes,no,no,no,yes,no,https://github.com/dotcypress/pid-loop
+piddiy,yes,yes,yes,full,no,no,no,yes,library,yes,no,no,yes,no,no,no,yes,no,https://github.com/sgeos/piddiy
+discrete_pid,no,yes,yes,full,no,yes,no,no,library,yes,no,yes,yes,yes,no,yes,yes,yes,https://github.com/Hs293Go/discrete_pid
+rusty-pid,yes,no,yes,no,no,yes,no,yes,binary,no,no,no,no,no,no,no,no,no,https://github.com/daschl/rusty-pid
+PIDController,yes,yes,yes,no,no,yes,no,no,library,no,no,no,no,yes,no,no,no,no,https://github.com/josh-tracey/PIDController
+pid,yes,yes,yes,no,no,no,no,yes,library,no,no,no,no,no,no,no,no,no,https://github.com/Michael-F-Bryan/pid
+pid-crtl,yes,yes,yes,full,no,yes,no,yes,library,no,no,no,yes,yes,no,no,yes,no,https://github.com/Iraeis/pid-ctrl
+rust-pid-controller,yes,yes,yes,no,no,yes,no,no,library,no,no,no,no,yes,no,no,yes,no,https://github.com/sctg-development/rust-pid-controller
+pid_rs,yes,no,yes,no,no,no,no,no,library,no,no,no,no,no,no,no,yes,no,https://github.com/mistgc/pid_rs
+advanced-pid-rs,no,yes,no,primitives,no,yes,no,yes,library,yes,no,yes,yes,yes,no,no,yes,no,https://github.com/teruyamato0731/advanced-pid-rs
+pid (AdinAck),no,yes,yes,full,yes,no,no,yes,library,no,no,no,no,no,no,no,no,no,https://github.com/AdinAck/pid
+pid (spacey-sooty),no,yes,no,no,no,no,no,no,library,no,no,yes,no,no,no,no,no,no,https://github.com/spacey-sooty/pid
+pid (abdulmelikbekmez),no,yes,no,no,yes,yes,no,no,binary,no,no,no,no,no,yes,no,no,no,https://github.com/abdulmelikbekmez/pid
+libpid-rs,yes,yes,yes,no,no,yes,no,yes,library,no,no,no,yes,yes,no,no,no,no,https://github.com/saronic-technologies/libpid-rs
+free-flight-stabilization,yes,yes,yes,full,yes,no,no,yes,library,yes,no,yes,yes,yes,no,no,yes,no,https://github.com/AeroRust/free-flight-stabilization
+dc-motor,no,yes,yes,no,yes,yes,no,yes,binary,no,no,no,no,no,no,no,no,no,https://github.com/tutla53/dc-motor
+macbookfan,yes,yes,yes,no,yes,yes,no,no,binary,no,no,no,no,no,no,no,no,no,https://github.com/jbg/macbookfan
+pid_example,no,yes,no,no,no,no,no,yes,library,no,no,yes,no,yes,no,no,no,no,https://github.com/cyrusmetcalf/pid_example
+pid-controller-rs,no,yes,yes,full,yes,yes,no,yes,library,no,no,no,no,yes,no,no,no,no,https://github.com/peterkrull/pid-controller-rs
+PIDControl,no,no,no,no,no,no,no,no,binary,no,no,no,no,no,no,no,no,no,https://github.com/prass/PIDControl
+rust_pid (johsnick),no,yes,yes,no,no,yes,no,no,library,no,no,no,no,yes,no,no,no,no,https://github.com/johsnick/rust_pid
+rust_pid,no,yes,yes,no,yes,no,no,no,library,no,no,no,no,yes,no,no,no,no,https://github.com/aloebs29/rust_pid
+pid.rs,no,no,no,no,no,no,no,no,library,no,no,yes,no,no,no,no,no,no,https://github.com/spacey-sooty/pid.rs
+guv,no,yes,no,full,no,yes,no,yes,library,yes,no,yes,yes,yes,no,no,no,no,https://github.com/jgrillo/guv
+pid_ball,yes,yes,yes,no,no,no,no,no,binary,no,no,yes,no,no,yes,no,no,no,https://github.com/raui100/pid_ball
+pid_rust,no,yes,no,no,yes,yes,yes,no,binary,no,no,no,no,yes,yes,no,no,no,https://github.com/brainengineerX/pid_rust
+pid-playground,yes,yes,yes,full,no,yes,no,yes,binary,no,no,no,no,no,no,no,yes,no,https://github.com/dotcypress/pid-playground
+pidctrl-rs,no,yes,no,no,no,no,no,no,library,no,no,no,no,no,no,no,yes,no,https://github.com/quietlychris/pidctrl-rs
+pid-playground,no,yes,yes,no,yes,no,no,no,binary,no,no,no,no,no,no,no,no,no,https://github.com/CatThingy/pid-playground
+pid-controller,no,yes,no,full,no,no,no,no,library,no,no,no,no,yes,no,no,no,no,https://github.com/adeschamps/pid-controller
+pid_rust,no,no,no,no,no,no,no,yes,binary,no,no,no,no,no,no,no,no,no,https://github.com/PartyNell/pid_rust
+pid-controller,no,yes,yes,no,yes,yes,no,no,library,no,no,no,no,yes,no,no,no,no,https://github.com/bschwind/pid-controller
+PID-Visualizer,no,yes,yes,no,no,no,no,no,binary,no,no,no,no,no,yes,no,no,no,https://github.com/vladneyo/PID-Visualizer
+pid_controller,no,yes,no,full,yes,no,no,no,library,no,no,no,no,yes,no,no,no,no,https://github.com/JustinEnlow/pid_controller
+segway-pid,no,yes,yes,no,yes,no,no,no,binary,no,no,no,no,no,yes,no,no,no,https://github.com/alaney2/segway-pid
+ga-pid,no,no,yes,no,no,no,no,no,binary,no,no,no,no,no,no,no,no,no,https://github.com/FlrnFrmm/ga-pid
+rust_pid,no,yes,no,no,no,no,no,no,binary,no,yes,no,no,no,yes,no,no,no,https://github.com/ArneCJacobs/rust_pid
+standard-pid,yes,yes,yes,full,yes,yes,no,yes,library,yes,no,no,yes,no,no,no,yes,no,https://github.com/Gip-Gip/standard-pid
+fanboi,yes,yes,yes,primitives,yes,yes,no,no,binary,no,no,yes,no,yes,no,no,no,no,https://github.com/d6e/fanboi
+rust-pid-rc,no,yes,no,no,no,no,no,no,binary,no,no,no,no,no,no,no,no,no,https://github.com/randommm/rust-pid-rc
+bve-pid-ato,no,yes,yes,no,no,no,no,no,library,no,no,no,no,no,no,no,no,no,https://github.com/akashiyaki01c/bve-pid-ato
+pid-fan-controller,no,yes,no,no,yes,yes,no,no,binary,no,no,no,no,no,no,no,no,no,https://github.com/zimward/pid-fan-controller
+arduino_test_dashboard,no,no,no,no,no,no,no,no,binary,no,no,no,no,no,yes,no,no,no,https://github.com/SIA-2023/arduino_test_dashboard
+rust-pid-sim,no,yes,no,no,no,yes,no,no,binary,no,no,no,no,no,no,no,no,no,https://github.com/joshuaPurushothaman/rust-pid-sim
+rust-pid-sim-bevy,no,yes,no,no,no,yes,no,no,binary,no,no,no,no,no,no,no,yes,no,https://github.com/joshuaPurushothaman/rust-pid-sim-bevy
+tiger-pid-steering-controller,yes,yes,yes,primitives,yes,yes,no,no,library,no,no,no,no,yes,no,no,no,no,https://github.com/dstaatz/tiger-pid-steering-controller
+fan_configurator,no,no,no,no,no,no,no,no,binary,no,no,no,no,no,no,no,no,no,https://github.com/zimward/fan_configurator
+rig-pid-controller-tunner-example,no,yes,no,no,no,no,no,no,binary,no,no,no,no,no,no,no,no,no,https://github.com/0xPlaygrounds/rig-pid-controller-tuner-example
+pid-ec-acpi-fan-controller,no,yes,yes,no,no,no,no,no,binary,no,no,no,no,no,no,no,no,no,https://github.com/tomboland/pid-ec-acpi-fan-controller
+syl-2381,no,no,no,no,no,no,no,yes,library,no,no,no,no,yes,no,no,yes,no,https://github.com/cstrahan/syl-2381
+2-wheeled-robot-simulation,no,yes,yes,no,no,no,no,no,binary,no,no,no,no,no,yes,no,no,no,https://github.com/gantover/2-wheeled-robot-simulation
+otto-throttle,yes,no,no,no,no,yes,no,no,binary,no,no,no,no,no,no,no,no,no,https://github.com/olejorga/otto-throttle
+Line_Following_Car_Simulator,no,yes,no,no,yes,yes,no,no,binary,no,no,no,no,no,no,no,no,no,https://github.com/Reinhardtvbm/Line_Following_Car_Simulator
