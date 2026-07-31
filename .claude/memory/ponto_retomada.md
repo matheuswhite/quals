@@ -1,6 +1,6 @@
 ---
 name: ponto-retomada
-description: "Cap. Resultados (renderiza como cap. 4 no PDF; comentarios '% 5.x' sao legado), secao 'Bibliotecas e repositorios de controle': 5.x.1 (Metodo) COMMITADA (9043d0d); 5.x.2 (Panorama comparativo) ESCRITA (prosa Matheus + tabela tab:lib-comp com coluna Referencia/cite + Aule citada matheuswhite/aule-rs) A COMMITAR; tabela do apendice tab:pid-survey CRIADA (csvsimple lendo res/pids.csv com coluna URL, landscape, 59 repos) A COMMITAR; 7 entradas .bib novas (6 repos control-system + aule). Fonte URLs: star list github.com/stars/matheuswhite/lists/control-system-rust. Cap. 4 completo. Entrega banca 7/ago; defesa 26/ago."
+description: "PROXIMO = cap. Fundamentacao (fundamentacao.tex; comentarios '% 3.x' sao legado, renderiza como cap. 2 no PDF) no SABADO 01/ago -- o ULTIMO sabado antes da entrega (7/ago). Escopo: so 3.3 (concorrencia/modelo de memoria) + 3.4 (Rust/tipos) no nivel do nucleo; 3.1/3.2/3.5/3.6 = paragrafos curtos. O cap. 3 tem de CRIAR 6 labels que o nucleo ja referencia e hoje saem '??' (sec:dr-def, sec:dr-vs-race, sec:prod-cons, sec:send_sync, sec:unsafe, subsec:types_guarantee) + decidir a casa de sec:scope. Cap. 1: 1.1 (Contextualizacao) FECHADA em argumento apos 6 rodadas de revisao banca e commitada (f4dc4c0); 7 refs novas no .bib; 1.2 (Objetivos) DIAGNOSTICADA mas intacta; 1.3 vazia. BLOQUEADOR nao resolvido: LISTA_DE_SIGLAS tem 11 siglas de outro trabalho (DEA/seguranca publica) e vai impressa. Caps. 3 e 4 completos. Entrega banca 7/ago; defesa 26/ago."
 metadata:
   node_type: memory
   author: Claude (claude-opus-4-8)
@@ -20,50 +20,93 @@ metadata:
     - "Claude (claude-opus-4-8), 2026-07-26"
     - "Claude (claude-opus-4-8), 2026-07-27"
     - "Claude (claude-opus-4-8), 2026-07-28"
+    - "Claude (claude-opus-4-8), 2026-07-31"
   type: project
   originSessionId: bfd04e9d-3381-42a2-bac3-e70b75a64a40
 ---
 
-**Ponto de retomada — sessão de 28/jul/2026.**
+**Ponto de retomada — sessão de 30–31/jul/2026 (noite de quinta). Salvo para o sábado 01/ago.**
 
-## FOCO — seção "Bibliotecas e repositórios de controle" (topo do cap. Resultados)
+## ⏭️ PRÓXIMO PASSO — sábado 01/ago: cap. Fundamentação
 
-Nota de numeração: o capítulo Resultados renderiza como **cap. 4** no PDF atual (ordem: intro=1, fundamentacao=2, Metodologia=3, Resultados=4, Cronograma=5 — cap. 2/7 cortados). Os comentários `% 5.x` no `.tex` são **legado**; a seção aparece como §4.1 no PDF.
+Arquivo `capitulos/fundamentacao.tex`. **Nota de numeração:** os comentários `% 3.x` são legado; com o cap. 2 (Relacionados) cortado, este capítulo renderiza como **cap. 2** no PDF (intro=1, fundamentação=2, Metodologia=3, Resultados=4, Cronograma=5).
 
-### 5.x.1 Método da busca (`subsec:control-repos-method`) — COMMITADA (`9043d0d`, `docs:`)
-Escrita+revisada. *Pendência:* passe de acentos (pesquina→pesquisa, repositorios, paragrafos, genericos, algebra, concorrencia, relevancia).
+Hoje é **esqueleto puro**: 41 linhas, 92 palavras, só `\section`/`\subsection`. É a maior peça pendente do documento e **o sábado 01/ago é o último** antes da entrega (7/ago).
 
-### 5.x.2 Panorama comparativo (`subsec:control-repos-table`) — ESCRITA (a commitar como `docs:`)
-Prosa do Matheus. Estrutura: veredito (ecossistema raso/bifurcado/imaturo) → funil PID no corpo **59→32 (libs)→17 (no_std)→9 (genérico pleno)→5 (anti-windup)→3 (saturação)**, com a ordem declarada como escolha do autor → 2 famílias: **A = análise LTI offline** (`control-sys-rs`, `TorBox`) × **B = execução/composição** (`pekpuglia`, `Hixos`, `AlbertoFoti`); `Josue-Herrera` = 6º repo degenerado (binário de aprendizado) → fecho posicionando a Aule.
-Formato final (difere do "híbrido" antes cogitado): **prosa por família + micro-tabela `tab:lib-comp`** (7 linhas × colunas no_std/concorrência/genérico pleno/crates.io/maduro/Referência; marcadores Sim/Não/Parcial). A grade PID completa foi pro apêndice.
-**Coluna "Referência" (`\cite`)** adicionada por Claude à `tab:lib-comp` (marcada inline `% modified-by: Claude`); linha da **Aule** = `\cite{aule}`.
-**Bug já corrigido pelo Matheus:** `_` cru em `\texttt{...control_systems}` (linha 63) vazava `\texttt`/modo-math por toda a seção; agora é `control\_systems` (plural, confirmado na fonte).
-*Pendências de forma (banca):* ortografia (ecossistema, raqueamento→ranqueamento, familía→família, proposito→propósito, diverdir→divergir, reunie→reúne, cental→central, idéia→ideia, "o Aule"/"a Aule" inconsistente, caption "dos repositório"→repositórios); reconfirmar os "ND" e o par README×código dos repos.
+**Escopo já decidido (roadmap, replan de 20/jul — não reabrir):** só **3.3 (Concorrência e Modelo de Memória)** + **3.4 (Rust: Sistema de Tipos e Segurança de Memória)** no nível que o núcleo usa. **3.1 (Sistemas de Controle), 3.2 (Arquitetura/atômicos e Cortex-M0), 3.5 (Eng. de Software), 3.6 (Embarcados) = parágrafos curtos.** Guardrail do revisor: a banca de memory safety fura exatamente na 3.3/3.4 — o corte é na periferia; 3.3+3.4 são intocáveis.
 
-### Tabela do apêndice `tab:pid-survey` — CRIADA (a commitar como `ai:`)
-`pos-textuais/apendiceA.tex`: `longtable` em `landscape` (pdflscape) via **csvsimple** lendo `res/pids.csv` (59 repos × 18 atributos + coluna **URL**), cabeçalhos rotatebox 90°, `respect underscore` (NÃO usar o pacote `underscore` — colide com `listings`), `\textwidth`←`\textheight` p/ largura landscape. Pacotes adicionados em `main.tex`: `longtable`, `pdflscape`, `csvsimple`. **Build `latexmk` exit 0, 71 páginas.**
+### 🔑 O cap. 3 tem de CRIAR estes labels — hoje o núcleo os referencia e sai `??`
 
-### `referencias.bib` — 7 entradas novas (a commitar como `ai:`)
-6 repos control-system (chaves `control-sys-rs`, `torbox`, `pekpuglia`, `hixos`, `albertofoti`, `josue-herrera`) + `aule` (matheuswhite/aule-rs). Metadados **CONFIRMADOS na fonte primária (GitHub) em 2026-07-28**. `author` = handle GitHub (sem nome real exibido); `aule` = "dos Santos, Matheus T.". `year` omitido nos 6 (data de commit não exposta na verificação); `aule` year=2026.
+| Label | Quem referencia | Onde deve nascer |
+|---|---|---|
+| `sec:dr-def` | §4.2.1, §4.3.2, §5.2.2, §5.2.4 (a definição das 4 cláusulas é a espinha do doc) | 3.3 |
+| `sec:dr-vs-race` | §4.2.1, §4.3.2 | 3.3.5 |
+| `sec:prod-cons` | §4.2.3 (2×, na poda das células) | 3.3 |
+| `sec:send_sync` | §4.3.2 | 3.4 |
+| `sec:unsafe` | §4.3 | 3.4 |
+| `subsec:types_guarantee` | §4.3 (2×) | 3.4 |
+| `sec:scope` | §4.2.3 (justifica o corte do single-core) | **DECISÃO PENDENTE:** cap. 1 (seção de delimitação) ou cap. 3 |
 
-### `res/pids.csv` — VERSIONAR (untracked; commit como dado do Matheus, sem trailer — carve-out)
-Coluna **URL** (20ª) adicionada da star-list, mapeada **1:1 por posição** (ordem da lista == ordem do CSV). Fonte: **https://github.com/stars/matheuswhite/lists/control-system-rust** (65 repos = 59 PID [itens 1–59] + 6 control-system [60–65]).
-**DECISÃO PENDENTE do Matheus:** 2 typos no campo `Name` do CSV — `pid-crtl` (repo real `pid-ctrl`, Iraeis) e `rig-...-tunner-example` (repo real `...tuner...`, 0xPlaygrounds). As URLs já apontam para o repo **correto**; o `Name` na tabela ainda mostra o typo.
+Verificado por varredura em 31/jul. Cuidado ao varrer: `cap:fundamentacao` e os `code:*` **não** são órfãos — o `\mychapter{título}{label}` cria o label (`ic.cls` l. 99) e as macros `\coderust`/`\codec` passam `label=#2` ao `lstlisting` (`ic.cls` l. 164/190).
 
-## Resto do Cap. Resultados (fora da seção de repos)
-- **§5.1 (Aule, `sec:aule-state`)** — COMMITADA (`6d170f2`).
-- **§5.2 (P1, `sec:case-setpoint`)** — escrita/revisada; listagem `code:rustc-error` (§5.2.3) **PREENCHIDA pelo Matheus (28/jul)** — sem pendência de conteúdo. A commitar (`docs:`).
-- **§5.3 (Limitações)** — COMMITADA (`b50ce52`, `docs:`).
+### 4 bugs de `\ref` nos caps. 3 e 4 (independem do cap. 3 — consertar no passe)
 
-## Cap. 4 (Metodologia, renderiza cap. 3) — COMPLETO. Só passe de forma.
-6 `\cite{}` vazios (5 na 4.4.1 + 1 na 4.6.3); tabela TODO na §4.3.3; `sec:dr-def`/`sec:dr-vs-race` seguem `??`. Enviar cap. 4 + cap. 5 ao Icaro assim que a seção de repos fechar.
+- `cap:results` (§4.5.1) → o label do cap. Resultados é **`cap:experiment`**.
+- `sec:cost-exp-proc` (§4.4.2) → provavelmente **`sec:experiment-proc`**.
+- `sec:cost-exp` (§4.4.2) → não existe (a medição é da dissertação) → reescrever a frase.
+- `list:eleven-cells` (§4.2.3) → a lista das 11 células é **texto plano** sem ambiente nem `\label`.
 
-## Pendências gerais (não bloqueiam)
-- Ortografia da 5.x.2 (acima). `refs/` untracked (decidir versionar × gitignore). `referencias.bib` herdadas (DEA) a limpar.
-- Citações `rust-error-index`, `rust-safe-soundness` — ver [[citacoes-pendentes]].
+## Estado do cap. 1 (sessão de 30–31/jul)
 
-## Prazo (roadmap_escrita.md, replan 25/jul)
-- **Entrega à banca: sex 7/ago/2026** (autoimposta; regimento 11/ago). **Defesa: qua 26/ago.** Cap. 2 e 7 CORTADOS.
+### §1.1 Contextualização — FECHADA em argumento, commitada (`f4dc4c0`, `docs:`)
+Escrita do zero a partir do roteiro (arco CARS de 5 blocos: território → concorrência imposta → C/MISRA/sanitizers e seu teto → Rust desloca a garantia + as duas incógnitas → perguntas). Passou por **6 rodadas de revisão em papel de banca**; todos os furos de conteúdo fecharam, incluindo:
+- pergunta de pesquisa neutra (era enviesada), **com o objeto "data races" de volta** e com hierarquia declarada ("Respondida a pergunta anterior…"); conector de lacuna ("Com essas lacunas apontadas") em vez de "Portanto";
+- erro conceitual MCU/SoC corrigido; "sanitizers não rodam em embarcado" qualificado para TSan; causalidade RISC suavizada; "alguns kilobytes" → centenas (contradizia o ESP32 do experimento);
+- **contradição com a §5.2.1 fechada**: o veículo agora está amarrado só ao **custo**, não à investigação da fronteira (a fronteira do P1 foi sondada deliberadamente **sem** a Aule);
+- **risco de enquadramento Tese A** resolvido: a nominalização "foi necessário a construção" virou "a biblioteca Aule foi construída" (sujeito = a lib, não o ato). *Discussão registrada: a reordenação do parágrafo (pôr a Aule antes) é impossível — a cadeia é necessidade → ausência → construção; e a l. 13 já retoma as lacunas antes das perguntas.*
+- **lacuna de ferramenta** declarada + `\ref{sec:control-repos}` (responde "cadê os trabalhos relacionados?", já que o cap. 2 foi cortado). A Aule é apresentada na intro pela 1ª vez.
+
+**Alavanca ainda NÃO aplicada (opcional, decisão do Matheus):** declarar o *status epistemológico* da Aule (instrumento, não objeto da avaliação) — é a resposta antecipada a "então sua contribuição é a biblioteca?". Padrão já existe no §5.2.1 e no §4.5.2.
+
+### §1.2 Objetivos — DIAGNOSTICADA, texto intacto (segue o rascunho original)
+**O furo principal (novo, criado pelo fecho da 1.1):** a §1.1 pergunta **2** coisas (fronteira; custo) e o objetivo geral promete **3** — inclui "comparar com o estado da arte em C+MISRA+sanitizers", que é o **obj. 8** e a **§4.7 inteira**, e não tem pergunta que o justifique. Distinção útil: o custo (quantitativo, §4.6) já está embutido na P2 porque custo é relativo a uma linha de base; o **regime de verificação** (qualitativo, §4.7 — momento/natureza/esforço/fronteira) é que está órfão. Decidir: a P2 se abre, ou a comparação de regimes deixa de ser objetivo próprio.
+
+Outros pontos levantados: objetivo geral está em **fases** e não subsome (o obj. específico 2 o repete literalmente) — o verbo do título, "**mapear**", resolve; `\subsection` deveria ser singular; **obj. 7 = obj. 5 + obj. 6** (e o §4.1 mapeia os três a uma só seção); **obj. 5 é mais estreito que o protocolo** (§4.6.3 mede 4 dimensões — runtime, determinismo, footprint, ergonomia; footprint e ergonomia não aparecem em objetivo nenhum); **nenhum objetivo testa a hipótese** (que a §5.3 enuncia); **o levantamento de bibliotecas não corresponde a objetivo nenhum** apesar de ocupar uma seção do cap. Resultados; tempo verbal errado ("objetivos 1–3 **serão** desenvolvidos" — já foram); falta declarar o **critério** da divisão qualificação/pós-qual (é o exploratório→empírico do §4.1); a lista está em **texto plano** (precisa `enumerate` + `\label`; `enumitem` NÃO está carregado → `[resume]` exige adicioná-lo, ou usar `\setcounter{enumi}{3}`).
+
+### §1.3 Visão Geral da Qualificação — vazia (título já corrigido de "da Dissertação")
+
+## Bibliografia — 7 entradas novas (commits `698e5f0`, `51a22c9`)
+`book:ogata`, `book:deadline-requirement` (Buttazzo), `doc:MISRA`, `doc:TSan`, `article:rust-safe-soundness` (Jung et al., CACM 2021), `article:rust-critical` (Pinho et al., ISSREW 2019), `url:esp-rust-no-std-stable` (Mabin, esp-hal 1.0.0-beta, fev/2025). Metadados confirmados em fonte primária; fichas de leitura em `plan/leitura_futura.md` (seção nova).
+
+**Ações pendentes no `.tex` (só o Matheus edita):**
+1. `\cite{url:rust-safe-soundess}` → **`article:rust-safe-soundness`** (typo + prefixo errado). É a única citação do cap. 1 que ainda sai `[?]`.
+2. **`\cite{article:rust-critical}` está mal alocada**: ancora "baixa utilização de recursos", que o paper não sustenta (ele mapeia guidelines MISRA que o Rust dispensa). Mover para a passagem sobre MISRA; para a alegação de recursos, buscar outra fonte.
+
+**Pendências bibliográficas:** confirmar edição consultada do **Ogata** (assumi 5ª br./2010) e do **Buttazzo** (assumi 3ª/2011); escolher a **versão do MISRA** (C:2012 · Third Ed. First Revision 2019 · C:2023) e ver se alguma regra trata de concorrência; pegar o **DOI do ISSREW** (Xplore doc. 8990314). Sugestão não triada: *Rust for Embedded Systems: Current State and Open Problems* (CCS 2024), para dar peso peer-reviewed ao "por que agora".
+
+## ⚠️ BLOQUEADOR aberto — lista de siglas de OUTRO trabalho
+`pre-textuais/LISTA_DE_SIGLAS.tex` declara **11 siglas herdadas do template** (BCC, CCR, CRS, VRS, **CVLI** = Crime Violento Letal Intencional, **DEA** = Análise Envoltória de Dados, DMUs, **SSP** = Secretaria de Segurança Pública, CISPs, NEAC, **DETRAN**). Está incluída no `main.tex` (l. 55) → **vai impressa na entrega**. Nenhuma sigla do trabalho está lá (SoC, MCU, GPIO, UART, SPI, IHM, HAL, MISRA, TSan) e `\ac{}` não é usado em nenhum capítulo. Correção trivial, impacto de vergonha alto.
+
+**Outro item de 1 minuto:** `pre-textuais/preambulo.tex` tem `\dataMesAno{Julho}{2026}` (entrega é 7/ago) e os examinadores ainda são `Dr. Examinador 1` / `Examinador 2`.
+
+## Erros sistemáticos — busca-e-substitui global (~35 correções, minutos)
+| Errado | Certo | Ocorrências |
+|---|---|---|
+| `expremí…` / `inexpremí…` | exprimível / inexprimível | **14** (termo central da tese!) |
+| `ecosistema` | ecossistema | 6 |
+| `algorítmo` | algoritmo | 6 |
+| `fonteira` | fronteira | 3 |
+| `reune` | reúne | 3 |
+| `sanitazers` | sanitizers | 2 |
+| `despresí…` | desprezível | 1 |
+
+Além disso, a §1.1 tem ~35 itens de forma listados na sessão (acentos, vírgulas separando sujeito de verbo, "É nesta linguagem, cujos HALs" agramatical, aspas retas + `\textbf` onde devia ser itálico, "utilizar ela", "da esp32" vs "do ESP32", muleta "Note que/Perceba que"). **Nenhum aplicado ainda** — a escolha foi correta: conteúdo primeiro.
+
+## Caps. 3 (Metodologia) e 4 (Resultados) — COMPLETOS
+Só passe de forma. Cap. 3: 6 `\cite{}` vazios (5 na 4.4.1 + 1 na 4.6.3 firmware) + **tabela TODO na §4.3.3** (lacuna de conteúdo, não de forma). Cap. 4: pendências de ortografia da §4.1 já listadas. Enviar caps. 3 e 4 ao Icaro — a "ação urgente" do roadmap segue **sem confirmação de que foi feita**.
+
+## Prazo
+**Entrega à banca: sex 7/ago/2026** (autoimposta; regimento 11/ago). **Defesa: qua 26/ago.** Restam: **sáb 01/ago (cap. 3) + noites 03–06/ago (cap. 1.2/1.3, cap. 5 Cronograma, pré-textuais, revisão) + manhã de 07/ago.** Cap. 2 e cap. 7 cortados.
 
 ## Workflow desta linha (manter)
-Roteiro por seção (skill `roteiro-academico`: imagem + 6 campos) → Matheus escreve → "verifique" (banca, sem mercê) → aponta furos → aplica → commit. Papel bibliotecário p/ buscas (Regra 7). Ver [[review-checklist-enforce]] e [[roteiro-explicacao-didatica]].
+Roteiro por seção (skill `roteiro-academico`: imagem + 6 campos) → Matheus escreve → "verifique" (banca, sem mercê) → aponta furos → aplica → "verifique novamente" até fechar → commit. Papel bibliotecário para buscas (Regra 7: ele dá as keywords, Claude busca e classifica, ele decide). Ver [[review-checklist-enforce]] e [[roteiro-explicacao-didatica]]. Ao discordar de um apontamento, ele contesta — conceder o que é dele e manter o que se sustenta (aconteceu hoje nas "alavancas" de enquadramento).
