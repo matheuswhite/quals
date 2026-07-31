@@ -12,6 +12,18 @@
 %   - Claude (claude-opus-4-8), 2026-07-28 -- seis repositorios "control system"
 %     (control-sys-rs, torbox, pekpuglia, hixos, albertofoti, josue-herrera) para a
 %     coluna de referencia da tabela tab:lib-comp (secao 5.x.2), marcados "added-by".
+%   - Claude (claude-opus-4-8), 2026-07-30 -- quatro entradas citadas na
+%     Contextualizacao (cap. 1): book:ogata, doc:MISRA, doc:TSan e
+%     article:rust-critical.
+%   - Claude (claude-opus-4-8), 2026-07-31 -- mais tres entradas da
+%     Contextualizacao: book:deadline-requirement (Buttazzo),
+%     article:rust-safe-soundness (Jung et al., CACM 2021) e
+%     url:esp-rust-no-std-stable (anuncio do esp-hal 1.0.0-beta, 2025).
+%     Veredito do Matheus na sessao; metadados confirmados em fonte primaria.
+%     Marcadas "added-by".
+%     Veredito do Matheus dado na sessao; metadados confirmados via busca web
+%     (Pearson/Amazon.br, misra.org.uk, ACM DL, IEEE Xplore/Computer Society).
+%     Marcadas "added-by".
 % NOTA: as entradas SEM marcacao "added-by" sao herdadas de um projeto anterior
 % (DEA / seguranca publica) e NAO pertencem a esta tese -- candidatas a remocao.
 % Metadados das entradas novas verificados via WebSearch (ACM DL, DBLP, USENIX,
@@ -650,4 +662,122 @@ doi = {10.3906/elk-1104-36}
   howpublished = {\url{https://github.com/matheuswhite/aule-rs}},
   year         = {2026},
   note         = {Reposit\'orio de software (Rust). Acesso em: 28 jul. 2026}
+}
+
+% ===========================================================================
+% Entradas da Contextualizacao (cap. 1) -- 2026-07-30
+% ===========================================================================
+
+% added-by: Claude, 2026-07-30
+% CONFERIR EDICAO: adotada a 5a ed. brasileira (Pearson Prentice Hall, 2010),
+% ISBN 978-85-7605-810-6, 824 p. -- e a mais difundida no Brasil. Se a edicao
+% consultada foi outra (ou a original "Modern Control Engineering", Prentice
+% Hall), ajustar edition/publisher/year/isbn.
+@book{book:ogata,
+  author    = {Ogata, Katsuhiko},
+  title     = {Engenharia de Controle Moderno},
+  edition   = {5},
+  publisher = {Pearson Prentice Hall},
+  address   = {S\~ao Paulo},
+  year      = {2010},
+  isbn      = {978-85-7605-810-6}
+}
+
+% added-by: Claude, 2026-07-30
+% MISRA C:2012 = terceira edicao das guidelines, publicada em marco de 2013 por
+% MIRA Limited; ISBN 978-1-906400-10-1 (papel) / 978-1-906400-11-8 (PDF).
+% DECISAO PENDENTE: existem revisoes posteriores -- MISRA C:2012 Third Edition
+% First Revision (2019, com Amendment 1/2) e MISRA C:2023. Citar a versao que o
+% trabalho efetivamente adota (o cap. 3 fala em "especificacao MISRA").
+@manual{doc:MISRA,
+  title        = {MISRA C:2012 --- Guidelines for the Use of the C Language in Critical Systems},
+  organization = {MISRA},
+  publisher    = {MIRA Limited},
+  address      = {Nuneaton, Warwickshire, UK},
+  edition      = {3},
+  month        = {mar},
+  year         = {2013},
+  isbn         = {978-1-906400-10-1}
+}
+
+% added-by: Claude, 2026-07-30
+% Paper original do ThreadSanitizer. Metadados confirmados na ACM DL
+% (doi 10.1145/1791194.1791203) e no Google Research: WBIA'09, NYC, pp. 62-71.
+@inproceedings{doc:TSan,
+  author    = {Serebryany, Konstantin and Iskhodzhanov, Timur},
+  title     = {ThreadSanitizer: Data Race Detection in Practice},
+  booktitle = {Proceedings of the Workshop on Binary Instrumentation and Applications (WBIA '09)},
+  pages     = {62--71},
+  publisher = {ACM},
+  address   = {New York, NY, USA},
+  year      = {2009},
+  doi       = {10.1145/1791194.1791203}
+}
+
+% added-by: Claude, 2026-07-30
+% ISSREW 2019, pp. 19-24 (IEEE Xplore doc. 8990314). O paper mapeia quais regras
+% de codificacao segura em C (MISRA) o Rust dispensa por construcao.
+% PENDENTE: DOI nao confirmado em fonte primaria (Xplore/CSDL bloquearam a
+% leitura automatica) -- confirmar antes da entrega e acrescentar o campo doi.
+@inproceedings{article:rust-critical,
+  author    = {Pinho, Andr\'e and Couto, Luis and Oliveira, Jos\'e},
+  title     = {Towards Rust for Critical Systems},
+  booktitle = {2019 IEEE International Symposium on Software Reliability Engineering Workshops (ISSREW)},
+  pages     = {19--24},
+  publisher = {IEEE},
+  year      = {2019}
+}
+
+% added-by: Claude, 2026-07-31
+% Veredito do Matheus: primeiro candidato da triagem do item 2 (deadline como
+% requisito). Referencia canonica de deadline: o cap. 1 define hard/soft/firm e
+% usa controle como caso motivador.
+% CONFERIR EDICAO: adotada a 3a ed. (Springer, 2011, Real-Time Systems Series),
+% ISBN 978-1-4614-0675-4 -- a mais difundida. Existem tambem 1a/1997, 2a/2005 e
+% 4a/2024 (ISBN 978-3-031-45409-7). Ajustar para a edicao efetivamente lida.
+@book{book:deadline-requirement,
+  author    = {Buttazzo, Giorgio C.},
+  title     = {Hard Real-Time Computing Systems: Predictable Scheduling Algorithms and Applications},
+  edition   = {3},
+  series    = {Real-Time Systems Series},
+  publisher = {Springer},
+  address   = {New York, NY, USA},
+  year      = {2011},
+  isbn      = {978-1-4614-0675-4}
+}
+
+% added-by: Claude, 2026-07-31
+% Veredito do Matheus: primeiro candidato da triagem do item 5 (features safe do
+% Rust: Send, Sync e borrow checker). Metadados confirmados na ACM DL
+% (doi 10.1145/3418295): CACM v. 64, n. 4, abr. 2021, pp. 144-152.
+% Serve TAMBEM para a citacao pendente da secao 4.3.2 (soundness do safe Rust).
+% ATENCAO: a chave no .tex esta como "url:rust-safe-soundess" (typo em soundness
+% + prefixo url: para um artigo). Chave correta abaixo -- atualizar a \cite.
+@article{article:rust-safe-soundness,
+  author    = {Jung, Ralf and Jourdan, Jacques-Henri and Krebbers, Robbert and Dreyer, Derek},
+  title     = {Safe Systems Programming in Rust},
+  journal   = {Communications of the ACM},
+  volume    = {64},
+  number    = {4},
+  pages     = {144--152},
+  month     = {apr},
+  year      = {2021},
+  publisher = {ACM},
+  doi       = {10.1145/3418295}
+}
+
+% added-by: Claude, 2026-07-31
+% Veredito do Matheus: ancora do "por que agora" deslocada para 2025 (o esp-hal
+% so estabilizou a API em 2025, nao em 2023-2024). Metadados confirmados na
+% fonte primaria (Espressif Developer Portal) em 2026-07-31: post de Scott Mabin,
+% 24 fev. 2025, anuncia o esp-hal 1.0.0-beta como o primeiro SDK Rust com apoio
+% do fabricante, apos ~6 anos, com foco exclusivo nos crates no_std (os crates
+% de port da std passam a "community-supported").
+@misc{url:esp-rust-no-std-stable,
+  author       = {Mabin, Scott},
+  title        = {esp-hal 1.0.0 beta announcement},
+  howpublished = {\url{https://developer.espressif.com/blog/2025/02/rust-esp-hal-beta/}},
+  year         = {2025},
+  month        = {feb},
+  note         = {Espressif Developer Portal. Acesso em: 31 jul. 2026}
 }
