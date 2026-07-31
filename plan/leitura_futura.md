@@ -6,6 +6,7 @@ modified:
   - 2026-05-28: Claude (claude-opus-4-7) — added references on the cost of graph/self-referential structures in safe Rust
   - 2026-06-01: Claude (claude-opus-4-8) — added a "Espaco de design" section (analysis method + synchronization design space + embedded Rust concurrency) to inform obj. 3
   - 2026-07-26: Claude (claude-opus-4-8) — added "Biblioteca vs. framework (Inversion of Control)" section (Fowler bliki + Johnson & Foote 1988); both already in referencias.bib and cited in 5.1
+  - 2026-07-31: Claude (claude-opus-4-8) — added "Contextualização (cap. 1)" section with the 7 references added to referencias.bib on 2026-07-30/31; all cited in §1.1, so they enter as "read before the banca" (same exception as the IoC section)
 ---
 
 <!-- LTeX: enabled=false -->
@@ -104,6 +105,62 @@ Sustenta o argumento da §5.1 (`sec:aule-state`): por que a Aule é biblioteca e
 - **Referência:** Johnson, R. E.; Foote, B. (1988). "Designing Reusable Classes." *Journal of Object-Oriented Programming*, 1(2), 22–35. `\cite{johnson1988reusable}`.
 - **Por que importa:** origem peer-reviewed do conceito — cunhou o termo e a observação de que os métodos definidos pelo usuário são chamados de dentro do framework. É a citação que blinda o flanco "IoC não é do Fowler" na banca.
 - **Estado:** por ler.
+
+---
+
+## Contextualização (cap. 1) — citadas na §1.1, a validar antes da banca
+
+As sete entradas adicionadas a `referencias.bib` em 30–31/jul/2026 para a Contextualização. **Mesma exceção da seção de IoC acima:** já estão citadas no texto, então entram aqui como *leitura obrigatória antes da banca* (Regra 7 — ler o que se cita), não como leitura-só-para-informar. Metadados foram confirmados em fonte primária; o que **não** foi confirmado é se o conteúdo de cada obra sustenta a afirmação que ela ancora — é isso que a leitura tem de fechar.
+
+### Ogata — *Engenharia de Controle Moderno*
+
+- **Referência:** Ogata, K. (2010). *Engenharia de Controle Moderno.* 5. ed. São Paulo: Pearson Prentice Hall. ISBN 978-85-7605-810-6. `\cite{book:ogata}`
+- **Por que importa:** ancora a teoria de controle na abertura da §1.1 (malha fechada, referência/setpoint, controle digital). É a única referência de controle "clássico" da introdução.
+- **Estado:** por ler.
+- **Pendência:** confirmar a **edição efetivamente consultada** — a entrada assume a 5ª brasileira. Se foi outra (ou a original *Modern Control Engineering*), corrigir `edition`/`publisher`/`year`/`isbn`.
+
+### Buttazzo — *Hard Real-Time Computing Systems*
+
+- **Referência:** Buttazzo, G. C. (2011). *Hard Real-Time Computing Systems: Predictable Scheduling Algorithms and Applications.* 3. ed. New York: Springer (Real-Time Systems Series). ISBN 978-1-4614-0675-4. `\cite{book:deadline-requirement}`
+- **Por que importa:** sustenta a afirmação central do primeiro parágrafo da §1.1 — deadline como **requisito**, não meta, e a distinção hard/soft/firm com a consequência da falha. É o que separa "perder deadline num desktop" de "perder deadline numa planta".
+- **Estado:** por ler.
+- **Pendência:** confirmar edição (há 1ª/1997, 2ª/2005, 3ª/2011, 4ª/2024) e localizar a passagem exata que define deadline no contexto de controle, para poder citar capítulo/seção na arguição.
+
+### MISRA C:2012
+
+- **Referência:** MISRA (2013). *MISRA C:2012 — Guidelines for the Use of the C Language in Critical Systems.* 3. ed. Nuneaton: MIRA Limited. ISBN 978-1-906400-10-1. `\cite{doc:MISRA}`
+- **Por que importa:** é a fonte primária do argumento do terceiro parágrafo da §1.1 e da §4.7.2 — MISRA força C disciplinado, mas é convenção apoiada em análise estática incompleta e **não automatiza a eliminação de data race**.
+- **Estado:** por ler.
+- **Pendência (decisão):** escolher a versão que o trabalho adota — MISRA C:2012 (2013), *Third Edition First Revision* (2019, com Amendments 1/2) ou **MISRA C:2023**. Hoje o texto diz apenas "o padrão MISRA". Ao fixar, verificar se alguma regra trata explicitamente de concorrência/acesso compartilhado — é o ponto que a banca pode cobrar.
+
+### Serebryany & Iskhodzhanov — ThreadSanitizer
+
+- **Referência:** Serebryany, K.; Iskhodzhanov, T. (2009). "ThreadSanitizer: data race detection in practice." In: *Proceedings of the Workshop on Binary Instrumentation and Applications (WBIA '09)*, pp. 62–71. ACM. DOI 10.1145/1791194.1791203. `\cite{doc:TSan}`
+- **Por que importa:** paper original do TSan. Ancora os limites do sanitizer na §1.1 (cobertura dinâmica: só pega o que é exercitado) e é a mesma ferramenta cuja saída real aparece na listagem `code:tsan-out` da §5.2.2. Também sustenta a §4.7.3.
+- **Estado:** por ler.
+- **Pendência:** confirmar no paper o que ele afirma sobre **cobertura** e sobre o algoritmo híbrido (happens-before + lockset) — a §1.1 e a §4.7.3 afirmam limites que devem sair do texto, não de senso comum.
+
+### Jung, Jourdan, Krebbers & Dreyer — *Safe Systems Programming in Rust*
+
+- **Referência:** Jung, R.; Jourdan, J.-H.; Krebbers, R.; Dreyer, D. (2021). "Safe Systems Programming in Rust." *Communications of the ACM*, 64(4), 144–152. DOI 10.1145/3418295. `\cite{article:rust-safe-soundness}`
+- **Por que importa:** fonte peer-reviewed para o mecanismo do quarto parágrafo da §1.1 — ownership/borrowing proibindo estaticamente a mutação de estado compartilhado, e `unsafe` encapsulado em APIs. **Cobre também** a citação que faltava na §4.3.2 (soundness do subconjunto safe) e serve à §4.7.3. Linha RustBelt; se for preciso o argumento formal, o par é *RustBelt* (POPL 2018).
+- **Estado:** por ler.
+- **Pendência:** a `\cite` no `.tex` ainda está como `url:rust-safe-soundess` (typo em *soundness* + prefixo `url:` para artigo) — trocar para `article:rust-safe-soundness`.
+
+### Pinho, Couto & Oliveira — *Towards Rust for Critical Systems*
+
+- **Referência:** Pinho, A.; Couto, L.; Oliveira, J. (2019). "Towards Rust for Critical Systems." In: *2019 IEEE International Symposium on Software Reliability Engineering Workshops (ISSREW)*, pp. 19–24. IEEE. `\cite{article:rust-critical}`
+- **Por que importa:** analisa **quais guidelines de codificação segura em C (MISRA) o Rust dispensa por construção** — é o interlocutor acadêmico do argumento MISRA → verificação por tipos da §1.1 e da §4.7. Hoje esse argumento não tem ninguém na literatura.
+- **Estado:** por ler.
+- **⚠️ Citação mal alocada:** está citada na §1.1 para "mantém controle sobre recursos e **baixa utilização de recursos**" — afirmação de desempenho/footprint que este paper **não** sustenta. Mover a `\cite` para a passagem sobre MISRA e buscar outra fonte (comparação de desempenho/footprint Rust vs C) para a alegação de recursos.
+- **Pendência:** DOI não confirmado (Xplore e CSDL bloquearam leitura automática) — pegar no IEEE Xplore, doc. 8990314, e acrescentar o campo `doi`.
+
+### Mabin — anúncio do esp-hal 1.0.0-beta
+
+- **Referência:** Mabin, S. (fev. 2025). *esp-hal 1.0.0 beta announcement.* Espressif Developer Portal. https://developer.espressif.com/blog/2025/02/rust-esp-hal-beta/ `\cite{url:esp-rust-no-std-stable}`
+- **Por que importa:** ancora o "por que agora" da §1.1. Confirmado na fonte (post de 24/fev/2025): é o **primeiro SDK Rust com apoio do fabricante**, após ~6 anos, e marca a estabilização de API com foco exclusivo nos crates `no_std` (os crates de port da `std` passam a *community-supported*). Foi por isso que a data no texto migrou de "2023–2024" para **2025**.
+- **Estado:** lido (verificado nesta sessão para confirmar a data).
+- **Nota:** é fonte web, não peer-reviewed. Se a banca cobrar peso acadêmico no "por que agora", o par possível é a literatura de Rust em embarcado — *Rust for Embedded Systems: Current State and Open Problems* (CCS 2024) apareceu na busca e não foi triado.
 
 ---
 
