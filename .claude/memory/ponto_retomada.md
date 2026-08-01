@@ -1,6 +1,6 @@
 ---
 name: ponto-retomada
-description: "PROXIMO = cap. Fundamentacao (fundamentacao.tex; comentarios '% 3.x' sao legado, renderiza como cap. 2 no PDF) no SABADO 01/ago -- o ULTIMO sabado antes da entrega (7/ago). Escopo: so 3.3 (concorrencia/modelo de memoria) + 3.4 (Rust/tipos) no nivel do nucleo; 3.1/3.2/3.5/3.6 = paragrafos curtos. O cap. 3 tem de CRIAR 6 labels que o nucleo ja referencia e hoje saem '??' (sec:dr-def, sec:dr-vs-race, sec:prod-cons, sec:send_sync, sec:unsafe, subsec:types_guarantee) + decidir a casa de sec:scope. Cap. 1: 1.1 (Contextualizacao) FECHADA em argumento apos 6 rodadas de revisao banca e commitada (f4dc4c0); 7 refs novas no .bib; 1.2 (Objetivos) DIAGNOSTICADA mas intacta; 1.3 vazia. BLOQUEADOR nao resolvido: LISTA_DE_SIGLAS tem 11 siglas de outro trabalho (DEA/seguranca publica) e vai impressa. Caps. 3 e 4 completos. Entrega banca 7/ago; defesa 26/ago."
+description: "PROGRESSO 01/ago (cap. Fundamentacao, fundamentacao.tex; renderiza cap. 2 no PDF, '% 3.x' legado): secao 3.3 PODADA 5->3 subsecoes. 3.3.1 contextos (label subsec:contexts) ESCRITA+4 cites; 3.3.2 modelo de memoria+def. data race (label subsec:dr-def) ESCRITA+4 cites, todos furos de revisao fechados; 3.3.3 data race x race condition (label subsec:data-race-x-race-condition) = ROTEIRO pronto, A ESCREVER. 3.4 Rust (2 subsecoes) NAO escrita. .bib +3: book:lee-seshia, book:stallings, doc:c11 (N1570). FALHA A CORRIGIR (ref invalida): labels criados nao batem com o nucleo -> renomear subsec:dr-def para sec:dr-def (4 refs cap4/5) e subsec:data-race-x-race-condition para sec:dr-vs-race (2 refs cap4); sec:prod-cons (2 refs em 4.2.3) e os labels do 3.4 (sec:send_sync/sec:unsafe/subsec:types_guarantee) ainda sem casa. Pendencia 3.3.3: refs Helmbold&McDowell 1996 + Netzer&Miller 1992 (Matheus traz, Regra 7). Cap.1 1.1 FECHADA (f4dc4c0); 1.2 diagnosticada; 1.3 vazia. BLOQUEADOR: LISTA_DE_SIGLAS de outro trabalho. Entrega 7/ago; defesa 26/ago."
 metadata:
   node_type: memory
   author: Claude (claude-opus-4-8)
@@ -21,33 +21,38 @@ metadata:
     - "Claude (claude-opus-4-8), 2026-07-27"
     - "Claude (claude-opus-4-8), 2026-07-28"
     - "Claude (claude-opus-4-8), 2026-07-31"
+    - "Claude (claude-opus-4-8), 2026-08-01"
   type: project
   originSessionId: bfd04e9d-3381-42a2-bac3-e70b75a64a40
 ---
 
-**Ponto de retomada — sessão de 30–31/jul/2026 (noite de quinta). Salvo para o sábado 01/ago.**
+**Ponto de retomada — sessão de 01/ago/2026 (sábado). Cap. Fundamentação em andamento.**
 
-## ⏭️ PRÓXIMO PASSO — sábado 01/ago: cap. Fundamentação
+## ⏭️ PRÓXIMO PASSO — escrever a 3.3.3, depois a 3.4
 
-Arquivo `capitulos/fundamentacao.tex`. **Nota de numeração:** os comentários `% 3.x` são legado; com o cap. 2 (Relacionados) cortado, este capítulo renderiza como **cap. 2** no PDF (intro=1, fundamentação=2, Metodologia=3, Resultados=4, Cronograma=5).
+Arquivo `capitulos/fundamentacao.tex` (renderiza **cap. 2** no PDF; `% 3.x` = legado). Escopo (replan 20/jul — não reabrir): só **3.3** + **3.4** no nível do núcleo; 3.1/3.2/3.5/3.6 = parágrafos curtos. 3.3/3.4 são intocáveis (a banca fura aqui).
 
-Hoje é **esqueleto puro**: 41 linhas, 92 palavras, só `\section`/`\subsection`. É a maior peça pendente do documento e **o sábado 01/ago é o último** antes da entrega (7/ago).
+### Progresso 01/ago — seção 3.3 (podada 5→3 subseções)
+- **3.3.1 Contextos de execução concorrente** (`subsec:contexts`) — **ESCRITA + citada** (`book:lee-seshia` ISR, `book:stallings` DMA, `book:deadline-requirement` escalonador, `eriksson2013rtfm` região crítica). A commitar `docs:`.
+- **3.3.2 Modelo de memória e a definição de data race** (`subsec:dr-def`) — **ESCRITA + citada**; absorveu happens-before+C11+Rust; furos de revisão fechados (happens-before definido+mecanismos, atomicidade, `enumerate`, "cláusulas 3 e 4" reformulado, C11=padrão, modelo Rust escopado a atômicos). Cites: `boehm2008foundations`+`adve2010memory`, `boehm2008foundations` (h-b), `doc:c11` (def.+UB), `article:rust-safe-soundness` (Rust). A commitar `docs:`.
+- **3.3.3 Data race × race condition** (`subsec:data-race-x-race-condition`) — **ROTEIRO pronto, A ESCREVER.** Estrito×amplo; Rust elimina data race, NÃO race condition (eixo 4); caso crítico = race condition sem data race (check-then-act/TOCTOU atômico); fecha justificando o recorte de 4.2.1. **Pendência (Regra 7 — Matheus traz):** Helmbold & McDowell (1996) + Netzer & Miller (1992), fora do `.bib`. Cuidado: o fim da 3.3.2 diz DR "contido dentro de" RC — relação debatida; apoiar na **assimetria**.
+- **3.4 Rust (tipos)** — 2 subseções (`Propriedade e emprestimo`; `safe e unsafe na troca de dados entre threads`) — **NÃO escritas.**
 
-**Escopo já decidido (roadmap, replan de 20/jul — não reabrir):** só **3.3 (Concorrência e Modelo de Memória)** + **3.4 (Rust: Sistema de Tipos e Segurança de Memória)** no nível que o núcleo usa. **3.1 (Sistemas de Controle), 3.2 (Arquitetura/atômicos e Cortex-M0), 3.5 (Eng. de Software), 3.6 (Embarcados) = parágrafos curtos.** Guardrail do revisor: a banca de memory safety fura exatamente na 3.3/3.4 — o corte é na periferia; 3.3+3.4 são intocáveis.
+`.bib`: **+3** — `book:lee-seshia`, `book:stallings`, `doc:c11` (N1570 §5.1.2.4). Triagem em `plan/triagem_referencias.md` (rodadas 1–2, lista definitiva). Yiu (ARM) descartável (alvo = Xtensa).
 
-### 🔑 O cap. 3 tem de CRIAR estes labels — hoje o núcleo os referencia e sai `??`
+### 🔑 FALHA ABERTA — labels criados NÃO batem com o que o núcleo referencia (sai `??`)
 
-| Label | Quem referencia | Onde deve nascer |
+| Label que o núcleo espera | Referenciado em | Situação (verificado 01/ago) |
 |---|---|---|
-| `sec:dr-def` | §4.2.1, §4.3.2, §5.2.2, §5.2.4 (a definição das 4 cláusulas é a espinha do doc) | 3.3 |
-| `sec:dr-vs-race` | §4.2.1, §4.3.2 | 3.3.5 |
-| `sec:prod-cons` | §4.2.3 (2×, na poda das células) | 3.3 |
-| `sec:send_sync` | §4.3.2 | 3.4 |
-| `sec:unsafe` | §4.3 | 3.4 |
-| `subsec:types_guarantee` | §4.3 (2×) | 3.4 |
-| `sec:scope` | §4.2.3 (justifica o corte do single-core) | **DECISÃO PENDENTE:** cap. 1 (seção de delimitação) ou cap. 3 |
+| `sec:dr-def` | Metodologia l.23, l.29 · Resultados l.144, l.223 | ⚠️ criado como **`subsec:dr-def`** (3.3.2 l.21) → **renomear** l.21 `\label` + l.17 `\ref` → `sec:dr-def` |
+| `sec:dr-vs-race` | Metodologia l.23, l.29 | ⚠️ criado como **`subsec:data-race-x-race-condition`** (3.3.3 l.46) → **renomear** l.46 `\label` + l.42 `\ref` → `sec:dr-vs-race` |
+| `sec:prod-cons` | Metodologia l.69, l.71 (poda das células, 4.2.3) | ❌ **sem casa** — decidir onde nasce em 3.3 (produtor-consumidor / P2) |
+| `sec:send_sync` | §4.3.2 | 3.4 (a escrever) |
+| `sec:unsafe` | §4.3 | 3.4 (a escrever) |
+| `subsec:types_guarantee` | §4.3 (2×) | 3.4 (a escrever) |
+| `sec:scope` | §4.2.3 (corte single-core) | **PENDENTE:** cap. 1 (delimitação) ou cap. 3 |
 
-Verificado por varredura em 31/jul. Cuidado ao varrer: `cap:fundamentacao` e os `code:*` **não** são órfãos — o `\mychapter{título}{label}` cria o label (`ic.cls` l. 99) e as macros `\coderust`/`\codec` passam `label=#2` ao `lstlisting` (`ic.cls` l. 164/190).
+Cuidado ao varrer: `cap:fundamentacao` e os `code:*` **não** são órfãos — `\mychapter`/`\coderust`/`\codec` criam o label (`ic.cls`).
 
 ### 4 bugs de `\ref` nos caps. 3 e 4 (independem do cap. 3 — consertar no passe)
 
