@@ -1,6 +1,8 @@
 ---
 author: Claude (claude-opus-4-8)
 created: 2026-07-20
+co-authors:
+  - Claude (claude-opus-4-8), 2026-08-01
 ---
 
 <!-- LTeX: enabled=false -->
@@ -25,19 +27,22 @@ Esteira viva da busca bibliográfica sob a **Regra 7 reformulada** (ver `CLAUDE.
 
 | Rodada | Data | Keywords (dadas pelo Matheus) | Ferramenta | Nº resultados | Observações |
 |---|---|---|---|---|---|
-| — | — | *(nenhuma busca executada ainda)* | — | — | — |
+| 1 | 2026-08-01 | (derivadas do texto da 3.3.1): tratamento de interrupção/ISR; DMA / transferência sem a CPU; contexto de execução em sistema embarcado. Cap.-alvo: 3.3.1 | WebSearch | 3 candidatos | Buraco = alicerce para ISR e DMA (a antiga 3.2 Arquitetura foi cortada). Preempção / escalonamento preemptivo×cooperativo / ISR-não-bloqueia já cobertos por `book:deadline-requirement` (Buttazzo) + `eriksson2013rtfm` (SRP/RTIC) no `.bib`. WebSearch = web genérica, não base indexada → metadados a confirmar em fonte primária antes de virar definitiva. |
 
 ## Lista provisória (aguardando leitura + aval do Matheus)
 
 | # | Relevância | Serve a (cap./obj.) | Referência (autor · título · venue · ano · tipo) | Gancho (1 linha) | Keyword | Aval |
 |---|---|---|---|---|---|---|
-| — | — | — | *(vazia — aguardando primeira rodada de busca)* | — | — | pendente |
+| 1 | Alta | 3.3.1 (contexto de execução / ISR / concorrência) | Lee, E. A. & Seshia, S. A. · *Introduction to Embedded Systems: A Cyber-Physical Systems Approach* · MIT Press · 2ª ed., 2017 · livro (ISBN 978-0-262-53381-2; versão livre em ptolemy.berkeley.edu, CC BY-NC-ND) | Alicerce acadêmico de interrupção/ISR e de concorrência em embarcado — cobre o tema da subseção inteira | ISR / contexto de execução | **definitiva (2026-08-01)** → `book:lee-seshia` |
+| 2 | Alta | 3.3.1 (DMA + I/O dirigido por interrupção) | Stallings, W. · *Computer Organization and Architecture* · Pearson · 10ª ed. 2016 (ISBN 978-0-13-410161-3) ou 11ª ed. 2019 · livro | Âncora clássica de DMA e I/O por interrupção no nível de arquitetura (ISA-neutro — casa com o enquadramento "custo ISA-independente") | DMA / transferência sem CPU | **definitiva (2026-08-01)** → `book:stallings` |
+| 3 | Baixa | 3.3.1 (ISR/NVIC concreto) | Yiu, J. · *The Definitive Guide to ARM Cortex-M3 and Cortex-M4 Processors* · Newnes/Elsevier · 3ª ed., 2013 (ISBN 978-0-12-408082-9) · livro | ISR/NVIC no hardware concreto — **ressalva:** é ARM Cortex-M e o alvo migrou p/ ESP32 Xtensa (Decisão 2026-06-15) → citaria mecânica de outra ISA. Só se quiser exemplo concreto e assumir a ressalva | ISR concreto / NVIC | pendente |
 
 ## Lista definitiva (avalizada → `.bib`)
 
 | Referência | bibkey | No `.bib`? |
 |---|---|---|
-| *(vazia)* | — | — |
+| Lee & Seshia, *Introduction to Embedded Systems*, 2ª ed., MIT Press, 2017 | `book:lee-seshia` | Sim (2026-08-01) |
+| Stallings, *Computer Organization and Architecture*, 11ª ed., Pearson | `book:stallings` | Sim (2026-08-01) |
 
 ## Lista descartada
 

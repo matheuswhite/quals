@@ -24,6 +24,10 @@
 %     Veredito do Matheus dado na sessao; metadados confirmados via busca web
 %     (Pearson/Amazon.br, misra.org.uk, ACM DL, IEEE Xplore/Computer Society).
 %     Marcadas "added-by".
+%   - Claude (claude-opus-4-8), 2026-08-01 -- duas entradas da Fundamentacao
+%     (cap. 3, subsec. 3.3.1): book:lee-seshia (Lee & Seshia) e book:stallings
+%     (Stallings). Veredito do Matheus na sessao; metadados confirmados em fonte
+%     primaria (Berkeley Ptolemy; Pearson). Marcadas "added-by".
 % NOTA: as entradas SEM marcacao "added-by" sao herdadas de um projeto anterior
 % (DEA / seguranca publica) e NAO pertencem a esta tese -- candidatas a remocao.
 % Metadados das entradas novas verificados via WebSearch (ACM DL, DBLP, USENIX,
@@ -780,4 +784,38 @@ doi = {10.3906/elk-1104-36}
   year         = {2025},
   month        = {feb},
   note         = {Espressif Developer Portal. Acesso em: 31 jul. 2026}
+}
+
+% ===========================================================================
+% Entradas da Fundamentacao (cap. 3, subsecao 3.3.1) -- 2026-08-01
+% ===========================================================================
+
+% added-by: Claude, 2026-08-01
+% Veredito do Matheus: definitiva (alicerce de ISR/interrupcao e de concorrencia
+% em embarcado, subsecao 3.3.1). Metadados confirmados na fonte primaria dos
+% autores (ptolemy.berkeley.edu/books/leeseshia) em 2026-08-01: 2a ed., MIT
+% Press, 2017, ISBN 978-0-262-53381-2. Versao livre (CC BY-NC-ND) no mesmo site.
+@book{book:lee-seshia,
+  author    = {Lee, Edward A. and Seshia, Sanjit A.},
+  title     = {Introduction to Embedded Systems: A Cyber-Physical Systems Approach},
+  edition   = {2},
+  publisher = {MIT Press},
+  address   = {Cambridge, MA, USA},
+  year      = {2017},
+  isbn      = {978-0-262-53381-2}
+}
+
+% added-by: Claude, 2026-08-01
+% Veredito do Matheus: definitiva (ancora de DMA e de I/O dirigido por
+% interrupcao, subsecao 3.3.1). Metadados CONFIRMADOS na fonte primaria (Pearson)
+% em 2026-08-01 para a GLOBAL EDITION: 11a ed., 2021, ISBN 978-1-292-42010-3.
+% CONFERIR EDICAO: a edicao US 11a e de 2019 (ISBN 978-0-13-499719-3). Ajustar
+% year/isbn para a copia efetivamente consultada.
+@book{book:stallings,
+  author    = {Stallings, William},
+  title     = {Computer Organization and Architecture},
+  edition   = {11},
+  publisher = {Pearson},
+  year      = {2021},
+  isbn      = {978-1-292-42010-3}
 }
