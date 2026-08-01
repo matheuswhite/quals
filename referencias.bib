@@ -28,6 +28,10 @@
 %     (cap. 3, subsec. 3.3.1): book:lee-seshia (Lee & Seshia) e book:stallings
 %     (Stallings). Veredito do Matheus na sessao; metadados confirmados em fonte
 %     primaria (Berkeley Ptolemy; Pearson). Marcadas "added-by".
+%   - Claude (claude-opus-4-8), 2026-08-01 -- entrada doc:c11 (norma C11, draft
+%     N1570) para a subsec. 3.3.2 (definicao de data race + UB, secao 5.1.2.4
+%     par. 25). Opcao A escolhida pelo Matheus; metadados confirmados na fonte
+%     primaria (WG14, N1570). Marcada "added-by".
 % NOTA: as entradas SEM marcacao "added-by" sao herdadas de um projeto anterior
 % (DEA / seguranca publica) e NAO pertencem a esta tese -- candidatas a remocao.
 % Metadados das entradas novas verificados via WebSearch (ACM DL, DBLP, USENIX,
@@ -818,4 +822,21 @@ doi = {10.3906/elk-1104-36}
   publisher = {Pearson},
   year      = {2021},
   isbn      = {978-1-292-42010-3}
+}
+
+% added-by: Claude, 2026-08-01
+% Opcao A (Matheus): draft publico N1570 do C11. Metadados e o par. 25 da secao
+% 5.1.2.4 (data race -> UB) confirmados na fonte primaria (WG14 N1570: HTML em
+% port70.net + PDF em open-std.org) em 2026-08-01. Redacao identica a da norma
+% oficial ISO/IEC 9899:2011.
+@techreport{doc:c11,
+  author      = {{ISO/IEC JTC1/SC22/WG14}},
+  title       = {Programming Languages --- C},
+  institution = {ISO/IEC},
+  type        = {Committee Draft},
+  number      = {N1570},
+  year        = {2011},
+  month       = {apr},
+  note        = {ISO/IEC 9899:2011. Se\c{c}\~ao 5.1.2.4, par. 25.
+                 Dispon\'ivel em: \url{https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf}}
 }
