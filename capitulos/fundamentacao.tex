@@ -1,41 +1,38 @@
 % 3
-\mychapter{Fundamentação teórica}{cap:fundamentacao} 
-
-% 3.1
-\section{Sistemas de Controle}
-
-% 3.2
-\section{Arquitetura e Organização de Computadores}
-
-% 3.2.1
-\subsection{Instruções atômicas e barreiras}
-
-% 3.2.2
-\subsection{O caso Cortex-M0 / ARMv6-M}
+\mychapter{Fundamentação teórica}{cap:fundamentacao}
 
 % 3.3
 \section{Concorrência e Modelo de Memória}
 
 % 3.3.1
 \subsection{Contextos de execução concorrente}
+\label{subsec:contexts}
+
+Quando um controlador, embarcado em um microcontrolador, está atuando em uma planta física existem três fluxos ocorrendo de forma concorrente: primeiro a aquisiçao do estado da planta, pois o controlador precisa conhecer o estado atual do mundo físico, antes de atuar nele; após isso, é realizado o calculo do sinal de controle, a partir dos dados de aquisição e estados internos; e por último o sinal de controle gerado é enviado para o mundo físico através de atuadores. Cada um desses fluxos é executado em um contexto diferente dentro do microcontrolador: A aquisição de dados pode utilizar dois contextos diferentes, a ISR e a DMA, enquanto o cálculo é feito majoritariamente em tarefas no microcontrolador. Uma ISR é uma rotina que trata uma interrupção, pois quando o dado da aquisição está pronto, o periférico que le este dado (por exemplo um ADC), interrompe a MCU para este dado ser armazenado na memória do microcontrolador \citep{book:lee-seshia}. Enquanto isso, a DMA serve para transferir dados de diferentes regiões da memória, sem a intervenção da MCU \citep{book:stallings}, isso alivia a carga da MCU para realizar outras ações, como realizar os calculo do próximo sinal de controle. Esses fluxos ocorrem com concorrencia entre os tipos de fluxos (ISR/DMA x Tarefa). Com esses vários fluxos ocorrendo concorrentemente, surge dois problemas: como os dados do fluxo de acquição são enviados para o fluxo de calculo do sinal de controle? E como o sinal de controle, calculado no fluxo de calculo, é enviado para o fluxo de atuação? Esses dois problemas fazem parte da mesma categoria de problemas: sincronização de memória entre fluxos de execução.
+
+Cada fluxo anterior pode ser mapeado em um ou mais contexto e cada contexto possui suas características e restrições. A ISR é capaz de executar código e interrompe outro contexto para ser executada (preempção), entretanto a sincronização de uma região de memória compartilhada não pode ser bloqueante, pois existiria um deadlock. Este deadlock ocorre pois a ISR ficar bloqueada (ou dormindo) esperando a tarefa, que ela mesmo preemptou, desbloquear a condição nunca vai acontecer, pois a tarefa deve esperar a ISR terminar, ficando em um loop de espera infinito. A DMA possui também características e restrições peculiares, pois não é capaz de executar código, dado que ela apenas move dados de uma região de memória para outra região. Por esse motivo, não existe bloqueio relacionada a ela, pois não executa código; e também é assincrona com relação a tarefa, pois ela é independente da MCU, por definição. E por último, tem-se a tarefa, possuindo o menor nível de restrições, pois é capaz de executar código e pode ser bloqueada na sincronização da região de memória. Sua relação com outras tarefas, depende do escalonador, podendo ser preempitivo (interrompendo outras tarefas para executar) ou cooperativo (só executa quando a outra tarefa libera) \citep{book:deadline-requirement}.
+
+Perceba que as restrições dos contexos sobre sincronização, implicam em restringir também quais implementações de sincronização podem ser aplicadas: por exemplo, na ISR, por não poder ser bloqueada, um mutex não pode ser aplicado, apenas regiões críticas pode ser utilizadas \citep{eriksson2013rtfm}. Enqaunto isso, na DMA, por não executar código, um mutex não pode ser utilizado e nem uma região crítica, pois no mutext exige execução de código, enquanto a seção crítica é ignorada pela DMA, foi ela executa independente da MCU. Além de todos os contextos citados, ainda existe mais um contexto: multiplos cores executandos tarefas em paralelo. Esse caso foi deixado de fora deliberadamente, ver \ref{cap:cron}, e não será tratado neste trabalho.
+
+Utilizar mais de um contexto concorrentemente é precondição das cláusulas de definção de data race, descritas na subseção a seguir \ref{subsec:dr-def}.
 
 % 3.3.2
-\subsection{Relação happens-before e sincronização}
+\subsection{Modelo de memória e a definição de data race}
+\label{subsec:dr-def}
 
 % 3.3.3
-\subsection{Modelo de memória do C11}
-
-% 3.3.4
-\subsection{Modelo de memória do Rust e ordenações de atômicos}
-
-% 3.3.5
-\subsection{Data race × race condition}
+\subsection{Data race x race condition}
 
 % 3.4
 \section{Rust: Sistema de Tipos e Segurança de Memória}
 
-% 3.5
-\section{Engenharia de Software}
+% 3.4.1
+\subsection{Propriedade e emprestimo}
 
-% 3.6
-\section{Sistemas Embarcados}
+% Ownership, borrow e lifetimes
+
+% 3.4.2
+\subsection{safe e unsafe na troca de dados entre threads}
+
+% Send + Sync + Borrow checking
+% safe e unsafe
