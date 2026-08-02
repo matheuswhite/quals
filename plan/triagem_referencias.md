@@ -3,6 +3,7 @@ author: Claude (claude-opus-4-8)
 created: 2026-07-20
 co-authors:
   - Claude (claude-opus-4-8), 2026-08-01
+  - Claude (claude-opus-4-8), 2026-08-02
 ---
 
 <!-- LTeX: enabled=false -->
@@ -29,6 +30,7 @@ Esteira viva da busca bibliográfica sob a **Regra 7 reformulada** (ver `CLAUDE.
 |---|---|---|---|---|---|
 | 1 | 2026-08-01 | (derivadas do texto da 3.3.1): tratamento de interrupção/ISR; DMA / transferência sem a CPU; contexto de execução em sistema embarcado. Cap.-alvo: 3.3.1 | WebSearch | 3 candidatos | Buraco = alicerce para ISR e DMA (a antiga 3.2 Arquitetura foi cortada). Preempção / escalonamento preemptivo×cooperativo / ISR-não-bloqueia já cobertos por `book:deadline-requirement` (Buttazzo) + `eriksson2013rtfm` (SRP/RTIC) no `.bib`. WebSearch = web genérica, não base indexada → metadados a confirmar em fonte primária antes de virar definitiva. |
 | 2 | 2026-08-01 | (dada pelo Matheus): norma C11 / UB em data race (§5.1.2.4) | WebSearch + WebFetch | 1 documento | Documento único e conhecido (não é garimpo). Redação e nº do parágrafo confirmados na fonte primária (WG14, N1570, versão HTML port70.net): §5.1.2.4 par. 25. Duas formas citáveis: N1570 (draft público, gratuito) × ISO/IEC 9899:2011 (oficial, pago). |
+| 3 | 2026-08-02 | (SEM keywords/busca ainda) — Matheus pediu candidatos para formar o prompt; propostos por Claude a partir do próprio conhecimento: (A) definição de race condition + distinção DR×RC (3.3.3 l.50/l.52); (B) origem do termo TOCTOU / check-then-act (l.52) | nenhuma (conhecimento prévio) | 7 candidatos | **Inversão do fluxo normal:** o passo 1 (keywords) foi substituído por "Claude sugere opções, Matheus escolhe". Guardrail preservado: Matheus dá o aval, `.bib` só depois. **Metadados NÃO confirmados em fonte primária ainda** — confirmar na escolha (o `#6 Helmbold&McDowell` pode nem existir com o ano indicado). |
 
 ## Lista provisória (aguardando leitura + aval do Matheus)
 
@@ -38,6 +40,13 @@ Esteira viva da busca bibliográfica sob a **Regra 7 reformulada** (ver `CLAUDE.
 | 2 | Alta | 3.3.1 (DMA + I/O dirigido por interrupção) | Stallings, W. · *Computer Organization and Architecture* · Pearson · 10ª ed. 2016 (ISBN 978-0-13-410161-3) ou 11ª ed. 2019 · livro | Âncora clássica de DMA e I/O por interrupção no nível de arquitetura (ISA-neutro — casa com o enquadramento "custo ISA-independente") | DMA / transferência sem CPU | **definitiva (2026-08-01)** → `book:stallings` |
 | 3 | Baixa | 3.3.1 (ISR/NVIC concreto) | Yiu, J. · *The Definitive Guide to ARM Cortex-M3 and Cortex-M4 Processors* · Newnes/Elsevier · 3ª ed., 2013 (ISBN 978-0-12-408082-9) · livro | ISR/NVIC no hardware concreto — **ressalva:** é ARM Cortex-M e o alvo migrou p/ ESP32 Xtensa (Decisão 2026-06-15) → citaria mecânica de outra ISA. Só se quiser exemplo concreto e assumir a ressalva | ISR concreto / NVIC | pendente |
 | 4 | Alta | 3.3.2 (definição de data race + UB) | ISO/IEC JTC1/SC22/WG14 · *Programming Languages --- C* · WG14 · 2011 · norma (C11); §5.1.2.4 par. 25. Formas: **N1570** (draft público) ou **ISO/IEC 9899:2011** (oficial) | Fonte normativa que define data race (as 4 cláusulas) **e** declara o UB — ancora as linhas 31 e 40 da 3.3.2 | norma C11 / UB data race | **definitiva (2026-08-01, Opção A)** → `doc:c11` |
+| 5 | Alta | 3.3.3 l.50 (def. race condition) + l.52 (assimetria DR×RC) | Netzer, R. H. B. & Miller, B. P. · *What are race conditions? Some issues and formalizations* · ACM LOPLAS 1(1):74–88 · 1992 · artigo (DOI 10.1145/130616.130623) | Paper canônico que formaliza *general race* (=race condition) × *data race*; ancora a definição (l.50) **e** a assimetria (l.52) de uma vez só | def. race condition / distinção DR-RC | **definitiva (2026-08-02, A1)** → `article:netzer-miller-races` |
+| 6 | Média | 3.3.3 l.52 (reforço da distinção/taxonomia) | Helmbold, D. P. & McDowell, C. E. · título/ano **A CONFIRMAR** (indicado como "1996" no ponto de retomada) · detecção/modelagem de race conditions | Reforço a Netzer&Miller; **RESSALVA: metadado não confirmado — pode não existir com esse ano/autoria** | taxonomia race condition | pendente (metadado a confirmar) |
+| 7 | Média | 3.3.3 l.50 (def. didática, alternativa a paper) | Ben-Ari, M. · *Principles of Concurrent and Distributed Programming* · Addison-Wesley · 2ª ed. 2006 · livro | Definição de race condition em livro-texto consagrado; alternativa se preferir livro a paper | race condition livro-texto | pendente |
+| 8 | Baixa | 3.3.3 l.50 (não-determinismo) | Emrath, P. A. & Padua, D. A. · *Automatic detection of nondeterminacy in parallel programs* · PADD'88 · 1988 · artigo | Foca no não-determinismo (cerne da sua def.), mas anterior à terminologia DR/RC consolidada | não-determinismo programa paralelo | pendente |
+| 9 | Alta | 3.3.3 l.52 (origem do termo TOCTOU) | Bishop, M. & Dilger, M. · *Checking for Race Conditions in File Accesses* · Computing Systems 9(2):131–152 · 1996 · artigo | Fonte canônica do termo TOCTOU; **RESSALVA: contexto = segurança de acesso a arquivos Unix, não controle** | TOCTOU origem | **definitiva (2026-08-02, B1)** → `article:bishop-dilger-toctou` |
+| 10 | Média | 3.3.3 l.52 (nomenclatura TOCTOU, catálogo) | MITRE · *CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition* · cwe.mitre.org · techreport/URL | Catálogo padrão da indústria; define TOCTOU; citável como URL; **não peer-reviewed** | TOCTOU catálogo | pendente |
+| 11 | Média | 3.3.3 l.52 (termo check-then-act) | Goetz, B. et al. · *Java Concurrency in Practice* · Addison-Wesley · 2006 · livro | Usa "check-then-act" como padrão de race condition (o outro nome no seu texto); **RESSALVA: Java, livro** | check-then-act | pendente |
 
 ## Lista definitiva (avalizada → `.bib`)
 
@@ -46,6 +55,8 @@ Esteira viva da busca bibliográfica sob a **Regra 7 reformulada** (ver `CLAUDE.
 | Lee & Seshia, *Introduction to Embedded Systems*, 2ª ed., MIT Press, 2017 | `book:lee-seshia` | Sim (2026-08-01) |
 | Stallings, *Computer Organization and Architecture*, 11ª ed., Pearson | `book:stallings` | Sim (2026-08-01) |
 | ISO/IEC C11, draft N1570, §5.1.2.4 par. 25 (Opção A) | `doc:c11` | Sim (2026-08-01) |
+| Netzer & Miller, *What are race conditions?*, ACM LOPLAS 1(1):74–88, 1992 | `article:netzer-miller-races` | Sim (2026-08-02) |
+| Bishop & Dilger, *Checking for Race Conditions in File Accesses*, Computing Systems 9(2):131–152, 1996 | `article:bishop-dilger-toctou` | Sim (2026-08-02) |
 
 ## Lista descartada
 

@@ -840,3 +840,46 @@ doi = {10.3906/elk-1104-36}
   note        = {ISO/IEC 9899:2011. Se\c{c}\~ao 5.1.2.4, par. 25.
                  Dispon\'ivel em: \url{https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf}}
 }
+
+% ===========================================================================
+% Entradas da Fundamentacao (cap. 3, subsecao 3.3.3) -- 2026-08-02
+% ===========================================================================
+
+% added-by: Claude, 2026-08-02
+% Veredito do Matheus: definitiva (candidato A1) para a definicao de race
+% condition (3.3.3 l.50) e a assimetria data race x race condition (l.52). Paper
+% canonico que formaliza general race (= race condition) x data race. Metadados
+% confirmados na fonte primaria (ACM Digital Library, doi 10.1145/130616.130623)
+% em 2026-08-02: ACM LOPLAS v.1, n.1, mar. 1992, pp. 74-88.
+@article{article:netzer-miller-races,
+  author    = {Netzer, Robert H. B. and Miller, Barton P.},
+  title     = {What Are Race Conditions? Some Issues and Formalizations},
+  journal   = {ACM Letters on Programming Languages and Systems},
+  volume    = {1},
+  number    = {1},
+  pages     = {74--88},
+  month     = {mar},
+  year      = {1992},
+  publisher = {ACM},
+  doi       = {10.1145/130616.130623}
+}
+
+% added-by: Claude, 2026-08-02
+% Veredito do Matheus: definitiva (candidato B1) para a origem do termo TOCTOU /
+% check-then-act (3.3.3 l.52). Metadados confirmados na fonte primaria (USENIX,
+% PDF oficial) em 2026-08-02: Computing Systems v.9, n.2, primavera 1996, pp.
+% 131-152. Periodico Computing Systems (USENIX) sem DOI -- URL do PDF no note.
+% RESSALVA (contexto): o estudo e sobre corridas em acesso a arquivos Unix, nao
+% controle embarcado -- e citado apenas como origem da nomenclatura TOCTOU.
+@article{article:bishop-dilger-toctou,
+  author    = {Bishop, Matt and Dilger, Michael},
+  title     = {Checking for Race Conditions in File Accesses},
+  journal   = {Computing Systems},
+  volume    = {9},
+  number    = {2},
+  pages     = {131--152},
+  year      = {1996},
+  publisher = {USENIX Association},
+  note      = {Dispon\'ivel em:
+               \url{https://www.usenix.org/legacy/publications/compsystems/1996/spr_bishop.pdf}}
+}

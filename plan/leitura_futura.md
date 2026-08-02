@@ -7,6 +7,7 @@ modified:
   - 2026-06-01: Claude (claude-opus-4-8) — added a "Espaco de design" section (analysis method + synchronization design space + embedded Rust concurrency) to inform obj. 3
   - 2026-07-26: Claude (claude-opus-4-8) — added "Biblioteca vs. framework (Inversion of Control)" section (Fowler bliki + Johnson & Foote 1988); both already in referencias.bib and cited in 5.1
   - 2026-07-31: Claude (claude-opus-4-8) — added "Contextualização (cap. 1)" section with the 7 references added to referencias.bib on 2026-07-30/31; all cited in §1.1, so they enter as "read before the banca" (same exception as the IoC section)
+  - 2026-08-02: Claude (claude-opus-4-8) — added "Distinção data race × race condition (3.3.3)" section with Netzer & Miller (1992) and Bishop & Dilger (1996); both in referencias.bib and cited in 3.3.3, so they enter as "read before the banca"
 ---
 
 <!-- LTeX: enabled=false -->
@@ -161,6 +162,26 @@ As sete entradas adicionadas a `referencias.bib` em 30–31/jul/2026 para a Cont
 - **Por que importa:** ancora o "por que agora" da §1.1. Confirmado na fonte (post de 24/fev/2025): é o **primeiro SDK Rust com apoio do fabricante**, após ~6 anos, e marca a estabilização de API com foco exclusivo nos crates `no_std` (os crates de port da `std` passam a *community-supported*). Foi por isso que a data no texto migrou de "2023–2024" para **2025**.
 - **Estado:** lido (verificado nesta sessão para confirmar a data).
 - **Nota:** é fonte web, não peer-reviewed. Se a banca cobrar peso acadêmico no "por que agora", o par possível é a literatura de Rust em embarcado — *Rust for Embedded Systems: Current State and Open Problems* (CCS 2024) apareceu na busca e não foi triado.
+
+---
+
+## Distinção data race × race condition (3.3.3) — citadas, a validar antes da banca
+
+As duas entradas adicionadas a `referencias.bib` em 02/ago/2026 para a subseção 3.3.3. **Mesma exceção das seções de IoC e Contextualização:** já estão citadas no texto, então entram aqui como *leitura obrigatória antes da banca* (Regra 7 — ler o que se cita), não como leitura-só-para-informar. Metadados confirmados em fonte primária; o que a leitura tem de fechar é se o conteúdo sustenta a afirmação que cada uma ancora.
+
+### Netzer & Miller — *What Are Race Conditions? Some Issues and Formalizations*
+
+- **Referência:** Netzer, R. H. B.; Miller, B. P. (1992). "What Are Race Conditions? Some Issues and Formalizations." *ACM Letters on Programming Languages and Systems (LOPLAS)*, 1(1), 74–88. DOI 10.1145/130616.130623. `\cite{article:netzer-miller-races}`
+- **Por que importa:** fonte canônica que formaliza *general race* (= race condition) × *data race*. Ancora a definição de race condition (3.3.3 l. 50) e a afirmação de assimetria (l. 52), e por consequência sustenta o recorte estrito da taxonomia (a 3.3.3 fecha justificando a 4.2.1).
+- **Estado:** por ler.
+- **Pendência (a fechar na leitura — a banca fura aqui):** confirmar **como** o paper formaliza a relação entre os dois conceitos — se afirma continência (*data race* ⊂ *race condition*) ou interseção sem continência. Isso decide se a 3.3.2 ("data race contido dentro de race condition") e a 3.3.3 (assimetria "RC sem DR") ficam alinhadas com a fonte ou precisam ser reformuladas. Ver a discussão de topologia registrada na revisão da 3.3.3.
+
+### Bishop & Dilger — *Checking for Race Conditions in File Accesses*
+
+- **Referência:** Bishop, M.; Dilger, M. (1996). "Checking for Race Conditions in File Accesses." *Computing Systems*, 9(2), 131–152. USENIX Association. `\cite{article:bishop-dilger-toctou}`
+- **Por que importa:** origem do termo TOCTOU (*time-of-check-to-time-of-use*). Ancora a nomenclatura do padrão *check-then-act* / TOCTOU na 3.3.3 l. 52.
+- **Estado:** por ler.
+- **Ressalva/Pendência:** o estudo é sobre corridas em **acesso a arquivos Unix** (segurança), não controle embarcado. A leitura tem de confirmar que a definição de TOCTOU transfere para o cenário ISR×tarefa sem distorção (o conceito é a janela entre *check* e *use*, independente do recurso) — e ter essa resposta pronta caso a banca cobre "isso é de arquivos, não de controle".
 
 ---
 
