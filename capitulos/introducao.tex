@@ -27,7 +27,7 @@ Para este trabalho, o objetivo inicial é a caracterização da fronteira entre 
 \subsection{Objetivos Específicos}
 
 % Só o rascunho mesmo com tópicos
-Os objetivos 1, 2 e 3 serão desenvolvidos na qualificação, enquanto os objetivos 4, 5, 6, 7 e 8 serão desenvolvidos na pós-qualificação.
+Os objetivos 1, 2 e 3 estão desenvolvidos na qualificação, enquanto os objetivos 4, 5, 6, 7 e 8 serão desenvolvidos na pós-qualificação.
 
 1. Propor uma taxonomia de padrões de data races presentes em algoritmos de controle que compartilham estado entre múltiplos contextos;
 2. Caracterizar a fronteira entre safe e unsafe destes padrões de data races;
@@ -40,3 +40,7 @@ Os objetivos 1, 2 e 3 serão desenvolvidos na qualificação, enquanto os objeti
 8. Comparar a verificação em tipos e em tempo de compilação da implementação destes algoritmos de controle, com a implementação do estado da arte em C, que usa \ac{MISRA} e padrões de controle de qualidade (como \acp{ISO} e sanitizers).
 
 \section{Visão Geral da Qualificação}
+
+Dado que a proposta está descrita, o restante é organizado assim: no capítulo \ref{cap:fundamentacao} está presente a fundamentação com as explicações e definições de data race e garantias do Rust. É neste capítulo que existe o conhecimento necessário para a compreensão do resto do texto. Na metodologia, capítulo \ref{cap:metodologia}, está presente a taxonomia, a fronteira entre safe e unsafe e o catálogo do espaço de design. No capítulo a seguir (\ref{cap:resultados}), são descritos os resultados parciais: o estado atual da biblioteca Aule; o caso demonstrativo P1; e o panorama do ecossistema open-source do Rust, para bibliotecas de controle. Por fim, no capítulo \ref{cap:cronograma} está descrito o cronograma pós-qualificação.
+
+Na qualificação, os objetivos de 1 a 3 estão concluídos, enquanto os objetivos de 4 a 8 serão concluídos na dissertação. Nos resultados parciais está a evidência já colhida. A ordem dos capítulos é construída para facilitar o entendimento, pois se começa com a pergunta, levando para os objetivos do trabalho. Após isso são apresentados os fundamentos necessários para o entendimento geral, seguido do método utilizado para coletar e verificar as evidências, fechando com o cronograma do que será realizado após este trabalho.
