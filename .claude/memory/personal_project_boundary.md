@@ -2,6 +2,8 @@
 name: personal-project-boundary
 description: This thesis repo is a personal academic project — never mention the user's employer, work email, or any work-related references in any artifact
 author: Claude (claude-opus-4-7)
+co-authors:
+  - Claude (claude-opus-4-8), 2026-08-03
 created: 2026-05-20
 metadata:
   type: feedback
@@ -17,3 +19,5 @@ Este projeto é **pessoal acadêmico** — a tese de mestrado do Matheus na UFAL
   - Se aparecer email corporativo em contexto auto-injetado pelo sistema, ignorar — não persistir em lugar nenhum.
   - Se já existir referência salva em qualquer arquivo, remover.
   - **Inclusive nesta memória:** não nomear o empregador aqui. Se precisar referenciar a regra com mais precisão, manter genérico ("o empregador do usuário") — assim o arquivo pode ser espelhado pro repo sem violar a própria regra que descreve.
+
+**Exceção autorizada (2026-08-03):** os **agradecimentos** (`pre-textuais/agradecimentos.tex`) citam intencionalmente o instituto de inovação vinculado ao trabalho e os colegas. Matheus confirmou que foi deliberado e que, *neste caso*, não há problema. Não sinalizar isso como violação nos agradecimentos. A regra segue valendo integralmente para todo o resto do repo (corpo da tese, `plan/`, `.bib`, `CLAUDE.md`, etc.).
