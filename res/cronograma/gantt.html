@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<!--
+  author: Claude (claude-opus-4-8)
+  created: 2026-08-04
+  nota: gerador de figura (Gantt) para o cap. Cronograma de Execucao.
+        Estrutura/duracoes/datas especificadas por Matheus (Cronograma_de_Execucao.tex);
+        Claude apenas transcreveu para HTML. Horizonte: set/2026 -> mai/2027 (9 meses).
+        Granularidade SEMANAL (4 semanas/mes, 36 semanas) com marcacao mensal por cima.
+        Obj.4 S1-S8; Obj.8 S7-S12; Obj.5/6 S13-S24; Obj.7 S21-S28; Redacao S17-S36.
+        Planta disponivel jan/27 (inicio da semana 17).
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Cronograma de Execução</title>
+<style>
+  :root{
+    --c-obj4:#4E79A7;
+    --c-obj56:#59A14F;
+    --c-obj7:#E15759;
+    --c-obj8:#B07AA1;
+    --c-red:#F28E2B;
+    --grid:#cdd3da;
+    --wgrid:#eef1f4;
+    --plant:#3f77b0;
+    --ink:#1f2733;
+    --muted:#6b7480;
+  }
+  *{box-sizing:border-box;}
+  html,body{ margin:0; }
+  body{
+    background:#ffffff;
+    color:var(--ink);
+    font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .sheet{ width:1296px; margin:0 auto; padding:28px 34px 24px; background:#fff; }
+  h1{ font-size:21px; font-weight:700; margin:0 0 3px; }
+  .sub{ font-size:12px; color:var(--muted); margin:0 0 8px; }
+  .legend{ font-size:11px; color:var(--muted); margin:0 0 18px; display:flex; gap:20px; align-items:center; }
+  .legend .key{ display:inline-flex; align-items:center; gap:6px; }
+  .legend .dash{ width:22px; height:0; border-top:2px dashed var(--plant); }
+  .legend .swatch{ width:14px; height:12px; border-radius:2px; background:#fefaf4; border:1px solid #f0d8b8; }
+
+  .chart{ position:relative; width:1228px; height:286px; }
+
+  /* faixas de fundo */
+  .tail{ position:absolute; top:46px; height:240px; background:#fefaf4; z-index:0; }
+  .weekgrid{ position:absolute; left:220px; top:46px; width:1008px; height:240px;
+    background:repeating-linear-gradient(to right, var(--wgrid) 0 1px, transparent 1px 28px); z-index:0; }
+  .ml{ position:absolute; top:0; height:286px; width:0; border-left:1px solid var(--grid); z-index:1; }
+  .plantline{ position:absolute; top:0; height:286px; width:0; border-left:2px dashed var(--plant); z-index:2; }
+  .hsep{ position:absolute; height:0; border-top:1px solid var(--grid); z-index:1; }
+  .rowsep{ position:absolute; left:0; width:1228px; height:0; border-top:1px solid var(--wgrid); z-index:1; }
+
+  /* cabecalho */
+  .corner{
+    position:absolute; left:0; top:0; width:210px; height:46px;
+    display:flex; align-items:center;
+    font-size:11.5px; color:var(--muted); font-weight:700;
+    text-transform:uppercase; letter-spacing:.04em;
+  }
+  .mhead{
+    position:absolute; top:0; height:26px; width:112px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; color:var(--muted); font-weight:600; z-index:2;
+  }
+  .mhead.tail{ color:#8a4d12; }
+  .mhead.plant{ color:var(--plant); }
+  .wk{
+    position:absolute; top:26px; height:20px; width:28px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:9.5px; color:#9aa2ac; z-index:2;
+  }
+
+  /* rotulos de objetivo */
+  .tlabel{
+    position:absolute; left:0; width:210px;
+    display:flex; align-items:center; padding-right:12px;
+    font-size:11.5px; line-height:1.2; color:var(--ink); z-index:3;
+  }
+  .tlabel .code{ font-weight:700; margin-right:5px; white-space:nowrap; }
+
+  /* barras */
+  .bar{
+    position:absolute; height:30px; border-radius:6px;
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:11.5px; font-weight:600;
+    box-shadow:0 1px 2px rgba(0,0,0,.18); z-index:3; white-space:nowrap;
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <h1>Cronograma de Execução</h1>
+  <p class="sub">Fase empírica &middot; set/2026 &ndash; mai/2027 &middot; granularidade semanal (S1&ndash;S4 por mês)</p>
+  <div class="legend">
+    <span class="key"><span class="dash"></span> planta disponível (jan/27)</span>
+    <span class="key"><span class="swatch"></span> fechamento (só redação)</span>
+  </div>
+
+  <div class="chart">
+
+    <!-- fechamento (abr-mai) -->
+    <div class="tail" style="left:1004px; width:224px;"></div>
+    <!-- grade semanal -->
+    <div class="weekgrid"></div>
+
+    <!-- linhas mensais (pula jan, que recebe a linha da planta) -->
+    <div class="ml" style="left:220px;"></div>
+    <div class="ml" style="left:332px;"></div>
+    <div class="ml" style="left:444px;"></div>
+    <div class="ml" style="left:556px;"></div>
+    <div class="ml" style="left:780px;"></div>
+    <div class="ml" style="left:892px;"></div>
+    <div class="ml" style="left:1004px;"></div>
+    <div class="ml" style="left:1116px;"></div>
+    <div class="ml" style="left:1228px;"></div>
+    <div class="plantline" style="left:668px;"></div>
+
+    <!-- separadores horizontais -->
+    <div class="hsep" style="left:220px; width:1008px; top:26px;"></div>
+    <div class="hsep" style="left:0; width:1228px; top:46px;"></div>
+    <div class="rowsep" style="top:94px;"></div>
+    <div class="rowsep" style="top:142px;"></div>
+    <div class="rowsep" style="top:190px;"></div>
+    <div class="rowsep" style="top:238px;"></div>
+    <div class="hsep" style="left:0; width:1228px; top:286px;"></div>
+
+    <!-- meses -->
+    <div class="corner">Objetivo</div>
+    <div class="mhead" style="left:220px;">set/26</div>
+    <div class="mhead" style="left:332px;">out/26</div>
+    <div class="mhead" style="left:444px;">nov/26</div>
+    <div class="mhead" style="left:556px;">dez/26</div>
+    <div class="mhead plant" style="left:668px;">jan/27</div>
+    <div class="mhead" style="left:780px;">fev/27</div>
+    <div class="mhead" style="left:892px;">mar/27</div>
+    <div class="mhead tail" style="left:1004px;">abr/27</div>
+    <div class="mhead tail" style="left:1116px;">mai/27</div>
+
+    <!-- semanas (S1-S4 por mes) -->
+    <div class="wk" style="left:220px;">1</div><div class="wk" style="left:248px;">2</div><div class="wk" style="left:276px;">3</div><div class="wk" style="left:304px;">4</div>
+    <div class="wk" style="left:332px;">1</div><div class="wk" style="left:360px;">2</div><div class="wk" style="left:388px;">3</div><div class="wk" style="left:416px;">4</div>
+    <div class="wk" style="left:444px;">1</div><div class="wk" style="left:472px;">2</div><div class="wk" style="left:500px;">3</div><div class="wk" style="left:528px;">4</div>
+    <div class="wk" style="left:556px;">1</div><div class="wk" style="left:584px;">2</div><div class="wk" style="left:612px;">3</div><div class="wk" style="left:640px;">4</div>
+    <div class="wk" style="left:668px;">1</div><div class="wk" style="left:696px;">2</div><div class="wk" style="left:724px;">3</div><div class="wk" style="left:752px;">4</div>
+    <div class="wk" style="left:780px;">1</div><div class="wk" style="left:808px;">2</div><div class="wk" style="left:836px;">3</div><div class="wk" style="left:864px;">4</div>
+    <div class="wk" style="left:892px;">1</div><div class="wk" style="left:920px;">2</div><div class="wk" style="left:948px;">3</div><div class="wk" style="left:976px;">4</div>
+    <div class="wk" style="left:1004px;">1</div><div class="wk" style="left:1032px;">2</div><div class="wk" style="left:1060px;">3</div><div class="wk" style="left:1088px;">4</div>
+    <div class="wk" style="left:1116px;">1</div><div class="wk" style="left:1144px;">2</div><div class="wk" style="left:1172px;">3</div><div class="wk" style="left:1200px;">4</div>
+
+    <!-- rotulos -->
+    <div class="tlabel" style="top:46px; height:48px;"><span class="code">Obj. 4</span> Implementação das garantias na Aule</div>
+    <div class="tlabel" style="top:94px; height:48px;"><span class="code">Obj. 8</span> Verificação: tipos &times; C+MISRA+sanitizers</div>
+    <div class="tlabel" style="top:142px; height:48px;"><span class="code">Obj. 5/6</span> Overhead e perda de deadlines</div>
+    <div class="tlabel" style="top:190px; height:48px;"><span class="code">Obj. 7</span> Comparação Rust &times; C</div>
+    <div class="tlabel" style="top:238px; height:48px;"><span class="code">Redação</span> Escrita da dissertação</div>
+
+    <!-- barras -->
+    <div class="bar" style="left:220px; width:224px; top:55px;  background:var(--c-obj4);">2&nbsp;meses</div>
+    <div class="bar" style="left:388px; width:168px; top:103px; background:var(--c-obj8);">1,5&nbsp;mês (host)</div>
+    <div class="bar" style="left:556px; width:336px; top:151px; background:var(--c-obj56);">3&nbsp;meses</div>
+    <div class="bar" style="left:780px; width:224px; top:199px; background:var(--c-obj7);">2&nbsp;meses</div>
+    <div class="bar" style="left:668px; width:560px; top:247px; background:var(--c-red);">5&nbsp;meses (sobreposta)</div>
+
+  </div>
+</div>
+</body>
+</html>
