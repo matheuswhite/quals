@@ -150,9 +150,11 @@ de Curso e Dissertacoes]
   morestring=[b]",
 }
 
+% modified-by: Claude (claude-opus-4-8), 2026-08-07 -- remocao do \mbox e troca de
+% frame=shadowbox por frame=single para permitir que a listagem quebre entre paginas.
+% Autorizado por Matheus nesta data (suspensao pontual da Regra 3).
 \newcommand{\coderust}[3]{
-  \mbox{
-    \lstset{framexleftmargin=5mm, frame=shadowbox, rulesepcolor=\color{gray}}
+    \lstset{framexleftmargin=5mm, frame=single}
     \lstinputlisting[language=Rust,
       breaklines=true,
       basicstyle=\footnotesize\ttfamily,
@@ -162,7 +164,6 @@ de Curso e Dissertacoes]
       stringstyle=\color{orange},
       showstringspaces=false,
       caption=#1,label=#2]{#3}
-  }
 }
 
 \newcommand{\codejava}[3]{
@@ -180,9 +181,10 @@ de Curso e Dissertacoes]
   }
 }
 
+% modified-by: Claude (claude-opus-4-8), 2026-08-07 -- idem \coderust: sem \mbox e frame=single
+% para permitir quebra de pagina. Autorizado por Matheus (suspensao pontual da Regra 3).
 \newcommand{\codec}[3]{
-  \mbox{
-    \lstset{framexleftmargin=5mm, frame=shadowbox, rulesepcolor=\color{gray}}
+    \lstset{framexleftmargin=5mm, frame=single}
     \lstinputlisting[language=C,
       breaklines=true,
       basicstyle=\footnotesize\ttfamily,
@@ -192,7 +194,6 @@ de Curso e Dissertacoes]
       stringstyle=\color{orange},
       showstringspaces=false,
       caption=#1,label=#2]{#3}
-  }
 }
 
 % Comentário do abstract

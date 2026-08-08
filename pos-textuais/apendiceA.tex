@@ -1,4 +1,7 @@
-\chapter{Apêndice A}
+% modified-by: Claude (claude-opus-4-8), 2026-08-07 -- titulo manual esvaziado (a designacao
+% "Apendice A" ja e automatica apos \appendix); reguas por linha e 1a coluna alargada.
+% Autorizado por Matheus (suspensao pontual da Regra 3).
+\chapter[Apêndice A]{}
 \label{cap:apendix-a}
 
 % added-by: Claude (claude-opus-4-8), 2026-07-28 -- transposicao de res/pids.csv (dado levantado por Matheus) via csvsimple; autorizada por ele nesta data
@@ -8,7 +11,7 @@
   % pdflscape mantem a \textwidth do retrato; reatribui para a dimensao que vira horizontal apos girar
   \setlength{\textwidth}{\textheight}%
   \setlength{\linewidth}{\textwidth}%
-  \begin{longtable}{>{\raggedright\arraybackslash}p{3cm} *{18}{c} >{\raggedright\arraybackslash\scriptsize}p{4.2cm}}
+  \begin{longtable}{>{\raggedright\arraybackslash}p{4cm} *{18}{c} >{\raggedright\arraybackslash\scriptsize}p{4.2cm}}
     \caption{Levantamento dos repositórios de PID em Rust (lista congelada em 09/06/2025)}
     \label{tab:pid-survey} \\
     \toprule
@@ -61,7 +64,7 @@
     \endfoot
     \bottomrule
     \endlastfoot
-    \csvreader[respect underscore, no check column count, separator=comma, late after line=\\]%
+    \csvreader[respect underscore, no check column count, separator=comma, late after line=\\\hline]%
       {res/pids.csv}{}{%
       \csvcoli & \csvcolii & \csvcoliii & \csvcoliv & \csvcolv & \csvcolvi
       & \csvcolvii & \csvcolviii & \csvcolix & \csvcolx & \csvcolxi & \csvcolxii

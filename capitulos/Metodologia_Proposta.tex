@@ -6,6 +6,9 @@
 %   - Claude (claude-opus-4-8), 2026-08-07 -- revisao gramatical mecanica (ortografia,
 %     acentuacao, concordancia, regencia, crase, pontuacao) autorizada por Matheus nesta data
 %     (suspensao pontual da Regra 3). Nenhum conteudo ou frase autoral foi alterado.
+%   - Claude (claude-opus-4-8), 2026-08-07 -- formatacao: tabelas 3.2/3.6 para landscape+longtable,
+%     3.5 para longtable (quebra de pagina), reguas por linha em 3.3/3.4/3.5/3.7 e quebra dos
+%     compostos C+MISRA/C+FreeRTOS. Autorizado por Matheus (suspensao pontual da Regra 3). So layout.
 \mychapter{Metodologia Proposta}{cap:metodologia}
 
 % Nesta seção, serão apresentados os procedimentos metodológicos adotados no trabalho
@@ -99,21 +102,31 @@ Portanto, quatro padrões emergem deste agrupamento por garantias. Todavia, um d
 
 A tabela resultante da taxonomia é descrita na Tabela \ref{tab:taxonomia}.
 
-\begin{table}[ht]
-  \centering
-  \caption{Taxonomia dos padrões de data race}
-  \label{tab:taxonomia}
-  \begin{tabular}{lllll}
+\begin{landscape}
+  \small
+  \setlength{\textwidth}{\textheight}%
+  \setlength{\linewidth}{\textwidth}%
+  \begin{longtable}{l >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{8cm} >{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{3.8cm}}
+    \caption{Taxonomia dos padrões de data race}\label{tab:taxonomia}\\
     \toprule
     Código & Nome & $\langle\text{Par},\text{Estrutura},\text{Acesso}\rangle$ & Exemplo de controle & Garantia exigida no safe \\
     \midrule
-    P1 & Tipo primitivo compartilhado & $\langle\text{Tarefa-Tarefa},\text{Escalar},\text{Leitor-Escritor}\rangle$ & configuração de setpoint & acesso indivisível e ordenado do valor\\
-    P2 & Produtor-Consumidor & $\langle\text{ISR/DMA-Tarefa},\text{Buffer},\text{Produtor-Consumidor}\rangle$ & amostras de ADC lidas em um loop & transferência de posse exclusiva \\
-    P3 & Tipo composto compartilhado & $\langle\text{Tarefa-Tarefa},\text{Struct},\text{Leitor-Escritor}\rangle$ & estado do observador & valor agregado observado como bloco indivisível \\
-    P4 & Read-modify-write compartilhado & $\langle\text{ISR-Tarefa},\text{Escalar},\text{RMW}\rangle$ & contador de encoder & indivisibilidade da sequência ler-modificar-escrever \\
+    \endfirsthead
+    \toprule
+    Código & Nome & $\langle\text{Par},\text{Estrutura},\text{Acesso}\rangle$ & Exemplo de controle & Garantia exigida no safe \\
+    \midrule
+    \endhead
+    \midrule
+    \multicolumn{5}{r}{\footnotesize continua na próxima página} \\
+    \endfoot
     \bottomrule
-  \end{tabular}
-\end{table}
+    \endlastfoot
+    P1 & Tipo primitivo compartilhado & $\langle\text{Tarefa-Tarefa},\text{Escalar},\text{Leitor-Escritor}\rangle$ & configuração de setpoint & acesso indivisível e ordenado do valor \\ \hline
+    P2 & Produtor-Consumidor & $\langle\text{ISR/DMA-Tarefa},\text{Buffer},\text{Produtor-Consumidor}\rangle$ & amostras de ADC lidas em um loop & transferência de posse exclusiva \\ \hline
+    P3 & Tipo composto compartilhado & $\langle\text{Tarefa-Tarefa},\text{Struct},\text{Leitor-Escritor}\rangle$ & estado do observador & valor agregado observado como bloco indivisível \\ \hline
+    P4 & Read-modify-write compartilhado & $\langle\text{ISR-Tarefa},\text{Escalar},\text{RMW}\rangle$ & contador de encoder & indivisibilidade da sequência ler-modificar-escrever \\
+  \end{longtable}
+\end{landscape}
 
 Neste ponto, é necessário especificar o porquê do P1, P3 e P4 serem padrões distintos e não o mesmo padrão com uma roupagem diferente. Para demonstrar isso, tem-se que P1 é o caso base: um escalar (Estrutura mais básica) compartilhado via Leitor-Escritor (acesso mais básico). Após isso, avançamos para o P3, que é uma variação no eixo 2 (Estrutura). Por último, avançamos para o P4, que é uma variação do eixo 3 (Acesso), em cima do P1. Em P4, também existe a mudança do Par, mas isso só gera uma variação e não um padrão novo, o que carrega a mudança de padrão é o eixo 3. Para avaliar se um caso é o P1 ou P3, pode-se perguntar se a consistência do valor compartilhado cabe em uma única operação atômica. Se couber, então é o caso P1, caso não caiba, então é P3. Já para distinguir P1 de P4, tem-se o seguinte questionamento: o novo valor depende do valor atual? Se não depender, então é uma escrita e leitura direta, remetendo à garantia de acesso indivisível e ordenado do valor de P1. Se depender, então é necessário o \ac{RMW} do P4. P2 não precisa de distinção com os outros, pois é transferência de posse exclusiva, o que é intrinsecamente distinto de compartilhamento de estado.
 
@@ -188,10 +201,15 @@ Deste modo, as implementações idiomáticas para um contexto embarcado (ou no\_
     Implementação & Garantia & Mecanismo & Dimensões \\
     \midrule
     Atomics & acesso indivisível e ordenado do valor & Tipo \texttt{Atomic} é \texttt{Sync} e possui suporte a load/store/RMW atômicos. & Compartilhamento e Lock-free \\
+    \hline
     Mutex & exclusão mútua implicando happens-before & Critical section que mascara IRQ & Compartilhamento e Sincronização bloqueante \\
+    \hline
     Snapshot e publicação & valor agregado observado como bloco indivisível & Dois buffers com troca atômica de ponteiro. O leitor nunca acessa estado inconsistente interno & Compartilhamento e lock-free \\
+    \hline
     Transferência de Mensagens & transferência de posse & Divisão de Producer e Consumer, sendo ambos \texttt{Send} & Transferência \\
+    \hline
     Reference Counter & Aliasing seguro (lifetime/ownership), sem mutação & Possui contagem atômica de referências e \texttt{Arc<T>: Send+Sync} se \texttt{T: Send+Sync} & Compartilhamento, lock-free e Alocação dinâmica \\
+    \hline
     Cópia owned & ausência de compartilhamento & valor passado por cópia ou por transferência & Cópia \\
     \bottomrule
   \end{tabularx}
@@ -209,10 +227,13 @@ Com o espaço definido, é possível associar as alternativas de implementação
     \midrule
     P1 & Atomics & Implementa acesso atômico a um valor \\
        & Cópia owned & Não há compartilhamento \\
+    \hline
     P2 & Transferência de Mensagens & Transfere a posse de um valor \\
+    \hline
     P3 & Mutex & Acesso exclusivo ao valor agregado inteiro \\
        & Cópia owned & Não há compartilhamento, pois cada contexto possui o agregado completo \\
        & Snapshot e publicação & Acesso somente ao valor novo ou antigo, nunca um valor com inconsistência interna \\
+    \hline
     P4 & Atomics & Implementa acesso atômico de read-modify-write a um valor (Se o hardware suportar) \\
        & Mutex & Acesso exclusivo para a operação de read-modify-write \\
     \bottomrule
@@ -233,25 +254,33 @@ Perceba que a garantia do padrão P3 pede um agregado invariante, por exemplo 2 
 
 Desta forma, é mostrada na tabela \ref{tab:cost-impl} a relação entre implementação e custo. Nesta tabela, a primeira coluna nomeia o padrão de data race (descrito na taxonomia). Na segunda coluna, são descritas as alternativas de implementação para cada padrão. E na terceira coluna, são descritas as dimensões de avaliação, de forma qualitativa.
 
-\begin{table}[ht]
-  \centering
-  \caption{Avaliação qualitativa das implementações safe dos padrões de data races}
-  \label{tab:cost-impl}
-  \begin{tabularx}{\textwidth}{>{\hsize=0.5\hsize}X >{\hsize=1.0\hsize}X >{\hsize=1.5\hsize}X}
-    \toprule
-    Padrão & Implementação safe & Avaliação qualitativa  \\
-    \midrule
-    P1 & Atomics & Poucos ciclos e sem bloqueio, o determinismo é grande por não possuir bloqueio e com baixo uso de RAM. Entretanto pode piorar a ergonomia se o tipo usado não for suportado por atomics, como float, sendo necessárias mais instruções (mais Flash) para a conversão do atomic inteiro para um float \\
-       & Cópia owned & Poucos ciclos e sem bloqueio, o determinismo é grande por não possuir bloqueio. Porém, é necessária mais RAM por ter cópias \\
-    P2 & Transferência de Mensagens & Mais ciclos (pois precisa mover o valor para o canal), porém sem bloqueio. Possui um aumento de RAM, pois o canal é um buffer dos valores, e também tem aumento de Flash (por conta das instruções de mover). A ergonomia é boa, pois não inclui muito boilerplate e a legibilidade é direta. Também não afeta o determinismo, pois não tem bloqueio. \\
-    P3 & Mutex & Possui poucos ciclos, mas tem o bloqueio. Isso afeta fortemente o determinismo. Além disso, a ergonomia é afetada, pois é necessário bloquear o mutex no uso, além disso aumenta a quantidade de instruções em Flash. Não aumenta a quantidade de RAM utilizada. \\
-       & Cópia owned & Mais ciclos por o tamanho ser maior e sem bloqueio, o determinismo é grande por não possuir bloqueio. Porém, é necessária mais RAM por ter cópias e o tamanho da cópia é maior do que de um escalar. \\
-       & Snapshot e publicação & Possui mais ciclos para a cópia dos valores, porém não tem bloqueio. Isso afeta pouco o determinismo. A ergonomia também é afetada, pois é necessário fazer a cópia dos valores e a mudança de referência. Além disso, aumenta muito o custo em RAM por duplicar agregados, que geralmente são grandes em tamanho. \\
-    P4 & Atomics & Poucos ciclos e sem bloqueio, o determinismo é grande por não possuir bloqueio e com baixo uso de RAM. Entretanto pode piorar a ergonomia se o tipo usado não for suportado por atomics, como float, sendo necessárias mais instruções (mais Flash) para a conversão do atomic inteiro para um float. Além disso, o hardware tem que suportar Atomic RMW, se não suportar é necessário Mutex com critical section, tendo os mesmos custos deste caso. \\
-       & Mutex & Possui poucos ciclos, mas tem o bloqueio. Isso afeta fortemente o determinismo. Além disso, a ergonomia é afetada, pois é necessário bloquear o mutex no uso, além disso aumenta a quantidade de instruções em Flash. Não aumenta a quantidade de RAM utilizada. \\
-    \bottomrule
-  \end{tabularx}
-\end{table}
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.12\textwidth} >{\raggedright\arraybackslash}p{0.29\textwidth} >{\raggedright\arraybackslash}p{0.51\textwidth}}
+  \caption{Avaliação qualitativa das implementações safe dos padrões de data races}\label{tab:cost-impl}\\
+  \toprule
+  Padrão & Implementação safe & Avaliação qualitativa \\
+  \midrule
+  \endfirsthead
+  \toprule
+  Padrão & Implementação safe & Avaliação qualitativa \\
+  \midrule
+  \endhead
+  \midrule
+  \multicolumn{3}{r}{\footnotesize continua na próxima página} \\
+  \endfoot
+  \bottomrule
+  \endlastfoot
+  P1 & Atomics & Poucos ciclos e sem bloqueio, o determinismo é grande por não possuir bloqueio e com baixo uso de RAM. Entretanto pode piorar a ergonomia se o tipo usado não for suportado por atomics, como float, sendo necessárias mais instruções (mais Flash) para a conversão do atomic inteiro para um float \\
+     & Cópia owned & Poucos ciclos e sem bloqueio, o determinismo é grande por não possuir bloqueio. Porém, é necessária mais RAM por ter cópias \\
+  \hline
+  P2 & Transferência de Mensagens & Mais ciclos (pois precisa mover o valor para o canal), porém sem bloqueio. Possui um aumento de RAM, pois o canal é um buffer dos valores, e também tem aumento de Flash (por conta das instruções de mover). A ergonomia é boa, pois não inclui muito boilerplate e a legibilidade é direta. Também não afeta o determinismo, pois não tem bloqueio. \\
+  \hline
+  P3 & Mutex & Possui poucos ciclos, mas tem o bloqueio. Isso afeta fortemente o determinismo. Além disso, a ergonomia é afetada, pois é necessário bloquear o mutex no uso, além disso aumenta a quantidade de instruções em Flash. Não aumenta a quantidade de RAM utilizada. \\
+     & Cópia owned & Mais ciclos por o tamanho ser maior e sem bloqueio, o determinismo é grande por não possuir bloqueio. Porém, é necessária mais RAM por ter cópias e o tamanho da cópia é maior do que de um escalar. \\
+     & Snapshot e publicação & Possui mais ciclos para a cópia dos valores, porém não tem bloqueio. Isso afeta pouco o determinismo. A ergonomia também é afetada, pois é necessário fazer a cópia dos valores e a mudança de referência. Além disso, aumenta muito o custo em RAM por duplicar agregados, que geralmente são grandes em tamanho. \\
+  \hline
+  P4 & Atomics & Poucos ciclos e sem bloqueio, o determinismo é grande por não possuir bloqueio e com baixo uso de RAM. Entretanto pode piorar a ergonomia se o tipo usado não for suportado por atomics, como float, sendo necessárias mais instruções (mais Flash) para a conversão do atomic inteiro para um float. Além disso, o hardware tem que suportar Atomic RMW, se não suportar é necessário Mutex com critical section, tendo os mesmos custos deste caso. \\
+     & Mutex & Possui poucos ciclos, mas tem o bloqueio. Isso afeta fortemente o determinismo. Além disso, a ergonomia é afetada, pois é necessário bloquear o mutex no uso, além disso aumenta a quantidade de instruções em Flash. Não aumenta a quantidade de RAM utilizada. \\
+\end{longtable}
 
 Na tabela \ref{tab:cost-impl} foi descrita a avaliação de forma qualitativa e não quantitativa. A avaliação de forma quantitativa é descrita na seção \ref{sec:experiment-proc} e medida na seção \ref{subsec:quantity-measurement}.
 
@@ -305,21 +334,31 @@ Na seção \ref{sec:cost} é apresentado um espaço de design. Na subseção atu
 
 Cada representante será implementado em um bloco dentro da biblioteca Aule. A implementação de cada bloco será trabalho da pós-qualificação. Na qualificação é apresentado o design dos blocos, bem como a rastreabilidade entre o bloco que será implementado e a dimensão de design. Note que esses novos blocos de sincronização (ou blocos sync, para simplificação) não entram em conflito com a afirmação de que o encadeamento forward mantém o núcleo de controle safe, pois esses blocos sync estão nas pontas do pipeline forward, para apenas comunicar as entradas e saídas de outros contextos de concorrência, encapsulando dentro de uma \ac{API} safe e recebendo e retornando sinais por valores. Desta forma, o núcleo de controle ainda permanecerá dentro do safe. Portanto, a tabela de rastreabilidade é apresentada na tabela \ref{tab:tracking}.
 
-\begin{table}[ht]
-  \centering
-  \caption{Associação de implementações safe com padrões de data races}
-  \label{tab:tracking}
-  \begin{tabularx}{\textwidth}{>{\hsize=0.5\hsize}X >{\hsize=1.0\hsize}X >{\hsize=1.5\hsize}X >{\hsize=1.0\hsize}X >{\hsize=1.0\hsize}X}
+\begin{landscape}
+  \small
+  \setlength{\textwidth}{\textheight}%
+  \setlength{\linewidth}{\textwidth}%
+  \begin{longtable}{>{\raggedright\arraybackslash}p{5cm} >{\raggedright\arraybackslash}p{7cm} >{\raggedright\arraybackslash}p{3.5cm} p{2.5cm} p{2.5cm}}
+    \caption{Associação de implementações safe com padrões de data races}\label{tab:tracking}\\
     \toprule
     Dimensão & Bloco Planejado & Feature & Estado & Caso \\
     \midrule
-    Cópia & Composição forward por valor & core no\_std & existe & - (é a base) \\
-    Compartilhamento Bloqueante & Bloco com \texttt{Arc<Mutex>} ou Critical section & alloc & planejado &  P3\\
-    Compartilhamento Lock-Free & Bloco com atomic ou snapshot & core / alloc & planejado & P1 / P3 \\
-    Estático x Heap & SPSC heapless & core no\_std & planejado & P2 \\
+    \endfirsthead
+    \toprule
+    Dimensão & Bloco Planejado & Feature & Estado & Caso \\
+    \midrule
+    \endhead
+    \midrule
+    \multicolumn{5}{r}{\footnotesize continua na próxima página} \\
+    \endfoot
     \bottomrule
-  \end{tabularx}
-\end{table}
+    \endlastfoot
+    Cópia & Composição forward por valor & core no\_std & existe & - (é a base) \\ \hline
+    Compartilhamento Bloqueante & Bloco com \texttt{Arc<Mutex>} ou Critical section & alloc & planejado & P3 \\ \hline
+    Compartilhamento Lock-Free & Bloco com atomic ou snapshot & core / alloc & planejado & P1 / P3 \\ \hline
+    Estático x Heap & SPSC heapless & core no\_std & planejado & P2 \\
+  \end{longtable}
+\end{landscape}
 
 Perceba que mesmo o núcleo estando dentro do safe, ainda existe código unsafe inevitável, pois existe interação com periféricos de hardware, e unsafe confinado, pois existem interações de concorrência. Deste modo, devem existir políticas para confinar o unsafe dentro de limites aceitáveis. Estes limites são: na interação com o hardware e na comunicação entre contextos de concorrência. Os pontos identificados hoje são: a interação com o hardware, a qual fica fora da biblioteca Aule; a ponte \ac{SWD} de comunicação do Desktop com o embarcado, a qual funciona como comunicação de uma validação \ac{HiL} do algoritmo de controle embarcado e os blocos de sincronização, os quais devem expor \acp{API} safe. Com isso, as políticas para utilizar unsafe dentro da biblioteca são: nunca no encadeamento forward, apenas nos adaptadores de borda (sincronização e \ac{SWD}); encapsulado dentro de \acp{API} safe; e ter invariante documentada. A invariante é a promessa feita de que o código é seguro, e documentada indica que essa promessa deve estar descrita junto ao código unsafe. Para garantir a política de nunca estar no encadeamento forward, o atributo \texttt{\#![forbid(unsafe\_code)]} será usado nos módulos do encadeamento forward, para não permitir a compilação de unsafe dentro destes módulos, apenas nos módulos dos blocos de interface de borda (sync e \ac{SWD}). Para garantir que os blocos unsafe possuam uma superfície pequena e confinada, é necessário definir uma métrica para saber o quão pequena ela é. Para isso, é utilizada \ac{LoC} do bloco unsafe e a avaliação da invariante documentada. Como são medidas as \ac{LoC} unsafe e como é feita a avaliação da invariante documentada está descrito na seção \ref{sec:experiment-proc}.
 
@@ -355,7 +394,7 @@ A primeira implementação é feita em cima da linguagem C, usando o FreeRTOS, p
 
 Na segunda implementação, onde o custo do Rust será medido, é usada a forma mais idiomática do Rust, para o ESP32 (Xtensa): Rust bare-metal em no\_std, com alocação estática usando o crate heapless e utilizando o crate esp-hal, como \ac{HAL}. Além disso, o compartilhamento entre \ac{ISR} e Tarefa será feito através de um bloco específico da biblioteca Aule, bem como todo o núcleo de controle \ref{subsec:catalog-n-unsafe-policy}. Perceba que o mais idiomático, neste caso, no Rust, não é utilizar um \ac{RTOS}, mas sim no\_std bare-metal com esp-hal. Isso ocorre, pois o \ac{RTIC} não suporta ESP32 Xtensa e o Embassy não é um \ac{RTOS} no mesmo sentido que o FreeRTOS, pois enquanto o FreeRTOS utiliza preempção no escalonamento, o Embassy utiliza cooperação no escalonamento. Com isso, o bare-metal no\_std com o esp-hal é a abordagem mais adequada e mais próxima que existe no Rust, para esse caso, com relação à implementação de referência. Para o regime de memória, é utilizado o crate heapless, pois com ele é possível obter alocação estática e manter a simetria (no âmbito da garantia de P3) com a implementação de referência. Note que ainda é utilizada alocação dinâmica, mas não na garantia, apenas como escolha do veículo de instanciação Aule. O ponto diferente entre as duas implementações é que em safe Rust, é impossível o compartilhamento de um bloco mutável sem um container de sincronização. O bloco coerente escrito na \ac{ISR} e lido pela Tarefa possui sua sincronização como opcional na implementação de referência, necessitando da disciplina do programador. Enquanto na implementação em Rust, por conta do sistema de tipos, a sincronização é forçada.
 
-Na tabela \ref{tab:impl-compare} são mostradas as diferenças entre cada uma das implementações. A tabela é construída com quatro colunas: a primeira é a dimensão na qual é apresentado o item de cada implementação; a segunda coluna, a forma em que a primeira implementação (C+FreeRTOS+\ac{MISRA}) realiza o item; a terceira coluna, a forma em que a segunda implementação (Rust+Aule) realiza o item; e a última coluna, na qual é classificada a diferença entre a coluna 2 e 3 em um dos três grupos: Controlado, em que não há diferença; Variável de estudo, em que é feita a comparação das medições; e Variável de Confusão Neutralizada, em que existe uma diferença, mas é isolada por medição. Note que ambas as implementações protegem o bloco com a mesma primitiva: mascarar \ac{IRQ} com uma seção crítica. Isso indica que o que está sendo medido não é a primitiva em si, mas sim o custo que o container safe do Rust adiciona sobre a primitiva compartilhada. O overhead desse container ser desprezível indica a segurança sem custos adicionais.
+Na tabela \ref{tab:impl-compare} são mostradas as diferenças entre cada uma das implementações. A tabela é construída com quatro colunas: a primeira é a dimensão na qual é apresentado o item de cada implementação; a segunda coluna, a forma em que a primeira implementação (C+\allowbreak FreeRTOS+\allowbreak \ac{MISRA}) realiza o item; a terceira coluna, a forma em que a segunda implementação (Rust+Aule) realiza o item; e a última coluna, na qual é classificada a diferença entre a coluna 2 e 3 em um dos três grupos: Controlado, em que não há diferença; Variável de estudo, em que é feita a comparação das medições; e Variável de Confusão Neutralizada, em que existe uma diferença, mas é isolada por medição. Note que ambas as implementações protegem o bloco com a mesma primitiva: mascarar \ac{IRQ} com uma seção crítica. Isso indica que o que está sendo medido não é a primitiva em si, mas sim o custo que o container safe do Rust adiciona sobre a primitiva compartilhada. O overhead desse container ser desprezível indica a segurança sem custos adicionais.
 
 \begin{table}[ht]
   \centering
@@ -363,21 +402,34 @@ Na tabela \ref{tab:impl-compare} são mostradas as diferenças entre cada uma da
   \label{tab:impl-compare}
   \begin{tabularx}{\textwidth}{>{\hsize=0.5\hsize}X >{\hsize=1.0\hsize}X >{\hsize=1.5\hsize}X >{\hsize=1.0\hsize}X}
     \toprule
-    Dimensão & C+FreeRTOS+MISRA & Rust+Aule & Papel no Experimento \\
+    Dimensão & C+\allowbreak FreeRTOS+\allowbreak MISRA & Rust+Aule & Papel no Experimento \\
     \midrule
     Algoritmo de controle & Realimentação de estados & Realimentação de estados & Controlado \\
+    \hline
     Estimador & Kalman (mesma tarefa) & Kalman (planejado, mesma tarefa) & Controlado \\
+    \hline
     Planta & Furuta física & Furuta física & Controlado \\
+    \hline
     MCU & ESP32 Xtensa & ESP32 Xtensa & Controlado \\
+    \hline
     Uso do núcleo & Single-core & Single-core & Controlado \\
+    \hline
     Período e deadline & Escolhido pelo usuário & Escolhido pelo usuário & Controlado \\
+    \hline
     Carga & Escolhida pelo usuário & Escolhida pelo usuário & Controlado \\
+    \hline
     Caso & P3 (fronteira ISR-Tarefa) & P3 (fronteira ISR-Tarefa) & Controlado \\
+    \hline
     Aquisição de dados & Interrupção & Interrupção & Controlado \\
+    \hline
     Memória da garantia & heap-free & heap-free & Controlado \\
+    \hline
     Mecanismo de proteção do bloco & Mascarar IRQ (seção crítica) & Mascarar IRQ (seção crítica) & Controlado \\
+    \hline
     Acesso do mecanismo de proteção & Direto (sob seção crítica) & \texttt{Mutex<RefCell>} & Variável de estudo \\
+    \hline
     Substrato & Free-RTOS & bare-metal & Variável de Confusão Neutralizada \\
+    \hline
     Alocação de veículo & 100 \% estática por MISRA & Heap no observador & Variável de Confusão Neutralizada \\
     \bottomrule
   \end{tabularx}
