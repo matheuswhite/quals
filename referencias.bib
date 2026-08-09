@@ -474,14 +474,16 @@
 }
 
 % added-by: Claude, 2026-08-09
-% Veredito do Matheus: fonte do firmware original da planta (periodo de 2 ms) --
-% subsec. 4.6.3. ATENCAO: em 2026-08-09 o repositorio retornou HTTP 404 a acesso
-% NAO autenticado (API e HTML) -> provavelmente PRIVADO. Owner e nome derivados
-% da URL informada; author = handle do GitHub (nome real nao confirmado);
-% year = ano de ACESSO (CONFIRMAR o ano do firmware).
-% RESSALVA (reprodutibilidade): se o repositorio for privado, a banca nao
-% consegue acessa-lo -- avaliar torna-lo publico ou citar o datasheet/fonte
-% alternativa do fabricante da planta.
+% Veredito do Matheus (opcao 4): o periodo de 2 ms sera VERIFICADO
+% EXPERIMENTALMENTE no proprio setup e reportado como dado deste trabalho; este
+% repositorio e citado apenas como ORIGEM do valor, nao como fonte autoritativa.
+% Com isso, a validade do resultado (metrica de deadline perdido, subsec. 4.6.3)
+% NAO depende do acesso a este repo. ATENCAO: em 2026-08-09 o repositorio retornou
+% HTTP 404 a acesso nao autenticado (API e HTML) -> provavelmente PRIVADO; owner e
+% nome derivados da URL; author = handle do GitHub; year = ano de ACESSO
+% (CONFIRMAR o ano do firmware). AJUSTE NO .tex (subsec. 4.6.3, l. 451): reenquadrar
+% a frase que hoje atribui a medicao "ao fabricante" para a verificacao empirica
+% feita neste trabalho, mantendo \citep{furuta-plant} apenas como origem.
 @misc{furuta-plant,
   author       = {{joseandersons}},
   title        = {Rotational-Inverted-Pendulum-Furuta},
