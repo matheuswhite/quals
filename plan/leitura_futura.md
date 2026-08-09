@@ -8,6 +8,7 @@ modified:
   - 2026-07-26: Claude (claude-opus-4-8) — added "Biblioteca vs. framework (Inversion of Control)" section (Fowler bliki + Johnson & Foote 1988); both already in referencias.bib and cited in 5.1
   - 2026-07-31: Claude (claude-opus-4-8) — added "Contextualização (cap. 1)" section with the 7 references added to referencias.bib on 2026-07-30/31; all cited in §1.1, so they enter as "read before the banca" (same exception as the IoC section)
   - 2026-08-02: Claude (claude-opus-4-8) — added "Distinção data race × race condition (3.3.3)" section with Netzer & Miller (1992) and Bishop & Dilger (1996); both in referencias.bib and cited in 3.3.3, so they enter as "read before the banca"
+  - 2026-08-09: Claude (claude-opus-4-8) — added "Rust Atomics and Locks" (Mara Bos) to the design-space section; book:bos-atomics in referencias.bib, will be cited in §4.4.1 (slot c, Seqlock)
 ---
 
 <!-- LTeX: enabled=false -->
@@ -90,6 +91,13 @@ Informa o obj. 3 (catalogar o **espaço de design** dos meios de implementar a s
 - **Referência:** *RTIC — Real-Time Interrupt-driven Concurrency* (livro/documentação do framework; rtic.rs — confirmar versão e data de acesso).
 - **Por que importa:** documenta o espaço de design concreto de concorrência **safe** em Cortex-M — recursos compartilhados, prioridades, seções críticas e a troca ISR↔tarefa. É o lado embarcado dos "meios" do obj. 3 e do caso de reconfiguração de parâmetros, e conecta com a plataforma do experimento (Cortex-M0, obj. 5). Relacionados a confirmar/considerar: crates `critical-section`, `heapless` (fila SPSC) e os atômicos de `core::sync::atomic`.
 - **Estado:** por ler.
+
+### Bos — *Rust Atomics and Locks*
+
+- **Referência:** Bos, M. (2023). *Rust Atomics and Locks: Low-Level Concurrency in Practice.* Sebastopol: O'Reilly Media. ISBN 978-1-098-11944-7. Versão online: https://marabos.nl/atomics/ `\cite{book:bos-atomics}`
+- **Por que importa:** referência Rust-concreta do espaço de design da sincronização — atomics, `Mutex`, canais e o padrão *seqlock* (snapshot/publicação). Ancora o slot (c) da §4.4.1 (`book:bos-atomics`); é o contraponto embarcado/Rust ao Herlihy & Shavit. **Exceção ao propósito do arquivo:** já está em `referencias.bib` e será citada na §4.4.1 — entra como *leitura a validar antes da banca* (Regra 7).
+- **Estado:** por ler.
+- **Pendência:** confirmar na leitura que o capítulo *Seqlock* sustenta o padrão "snapshot e publicação" como descrito na §4.4.1, sem distorção do mecanismo.
 
 ## Biblioteca vs. framework (Inversion of Control)
 
