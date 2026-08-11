@@ -7,6 +7,7 @@ modified:
   - 2026-08-10: Claude (claude-opus-5) — reescrito como GUIA DE LEITURA a pedido do Matheus: por obra, apenas o recorte que ele tem de ler antes da qualificacao (21/ago)
   - 2026-08-10: Claude (claude-opus-5) — Buttazzo substituido (Liu & Layland + Lee & Seshia, aval do Matheus); Liu & Layland entra na lista com o recorte; arquivos obsoletos (parcial do Buttazzo, candidato Maggio) removidos
   - 2026-08-10: Claude (claude-opus-5) — Liu & Layland conferido (JACM 20(1):46-61, 16 p) e movido para 05-contextualizacao-cap1/; recorte refinado apos ler a 1a pagina; Stallings segue faltando (md5 confirma que o arquivo e a mesma capa renomeada); registrada a alternativa de reduzir a l.19 a book:lee-seshia
+  - 2026-08-10: Claude (claude-opus-5) — troca de citacao aplicada no .tex (autorizada); numeros de linha do cap. 1 e 3 atualizados (+4)
 --- -->
 
 <!-- LTeX: enabled=false -->
@@ -19,6 +20,11 @@ seção; onde diz "localizar", o ponto exato se acha pelo sumário na hora da le
 
 Seções pela numeração real do `.tex` (1 introdução · 3 fundamentação · 4 metodologia ·
 5 resultados). Os `plan/*.md` usam a numeração antiga do outline.
+
+**Números de linha (10/ago, pós-troca de citação):** `introducao.tex` e `fundamentacao.tex` ganharam
+4 linhas de cabeçalho cada — as citações desses dois arquivos desceram 4 linhas (ex.: a de deadline
+era l.13, hoje é **l.17**; a de escalonador era l.21, hoje é **l.25**). Os outros capítulos não
+mudaram.
 
 ## Cap. 1 — Contextualização
 
@@ -36,7 +42,7 @@ Seções pela numeração real do `.tex` (1 introdução · 3 fundamentação ·
 |---|---|---|
 | **Lee & Seshia (2017)** — *Introduction to Embedded Systems* (livro, 30 MB) | `09-.../lee-seshia-...-v2_3.pdf` | **Dois capítulos, não o livro:** o de **Input and Output** (interrupções/ISR e DMA) e o de **Multitasking/Scheduling** (preempção; escalonador cooperativo). Localizar pelo sumário |
 | **Eriksson et al. (2013)** — *RTFM, Step 1* (4 p) | `09-.../eriksson-2013-rtfm-step1-sies.pdf` | Inteiro (4 páginas). Ancora ISR/tarefa em §3.1.1 e a alternativa de sincronização em §4.4.1 |
-| **Boehm & Adve (2008)** — *Foundations of the C++ Concurrency Memory Model* (11 p) | `07-.../boehm-adve-2008-...pdf` | A seção que **define data race** e a que estabelece o **happens-before** como a ordenação dada pelo modelo de memória — é o que as l. 31 e 33 afirmam |
+| **Boehm & Adve (2008)** — *Foundations of the C++ Concurrency Memory Model* (11 p) | `07-.../boehm-adve-2008-...pdf` | A seção que **define data race** e a que estabelece o **happens-before** como a ordenação dada pelo modelo de memória — é o que as l. 35 e 37 afirmam |
 | **Adve & Boehm (2010)** — *Memory Models: A Case for Rethinking…* (9 p) | `07-.../adve-boehm-2010-...pdf` | Introdução + a seção sobre **o que é um modelo de memória** / data-race-free. Papel de contexto, ao lado do de 2008 |
 | **WG14 N1570 (C11)** — draft (701 p) | `07-.../wg14-n1570-c11-draft.pdf` | **Só §5.1.2.4, parágrafo 25** (+ as definições vizinhas da §5.1.2.4). É de lá que saem as **4 cláusulas** do data race e o UB. Nada mais do documento |
 | **Netzer & Miller (1992)** — *What Are Race Conditions?* (15 p) | `06-.../netzer-miller-1992-...pdf` | As definições de **general race** e **data race** e, principalmente, a seção que **relaciona os dois**. **Alvo:** decidir se o paper afirma continência (DR ⊂ RC) ou interseção — disso depende a redação da §3.1.2 e a assimetria da §3.1.3. É o furo mais provável da banca aqui |
@@ -66,8 +72,8 @@ Seções pela numeração real do `.tex` (1 introdução · 3 fundamentação ·
 **8ª**. Se a cópia lida for a 8ª, `edition`/`year`/`publisher`/`isbn` mudam.
 
 **Alternativa, se o livro não vier:** a §3.1.1 cita Stallings junto com `book:lee-seshia` na mesma
-linha (l.19), e o capítulo de **Input and Output** do Lee & Seshia — que **está** na pasta — cobre
-interrupções e DMA. Reduzir a l.19 a `book:lee-seshia` é uma saída análoga à que resolveu o
+linha (l.23), e o capítulo de **Input and Output** do Lee & Seshia — que **está** na pasta — cobre
+interrupções e DMA. Reduzir a l.23 a `book:lee-seshia` é uma saída análoga à que resolveu o
 Buttazzo. Custo: perde-se a âncora de arquitetura no nível de organização de computadores.
 
 ### Buttazzo — fora da lista (substituído em 10/ago)
@@ -75,8 +81,10 @@ Buttazzo. Custo: perde-se a âncora de arquitetura no nível de organização de
 Sem acesso ao livro, o Matheus aprovou a **opção 1 + 2** da rodada 4 de
 `plan/triagem_referencias.md`: a frase de deadline (§1.1) passa a citar **Liu & Layland** e a de
 escalonador preemptivo × cooperativo (§3.1.1) passa a citar **Lee & Seshia**, que já está aqui.
-`book:deadline-requirement` fica sem citação no texto — e, sem `\nocite{*}`, sem aparecer na
-bibliografia. **Nada do Buttazzo precisa ser lido.**
+**Aplicado no `.tex` em 10/ago** (troca autorizada por ele, suspensão pontual da Regra 3):
+`introducao.tex:17` → `article:liu-layland-hard-real-time` e `fundamentacao.tex:25` →
+`book:lee-seshia`. `book:deadline-requirement` é hoje a **única entrada órfã** do `.bib` e, sem
+`\nocite{*}`, não é impressa. **Nada do Buttazzo precisa ser lido.**
 
 ⚠️ **Ressalva confirmada na leitura da 1ª página (10/ago):** o paper **ajuda mais do que se
 supunha** — abre motivando em *"computers for control and monitoring of industrial processes"* e
@@ -92,9 +100,9 @@ Citadas, mas fora do escopo da qualificação. Ficam para depois; não estão na
 
 | Obra | O que seria preciso ler | Risco assumido |
 |---|---|---|
-| **Ogata** — *Engenharia de Controle Moderno* | capítulos de malha fechada/referência + o de controle digital (§1.1 l.13) | baixo: teoria de controle consolidada |
+| **Ogata** — *Engenharia de Controle Moderno* | capítulos de malha fechada/referência + o de controle digital (§1.1 l.17) | baixo: teoria de controle consolidada |
 | **Wazlawick** — *Metodologia de pesquisa para CC* | **seção 2.6** (as 3 classes de pesquisa) — a própria `\citep` já diz | baixo: a classificação está declarada na citação |
-| **MISRA C:2012** | as regras que tratam de concorrência/acesso compartilhado, se existirem (§1.1 l.17) | baixo: a afirmação relevante tem `article:rust-critical` como interlocutor, e esse **está** na pasta |
+| **MISRA C:2012** | as regras que tratam de concorrência/acesso compartilhado, se existirem (§1.1 l.21) | baixo: a afirmação relevante tem `article:rust-critical` como interlocutor, e esse **está** na pasta |
 
 ## Outras ressalvas de conferência
 
