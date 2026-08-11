@@ -1,6 +1,6 @@
 ---
 name: ponto-retomada
-description: "PROGRESSO 04/ago: CAP. 6 (Cronograma de Execucao, capitulos/Cronograma_de_Execucao.tex) ESCRITO por Matheus (abertura + 6.1 c/ figura + 6.2 Plano de Trabalho) e FIGURA GANTT gerada (Claude): res/cronograma/gantt.html = gerador HTML autocontido (granularidade SEMANAL S1-S4/mes, faixa de mes por cima, linha da planta jan/27, sombreamento fechamento abr-mai) + res/cronograma/gantt.png renderizado via Edge headless (--force-device-scale-factor=2 --window-size=1300,440). Cronograma fase empirica set/2026->mai/2027 (9 meses): Obj4 set-out(2m); Obj8 out-meados a nov(1,5m, host, sem planta); Obj5/6 dez-fev(3m); Obj7 fev-mar(2m); Redacao jan-mai(5m, sobreposta); planta jan/27. PENDENTE cap.6 .tex (so Matheus edita): typos — 'A estrica'->escrita (L29, o mais visivel), meses/distribuir (L8), construidos/proibicao/politica (L21), dependencias (L23), pendulo/distribuicoes/disponibilidade (L25), sera-realizado/prolongando/ocorrerao/ciclos/quantificado/veredito (L27); + coerencia '1 mes para cada C/Rust' (L29) vs 'em paralelo' (L25). Ja corrigido por ele: forbid com cerquilha escapada, inicio 1/set, granularidade semanal, prazo=meta. Oferecido nao feito: plan/cap_6_cronograma.md. AINDA ABERTO (02/ago): cap.3 nucleo 3.3+3.4 escrito (labels + passe + cites 3.4); cap.1 1.2 diagnosticada/1.3 vazia; BLOQUEADOR LISTA_DE_SIGLAS; erros sistematicos globais. Entrega 7/ago; defesa 26/ago."
+description: "PROGRESSO 04/ago: CAP. 6 (Cronograma de Execucao, capitulos/Cronograma_de_Execucao.tex) ESCRITO por Matheus (abertura + 6.1 c/ figura + 6.2 Plano de Trabalho) e FIGURA GANTT gerada (Claude): res/cronograma/gantt.html = gerador HTML autocontido (granularidade SEMANAL S1-S4/mes, faixa de mes por cima, linha da planta jan/27, sombreamento fechamento abr-mai) + res/cronograma/gantt.png renderizado via Edge headless (--force-device-scale-factor=2 --window-size=1300,440). Cronograma fase empirica set/2026->mai/2027 (9 meses): Obj4 set-out(2m); Obj8 out-meados a nov(1,5m, host, sem planta); Obj5/6 dez-fev(3m); Obj7 fev-mar(2m); Redacao jan-mai(5m, sobreposta); planta jan/27. PENDENTE cap.6 .tex (so Matheus edita): typos — 'A estrica'->escrita (L29, o mais visivel), meses/distribuir (L8), construidos/proibicao/politica (L21), dependencias (L23), pendulo/distribuicoes/disponibilidade (L25), sera-realizado/prolongando/ocorrerao/ciclos/quantificado/veredito (L27); + coerencia '1 mes para cada C/Rust' (L29) vs 'em paralelo' (L25). Ja corrigido por ele: forbid com cerquilha escapada, inicio 1/set, granularidade semanal, prazo=meta. Oferecido nao feito: plan/cap_6_cronograma.md. AINDA ABERTO (02/ago): cap.3 nucleo 3.3+3.4 escrito (labels + passe + cites 3.4); cap.1 1.2 diagnosticada/1.3 vazia; BLOQUEADOR LISTA_DE_SIGLAS; erros sistematicos globais. Entrega 7/ago; defesa 26/ago. ATUALIZACAO 10/ago: ele informou QUALIFICACAO em 21/ago/2026 (antes 26/ago -- confirmar) e a prioridade passou a ser LER tudo que o .tex cita; pasta leituras/ criada com o mapa em leituras/README.md (faltam 2: Buttazzo com download incompleto e Stallings so-capa; Ogata/Wazlawick/MISRA fora do escopo por decisao dele; eriksson2013rtfm resolvido)."
 metadata:
   node_type: memory
   author: Claude (claude-opus-4-8)
@@ -24,6 +24,7 @@ metadata:
     - "Claude (claude-opus-4-8), 2026-08-01"
     - "Claude (claude-opus-4-8), 2026-08-02"
     - "Claude (claude-opus-4-8), 2026-08-04"
+    - "Claude (claude-opus-5), 2026-08-10"
   type: project
   originSessionId: bfd04e9d-3381-42a2-bac3-e70b75a64a40
 ---
@@ -135,6 +136,11 @@ Só passe de forma. Cap. 3: 6 `\cite{}` vazios (5 na 4.4.1 + 1 na 4.6.3) + **tab
 
 ## Prazo
 **Entrega à banca: sex 7/ago/2026** (autoimposta; regimento 11/ago). **Defesa: qua 26/ago.** Restam (após 04/ago): **noites 05–06/ago (typos cap. 6 + labels/passe cap. 3 + cap. 1.2/1.3 + pré-textuais + revisão) + manhã de 07/ago (passe final + entrega).** Cap. 2 e cap. 7 cortados.
+
+**⚠️ ATUALIZAÇÃO 10/ago:** ele informou a **qualificação em 21/ago/2026** (antes constava defesa 26/ago — provável remarcação; **confirmar**). Restam ~11 dias, e a prioridade declarada nesta data é **ler tudo o que o `.tex` cita** antes da banca.
+
+## Leituras para a banca (10/ago)
+Pasta `leituras/` criada (não versionada; `.gitignore` deixa passar só `leituras/README.md`, que é o mapa: 32 chaves citadas × cópia local × onde cada obra é citada, com a numeração real do `.tex`). Estado ao fim de 10/ago: **faltam 2** — **Buttazzo** (download incompleto) e **Stallings** (o PDF baixado é só a capa, 8ª ed.). **Ogata, Wazlawick e MISRA C:2012 ficaram FORA do escopo por decisão dele** (lê depois da banca). `eriksson2013rtfm` resolvido (ele baixou). `furuta-plant` é repo privado — nada a ler. **Pendência de `.bib`:** as cópias de Buttazzo/Stallings parecem ser edições **antigas** (Buttazzo scan PDF 1.3; Stallings 8ª ed.) ≠ 3ª/2011 e 11ª/2021 do `.bib` — conferir ao ler.
 
 ## Git — atenção
 Verificar se o local está atrás de `origin/main` (`git pull`/fast-forward) **antes** de novos commits, para não divergir. `refs/` aparece untracked (ruído do ambiente — fora dos commits). `res/cronograma/` **não** está no `.git/info/exclude` (ao contrário de `res/intro/`) → o `gantt.png` é versionável.
