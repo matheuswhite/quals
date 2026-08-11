@@ -80,3 +80,8 @@ Thumbs.db
 
 # === Rust / cargo (code snippets under src/) ===
 **/target/
+
+# === Leituras (copias locais das obras de plan/leitura_futura.md) ===
+# PDFs/HTML de obras com direitos autorais: nao versionar. So o mapa (README.md) entra.
+leituras/*
+!leituras/README.md
