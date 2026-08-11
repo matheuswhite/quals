@@ -4,6 +4,7 @@ created: 2026-07-20
 co-authors:
   - Claude (claude-opus-4-8), 2026-08-01
   - Claude (claude-opus-4-8), 2026-08-02
+  - Claude (claude-opus-5), 2026-08-10
 ---
 
 <!-- LTeX: enabled=false -->
@@ -31,6 +32,7 @@ Esteira viva da busca bibliográfica sob a **Regra 7 reformulada** (ver `CLAUDE.
 | 1 | 2026-08-01 | (derivadas do texto da 3.3.1): tratamento de interrupção/ISR; DMA / transferência sem a CPU; contexto de execução em sistema embarcado. Cap.-alvo: 3.3.1 | WebSearch | 3 candidatos | Buraco = alicerce para ISR e DMA (a antiga 3.2 Arquitetura foi cortada). Preempção / escalonamento preemptivo×cooperativo / ISR-não-bloqueia já cobertos por `book:deadline-requirement` (Buttazzo) + `eriksson2013rtfm` (SRP/RTIC) no `.bib`. WebSearch = web genérica, não base indexada → metadados a confirmar em fonte primária antes de virar definitiva. |
 | 2 | 2026-08-01 | (dada pelo Matheus): norma C11 / UB em data race (§5.1.2.4) | WebSearch + WebFetch | 1 documento | Documento único e conhecido (não é garimpo). Redação e nº do parágrafo confirmados na fonte primária (WG14, N1570, versão HTML port70.net): §5.1.2.4 par. 25. Duas formas citáveis: N1570 (draft público, gratuito) × ISO/IEC 9899:2011 (oficial, pago). |
 | 3 | 2026-08-02 | (SEM keywords/busca ainda) — Matheus pediu candidatos para formar o prompt; propostos por Claude a partir do próprio conhecimento: (A) definição de race condition + distinção DR×RC (3.3.3 l.50/l.52); (B) origem do termo TOCTOU / check-then-act (l.52) | nenhuma (conhecimento prévio) | 7 candidatos | **Inversão do fluxo normal:** o passo 1 (keywords) foi substituído por "Claude sugere opções, Matheus escolhe". Guardrail preservado: Matheus dá o aval, `.bib` só depois. **Metadados NÃO confirmados em fonte primária ainda** — confirmar na escolha (o `#6 Helmbold&McDowell` pode nem existir com o ano indicado). |
+| 4 | 2026-08-10 | (pedido do Matheus): **substituir `book:deadline-requirement` (Buttazzo) por um artigo** — ele não conseguiu acesso ao livro. Alvo duplo, porque a chave ancora duas frases diferentes: **(A)** §1.1 l.13 — perder deadline em controle ≠ travar GUI; risco de desestabilizar a planta (deadline como requisito, hard/soft/firm); **(B)** §3.1.1 l.21 — escalonador **preemptivo × cooperativo** | WebSearch + Semantic Scholar API (openAccessPdf) + testes de URL | 4 candidatos | **Critério extra imposto pelo caso:** o substituto tem de ser **acessível a ele** — o problema original foi acesso. Por isso o filtro incluiu OA. Achado relevante: **(B) não precisa de referência nova** — `book:lee-seshia`, já definitiva e já em mãos, cobre preempção/escalonamento no capítulo de Multitasking/Scheduling; a saída mais barata é repontar a `\citep` da l.21. Metadados dos candidatos confirmados em fonte primária apenas para o #12 (LIPIcs/Dagstuhl); os demais via DBLP/ACM/IEEE, **a confirmar** se avalizados. |
 
 ## Lista provisória (aguardando leitura + aval do Matheus)
 
@@ -47,6 +49,10 @@ Esteira viva da busca bibliográfica sob a **Regra 7 reformulada** (ver `CLAUDE.
 | 9 | Alta | 3.3.3 l.52 (origem do termo TOCTOU) | Bishop, M. & Dilger, M. · *Checking for Race Conditions in File Accesses* · Computing Systems 9(2):131–152 · 1996 · artigo | Fonte canônica do termo TOCTOU; **RESSALVA: contexto = segurança de acesso a arquivos Unix, não controle** | TOCTOU origem | **definitiva (2026-08-02, B1)** → `article:bishop-dilger-toctou` |
 | 10 | Média | 3.3.3 l.52 (nomenclatura TOCTOU, catálogo) | MITRE · *CWE-367: Time-of-check Time-of-use (TOCTOU) Race Condition* · cwe.mitre.org · techreport/URL | Catálogo padrão da indústria; define TOCTOU; citável como URL; **não peer-reviewed** | TOCTOU catálogo | pendente |
 | 11 | Média | 3.3.3 l.52 (termo check-then-act) | Goetz, B. et al. · *Java Concurrency in Practice* · Addison-Wesley · 2006 · livro | Usa "check-then-act" como padrão de race condition (o outro nome no seu texto); **RESSALVA: Java, livro** | check-then-act | pendente |
+| 12 | Alta | §1.1 l.13 (A: consequência de perder deadline em controle) | Maggio, M.; Hamann, A.; Mayer-John, E.; Ziegenbein, D. · *Control-System Stability Under Consecutive Deadline Misses Constraints* · ECRTS 2020, LIPIcs v. 165, pp. 21:1–21:24 · 2020 · artigo (DOI 10.4230/LIPIcs.ECRTS.2020.21) | **Acesso garantido** (LIPIcs, CC-BY, PDF baixado como `leituras/_CANDIDATO-substituto-buttazzo-maggio-2020-ecrts.pdf`). Trata exatamente do que a §1.1 afirma: o efeito de **deadline perdido sobre a estabilidade** do sistema de controle. **RESSALVA:** é sobre *tolerância* a misses (modelos weakly-hard) — sustenta "perder deadline ameaça a estabilidade", **não** a taxonomia hard/soft/firm; se a taxonomia importar no texto, precisa de par | substituto Buttazzo (A) | **descartado (2026-08-10)** — ver lista descartada |
+| 13 | Alta | §1.1 l.13 (A: deadline como requisito, não velocidade) | Stankovic, J. A. · *Misconceptions About Real-Time Computing: A Serious Problem for Next-Generation Systems* · IEEE Computer 21(10):10–19 · 1988 · artigo (DOI 10.1109/2.7053) | O artigo canônico do argumento "tempo real **não** é 'rápido'; deadline é requisito de correção" — é a formulação mais próxima da sua frase. **RESSALVA: fechado (IEEE)** → CAPES/UFAL; se o acesso falhar de novo, não resolve o problema que motivou a troca | substituto Buttazzo (A) | **descartado (2026-08-10)** — ver lista descartada |
+| 14 | Média | §1.1 l.13 (A) + §3.1.1 l.21 (B, parcial) | Liu, C. L. & Layland, J. W. · *Scheduling Algorithms for Multiprogramming in a Hard-Real-Time Environment* · JACM 20(1):46–61 · 1973 · artigo (DOI 10.1145/321738.321743) | Alicerce de *hard real-time* + escalonamento **preemptivo** por prioridade. **Acesso:** ACM bronze OA (abre no navegador, como o Netzer & Miller). **RESSALVAS:** não discute escalonamento **cooperativo** (metade de B fica descoberta) e não faz a taxonomia hard/soft/firm | substituto Buttazzo (A/B) | **definitiva (2026-08-10, opcao 2)** → `article:liu-layland-hard-real-time` |
+| 15 | Média | §3.1.1 l.21 (B: preemptivo × cooperativo) | **Sem obra nova** — repontar a `\citep` para `book:lee-seshia` (já definitiva) | Capítulo de **Multitasking/Scheduling** cobre preempção e escalonador cooperativo; a obra **já está em mãos** (PDF livre v2.3) e já ancora a l.19 da mesma subseção. Custo zero de acesso e de `.bib` | substituto Buttazzo (B) | **definitiva (2026-08-10, opcao 1)** → repontar para `book:lee-seshia` (sem entrada nova) |
 
 ## Lista definitiva (avalizada → `.bib`)
 
@@ -57,9 +63,11 @@ Esteira viva da busca bibliográfica sob a **Regra 7 reformulada** (ver `CLAUDE.
 | ISO/IEC C11, draft N1570, §5.1.2.4 par. 25 (Opção A) | `doc:c11` | Sim (2026-08-01) |
 | Netzer & Miller, *What are race conditions?*, ACM LOPLAS 1(1):74–88, 1992 | `article:netzer-miller-races` | Sim (2026-08-02) |
 | Bishop & Dilger, *Checking for Race Conditions in File Accesses*, Computing Systems 9(2):131–152, 1996 | `article:bishop-dilger-toctou` | Sim (2026-08-02) |
+| Liu & Layland, *Scheduling Algorithms for Multiprogramming in a Hard-Real-Time Environment*, J. ACM 20(1):46–61, 1973 | `article:liu-layland-hard-real-time` | Sim (2026-08-10) |
 
 ## Lista descartada
 
 | Referência | Motivo (curto) |
 |---|---|
-| *(vazia)* | — |
+| Maggio et al., *Control-System Stability Under Consecutive Deadline Misses Constraints*, ECRTS 2020 (#12) | 2026-08-10: não escolhido na substituição do Buttazzo. É sobre *tolerância* a misses (weakly-hard) — abriria flanco na banca contra a frase da §1.1 |
+| Stankovic, *Misconceptions About Real-Time Computing*, IEEE Computer 1988 (#13) | 2026-08-10: fechado (IEEE) — recairia no mesmo problema de acesso que motivou a troca |

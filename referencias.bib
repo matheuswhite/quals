@@ -50,6 +50,14 @@
 %     da planta; subsec. 4.6.3) e rust-error-index (indice de erros do compilador;
 %     subsec. 4.3.2). O slot (e) reusa eriksson2013rtfm (ja presente). Marcadas
 %     "added-by".
+%   - Claude (claude-opus-5), 2026-08-10 -- entrada
+%     article:liu-layland-hard-real-time (Liu & Layland, J. ACM 1973) apos veredito
+%     do Matheus ("opcao 1 + 2" da rodada 4 da triagem): substitui
+%     book:deadline-requirement (Buttazzo, sem acesso) na frase de deadline do
+%     cap. 1; a frase de escalonador preemptivo x cooperativo (subsec. 3.1.1)
+%     passa a apontar para book:lee-seshia, sem entrada nova. Metadados
+%     confirmados via Crossref (registro do DOI feito pela ACM). Marcada
+%     "added-by".
 % NOTA: apos a limpeza de 2026-08-09, todas as entradas exceto
 % wazlawick2009metodologia carregam marcacao "added-by". As entradas removidas
 % continuam recuperaveis no historico do git.
@@ -504,4 +512,42 @@
   howpublished = {\url{https://doc.rust-lang.org/error_codes/error-index.html}},
   year         = {2026},
   note         = {Documenta\c{c}\~ao oficial. Acesso em: 09 ago. 2026}
+}
+
+% ===========================================================================
+% Substituicao do Buttazzo (cap. 1 / subsec. 3.1.1) -- 2026-08-10
+% Veredito do Matheus: aprovada a "opcao 1 + 2" -- (1) a frase de escalonador
+% preemptivo x cooperativo (fundamentacao.tex l.21) passa a apontar para
+% book:lee-seshia, que ja e definitiva e ja esta em maos; (2) a frase de deadline
+% em controle (introducao.tex l.13) passa a apontar para este artigo. Motivo da
+% troca: sem acesso ao livro do Buttazzo (book:deadline-requirement).
+% ATENCAO: apos a troca no .tex, book:deadline-requirement fica SEM nenhuma
+% citacao -- como \nocite{*} esta comentado no main.tex, a entrada simplesmente
+% nao e impressa. Mantida no arquivo como rastro do processo.
+% ===========================================================================
+
+% added-by: Claude, 2026-08-10
+% Artigo canonico de hard real-time: prioridade fixa + escalonamento preemptivo,
+% com o deadline tratado como requisito do sistema (nao como meta de desempenho).
+% Metadados confirmados em 2026-08-10 via Crossref (registro do DOI feito pela
+% propria ACM): J. ACM v. 20, n. 1, jan. 1973, pp. 46-61, doi 10.1145/321738.321743.
+% Nome do primeiro autor grafado como no registro: "C. L. Liu".
+% ACESSO: PDF liberado na ACM DL (bronze OA) -- abrir no navegador; download por
+% script e bloqueado (403).
+% RESSALVA para a arguicao: o artigo sustenta hard real-time e preempcao, mas NAO
+% faz a taxonomia hard/soft/firm nem discute escalonamento cooperativo.
+% HISTORICO: esta obra ja estivera no arquivo como "liu1973scheduling" e foi
+% removida na higiene de 2026-08-09 por estar orfa (sem citacao). Volta agora com
+% chave no padrao das demais e COM citacao no texto.
+@article{article:liu-layland-hard-real-time,
+  author    = {Liu, C. L. and Layland, James W.},
+  title     = {Scheduling Algorithms for Multiprogramming in a Hard-Real-Time Environment},
+  journal   = {Journal of the ACM},
+  volume    = {20},
+  number    = {1},
+  pages     = {46--61},
+  month     = {jan},
+  year      = {1973},
+  publisher = {ACM},
+  doi       = {10.1145/321738.321743}
 }
