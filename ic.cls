@@ -236,7 +236,7 @@ de Curso e Dissertacoes]
 %%------------------------------------------------------------------------------
 \DeclareOption{dissertacao}{%
     \setboolean{tcc}{false}
-    \typeout{Tipo de Documento: Proposta de Dissertação de Mestrado.}
+    \typeout{Tipo de Documento: Proposta de Qualificação de Mestrado.}
 }
 
 %%------------------------------------------------------------------------------
@@ -244,7 +244,7 @@ de Curso e Dissertacoes]
 %%------------------------------------------------------------------------------
 \DeclareOption{tcc}{%
     \setboolean{tcc}{true}
-    \typeout{Tipo de Documento: Proposta de Dissertação de Mestrado.}
+    \typeout{Tipo de Documento: Proposta de Qualificação de Mestrado.}
 }
 
 %%------------------------------------------------------------------------------
@@ -314,7 +314,7 @@ de Curso e Dissertacoes]
     \begin{flushright} % Alinhamento à direita
       \href{http://ic.ufal.br}{\includegraphics[width=.3\linewidth]{IC.eps}}\\%
 % [Rian] Adicionado href
-      \Large \vspace*{2cm} \ifthenelse{\boolean{tcc}}{Proposta de Dissertação de Mestrado}{Dissertação de Mestrado}\\%
+      \Large \vspace*{2cm} \ifthenelse{\boolean{tcc}}{Proposta de Qualificação de Mestrado}{Qualificação de Mestrado}\\%
       \vspace*{2cm} \LARGE \textbf{\@titulo} \\%
       \vspace*{2cm}%
       \Large \href{\@autorPagina}{\color{black}{\@autorNome}} \\ \normalsize %
@@ -334,7 +334,7 @@ de Curso e Dissertacoes]
       \normalsize \vfill Maceió, \@data%
     \end{flushright}%
     \folhaDeRosto%
-    \aprovacao%
+    % \aprovacao%
     \renewcommand{\thepage}{\roman{page}} \setcounter{page}{0}
     \normalsize%
 }
@@ -358,12 +358,12 @@ de Curso e Dissertacoes]
     \hfill%
     \begin{minipage}{ 11 cm }%
         \ifthenelse{\boolean{tcc}}%
-       {Proposta de Dissertação apresentada como requisito
+       {Proposta de Qualificação apresentada como requisito
 parcial para obtenção do grau de Mestre em Informática
 pelo Programa de Pós – Graduação em Informática do
 Instituto de Computação da Universidade Federal de
 Alagoas.}%
-        {Proposta de Dissertação apresentada como requisito parcial para obtenção do grau de
+        {Proposta de Qualificação apresentada como requisito parcial para obtenção do grau de
 Mestre em Informática pelo Programa de Pós – Graduação em Informática do Instituto
 de Computação da Universidade Federal de Alagoas., aprovada pela comissão
 examinadora que abaixo assina.}%
@@ -403,7 +403,7 @@ examinadora que abaixo assina.}%
     \newpage%
     \thispagestyle{empty}%
     \ifthenelse{\boolean{tcc}}%
-        {Proposta de Dissertação apresentada como requisito parcial para obtenção do grau de Mestre pelo Curso de Mestrado em Informática do Instituto de Computação da
+        {Proposta de Qualificação apresentada como requisito parcial para obtenção do grau de Mestre pelo Curso de Mestrado em Informática do Instituto de Computação da
 Universidade Federal de Alagoas, aprovada pela comissão examinadora que abaixo assina.}%
         {Dissertação apresentada como requisito parcial para obtenção do grau de
 Mestre pelo Curso de Mestrado em Modelagem Computacional de Conhecimento do
