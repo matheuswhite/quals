@@ -1,6 +1,10 @@
+% author: Matheus T. dos Santos
+% co-authors:
+%   - Claude (claude-opus-4-8), 2026-08-13 -- formatacao mecanica autorizada por Matheus
+%     (suspensao pontual da Regra 3): italico em "Data race" nas keywords. Corpo (ingles) intacto.
 \begin{abstract}
 
 In closed-loop digital control, failing to meet the time requirement of the sampling period could destabilize the entire system, causing severe accidents. The nature of digital control requires shared states: in data acquisition, in user parametrization, or in control signal output. The shared states accessed by multiple contexts, in which at least one of them performs a write and at least one of them is not synchronized, lead to a data race. The current state of the art in digital control implementation, in embedded systems, relies on C+MISRA+Sanitizers to avoid data races. However, this method depends on the developer's discipline and on detecting data races exercised at runtime. With the Rust programming language, these guarantees are moved from the developer to the compiler and the data races are not detected at runtime anymore, but they are eliminated at compile time, using Rust's type system (Send/Sync and borrow checker). However, Rust needs a forced synchronization, which has a cost. It is also unknown which residual unsafe remains in Rust. Thus, what is the boundary between safe and unsafe in data race patterns, in the domain of embedded control algorithms, and what is the cost of Rust's guarantees? In this work, a taxonomy is proposed to classify the data race patterns within the control algorithms. Furthermore, the guarantee design space that makes data races unrepresentable is cataloged. The experiment vehicle is built: Aule, a control library designed to instantiate the control algorithms used in the experiments. Currently, Aule provides the foundation for building the experiments on a physical plant, with the synchronization blocks under development. A comparative overview of Rust's open-source ecosystem for control libraries is shown. Finally, this work shows a demonstrative case of Rust's safe compiler refusal, when the code contains a data race.
 
-\keywords{Data race; Memory Safety; Control Systems; Rust; Embedded Systems}
+\keywords{\textit{Data race}; Memory Safety; Control Systems; Rust; Embedded Systems}
 \end{abstract}
